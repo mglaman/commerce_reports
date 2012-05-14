@@ -1,13 +1,9 @@
 name = Commerce Reports
-description = Defines Reports
+description = Reporting module for Drupal Commerce.
 package = Commerce
 dependencies[] = commerce
-dependencies[] = date
-dependencies[] = date_popup
+dependencies[] = views_data_export
 core = 7.x
 
-files[] = commerce_reports.install
 files[] = commerce_reports.module
-files[] = includes/views/handlers/commerce_reports_handler_field_products_qty_monthly_line.inc
-files[] = includes/views/handlers/commerce_reports_handler_field_products_sales_monthly_bar.inc
-files[] = includes/views/handlers/commerce_reports_handler_field_products_percent_pie.inc
+files[] = includes/views/commerce_reports_handler_field_productquantity.inc
