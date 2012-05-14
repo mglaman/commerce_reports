@@ -7,3 +7,6 @@ core = 7.x
 
 files[] = commerce_reports.module
 files[] = includes/views/commerce_reports_handler_field_productquantity.inc
+files[] = includes/views/commerce_reports_handler_field_timestamp_ccyymm.inc
+files[] = includes/views/commerce_reports_handler_field_timestamp_ccyymmdd.inc
+files[] = includes/views/commerce_reports_handler_field_timestamp_ccyyww.inc
