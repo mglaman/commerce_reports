@@ -16,6 +16,13 @@ function commerce_reports_menu() {
     'file path' => drupal_get_path('module', 'system'),
     'file' => 'system.admin.inc',
   );
+  
+  $items['admin/commerce/reports/statistics'] = array(
+    'title' => 'Reports Statistics', 
+    'page callback' => 'commerce_reports_sales_statistics', 
+    'access arguments' => array('access commerce reports'),
+    'file' => 'commerce_reports.admin.inc',
+  );
 
   return $items;
 }
