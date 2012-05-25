@@ -3,14 +3,44 @@
 /**
  * Dummy function that should be implemented to show overview.
  */
-function commerce_reports_sales() {
-  return commerce_reports_sales_statistics();
+function commerce_reports_overview_page() {
+  return array(
+    commerce_reports_sales_overview(),
+    commerce_reports_customer_statistics()
+  );
+}
+
+function commerce_reports_sales_overview() {
+  $sales = commerce_reports_sales(commerce_reports_get_date('today', t('Today')));
+  $sales = array_merge($sales, commerce_reports_sales(commerce_reports_get_date('yesterday', t('Yesterday'))));
+  
+  $month = commerce_reports_get_date('first day of this month midnight', t('Month-to-date'));
+  $monthly = commerce_reports_sales_data($month['timestamp']);
+  $monthlyFormatted = commerce_reports_sales_format($monthly, $month);
+  $sales = array_merge($sales, $monthlyFormatted);
+  
+  $daysInMonth = date('t', $month['timestamp']);
+  $monthlyAverage = array();
+  foreach ($monthly as $currency => $row) {
+    $monthlyAverage[$currency] = array(
+      'count' => ($row['count'] / $daysInMonth),
+      'sum' => ($row['sum'] / $daysInMonth),
+    );
+  }
+  $monthlyAverageFormatted = commerce_reports_sales_format($monthlyAverage, array('combined' => t('Daily average for %month', array('%month' => date('F o', $month['timestamp'])))));
+  $sales = array_merge($sales, $monthlyAverageFormatted);
+  
+  return array(
+    '#theme' => 'table',
+    '#rows' => $sales,
+    '#header' => array(t('Sales Data'), t('Number of Orders'), t('Total Revenue'), t('Average Order')),
+  );
 }
 
 /**
  * Page callback for general statistics page.
  */
-function commerce_reports_sales_statistics() {
+function commerce_reports_customer_statistics() {
   $statistics = array();
   
   $totalRevenueQuery = db_select('commerce_payment_transaction', 'cpt')
@@ -49,11 +79,10 @@ function commerce_reports_sales_statistics() {
       array(t('Online customers'), $onlineCustomers),
     )
   );
-    
+  
   return array(
     '#theme' => 'table',
     '#rows' => $statistics,
     '#header' => array(array('data' => t('Statistics'), 'width' => '50%'), null),
-    '#empty' => t('You did not add parts to this task.'),
   );
 }

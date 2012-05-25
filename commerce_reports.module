@@ -9,24 +9,25 @@ function commerce_reports_menu() {
   $items['admin/commerce/reports'] = array(
     'title' => 'Reports',
     'description' => 'View reports for your store.',
-    'page callback' => 'system_admin_menu_block_page',
+    'page callback' => 'commerce_reports_overview_page', 
     'access arguments' => array('access commerce reports'),
     'type' => MENU_NORMAL_ITEM,
     'weight' => 50,
-    'file path' => drupal_get_path('module', 'system'),
-    'file' => 'system.admin.inc',
-  );
-  
-  $items['admin/commerce/reports/statistics'] = array(
-    'title' => 'Reports Statistics', 
-    'page callback' => 'commerce_reports_sales_statistics', 
-    'access arguments' => array('access commerce reports'),
     'file' => 'commerce_reports.admin.inc',
   );
 
   return $items;
 }
 
+function commerce_reports_theme($existing, $type, $theme, $path){
+  return array(
+    'statistics' => array(
+      'variables' => array('sales' => NULL, 'statistics' => NULL),
+      'template' => 'statistics',
+      'path' => drupal_get_path('module', 'commerce_reports') .'/theme'
+    )
+  );
+}
 
 /**
  * Implements hook_permission().
@@ -39,7 +40,6 @@ function commerce_reports_permission() {
   );
 }
 
-
 /**
  * Implements hook_views_api().
  */
@@ -48,4 +48,69 @@ function commerce_reports_views_api() {
     'api' => 3,
     'path' => drupal_get_path('module', 'commerce_reports') . '/includes/views',
   );
+}
+
+/**
+ * Implements hook_date_formats().
+ */
+function commerce_reports_date_formats() {
+  return array(
+    array(
+      'type' => 'commerce_reports',
+      'format' => 'l N F o',
+      'locales' => array(),
+    )
+  );
+}
+
+function commerce_reports_get_date($date, $label) {
+  $timestamp = strtotime($date);
+  
+  $info = array(
+    'timestamp' => $timestamp,
+    'absolute' => format_date($timestamp, 'commerce_reports'),
+    'relative' => $date,
+    'label' => $label,
+  );
+  
+  $info['combined'] = $info['label'] . ', ' . $info['absolute'];
+  
+  return $info;
+}
+
+function commerce_reports_sales_data($start = 0) {
+  $sales = array();
+  
+  $query = db_select('commerce_payment_transaction', 'cpt')
+    ->fields('cpt', array('currency_code'))
+    ->condition('created', $start, '>=');
+    
+  $query->addExpression('SUM(amount)', 'sum');
+  $query->addExpression('AVG(amount)', 'average');
+  $query->addExpression('COUNT(*)', 'count');
+  
+  $result = $query->execute();
+  
+  while ($row = $result->fetchAssoc()) {
+    $currency = $row['currency_code'];
+    unset($row['currency_code']);
+    
+    $sales[$currency] = $row;
+  }
+  
+  return $sales;
+}
+
+function commerce_reports_sales_format($data, $dateInfo, $style = 'combined') {
+  $sales = array();
+  
+  foreach ($data as $currency => $row) {
+    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency), empty($row['average']) ? null : commerce_currency_format($row['average'], $currency));
+  }
+  
+  return $sales;
+}
+
+function commerce_reports_sales($dateInfo, $style = 'combined') {
+  return commerce_reports_sales_format(commerce_reports_sales_data($dateInfo['timestamp']), $dateInfo, $style);
 }
