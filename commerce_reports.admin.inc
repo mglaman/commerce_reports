@@ -19,15 +19,15 @@ function commerce_reports_sales_overview() {
   $monthlyFormatted = commerce_reports_sales_format($monthly, $month);
   $sales = array_merge($sales, $monthlyFormatted);
   
-  $daysInMonth = date('t', $month['timestamp']);
+  $daysInMonth = format_date($month['timestamp'], 'custom', 't');
   $monthlyAverage = array();
   foreach ($monthly as $currency => $row) {
     $monthlyAverage[$currency] = array(
-      'count' => ($row['count'] / $daysInMonth),
-      'sum' => ($row['sum'] / $daysInMonth),
+      'count' => round($row['count'] / $daysInMonth, 2),
+      'sum' => round($row['sum'] / $daysInMonth),
     );
   }
-  $monthlyAverageFormatted = commerce_reports_sales_format($monthlyAverage, array('combined' => t('Daily average for %month', array('%month' => date('F o', $month['timestamp'])))));
+  $monthlyAverageFormatted = commerce_reports_sales_format($monthlyAverage, array('combined' => t('Daily average for @month', array('@month' => format_date($month['timestamp'], 'custom', 'F o')))));
   $sales = array_merge($sales, $monthlyAverageFormatted);
   
   return array(
