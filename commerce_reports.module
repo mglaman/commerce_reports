@@ -107,7 +107,7 @@ function commerce_reports_sales_format($data, $dateInfo, $style = 'combined') {
   $sales = array();
   
   foreach ($data as $currency => $row) {
-    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency), is_null($row['average']) ? null : commerce_currency_format($row['average'], $currency));
+    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency), !isset($row['average']) ? null : commerce_currency_format($row['average'], $currency));
   }
   
   return $sales;
