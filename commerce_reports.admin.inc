@@ -10,6 +10,9 @@ function commerce_reports_overview_page() {
   );
 }
 
+/**
+ * Generates table with sales overview data.
+ */
 function commerce_reports_sales_overview() {
   $sales = commerce_reports_sales(commerce_reports_get_date('today', t('Today')));
   $sales = array_merge($sales, commerce_reports_sales(commerce_reports_get_date('yesterday', t('Yesterday'))));
@@ -30,6 +33,17 @@ function commerce_reports_sales_overview() {
   $monthlyAverageFormatted = commerce_reports_sales_format($monthlyAverage, array('combined' => t('Daily average for @month', array('@month' => format_date($month['timestamp'], 'custom', 'F o')))));
   $sales = array_merge($sales, $monthlyAverageFormatted);
   
+  $remainingDaysInMonth = $daysInMonth - format_date($month['timestamp'], 'custom', 'j');
+  $monthlyProjected = array();
+  foreach ($monthly as $currency => $row) {
+    $monthlyProjected[$currency] = array(
+      'count' => round($monthly[$currency]['count'] + $monthlyAverage[$currency]['count'] * $remainingDaysInMonth, 2),
+      'sum' => round($monthly[$currency]['sum'] + $monthlyAverage[$currency]['sum'] * $remainingDaysInMonth),
+    );
+  }
+  $monthlyProjectedFormatted = commerce_reports_sales_format($monthlyProjected, array('combined' => t('Projected totals for @month', array('@month' => format_date($month['timestamp'], 'custom', 'F o')))));
+  $sales = array_merge($sales, $monthlyProjectedFormatted);
+  
   return array(
     '#theme' => 'table',
     '#rows' => $sales,
@@ -38,7 +52,7 @@ function commerce_reports_sales_overview() {
 }
 
 /**
- * Page callback for general statistics page.
+ * Generates table with customer statistics.
  */
 function commerce_reports_customer_statistics() {
   $statistics = array();

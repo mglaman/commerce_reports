@@ -94,6 +94,8 @@ function commerce_reports_sales_data($start = 0) {
   while ($row = $result->fetchAssoc()) {
     $currency = $row['currency_code'];
     unset($row['currency_code']);
+
+    if (empty($row['average'])) $row['average'] = 0;
     
     $sales[$currency] = $row;
   }
@@ -105,7 +107,7 @@ function commerce_reports_sales_format($data, $dateInfo, $style = 'combined') {
   $sales = array();
   
   foreach ($data as $currency => $row) {
-    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency), empty($row['average']) ? null : commerce_currency_format($row['average'], $currency));
+    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency), is_null($row['average']) ? null : commerce_currency_format($row['average'], $currency));
   }
   
   return $sales;
