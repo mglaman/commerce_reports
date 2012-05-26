@@ -5,12 +5,12 @@
  */
 function commerce_reports_menu() {
   $items = array();
-
+  
   $items['admin/commerce/reports'] = array(
     'title' => 'Reports',
-    'description' => 'View reports for your store.',
-    'page callback' => 'commerce_reports_overview_page', 
-    'access arguments' => array('access commerce reports'),
+    'description' => 'Summary report for your store.',
+    'page callback' => 'commerce_reports_overview_page',
+    'access arguments' => array('access_commerce_reports'),
     'type' => MENU_NORMAL_ITEM,
     'weight' => 50,
     'file' => 'commerce_reports.admin.inc',

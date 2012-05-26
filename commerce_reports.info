@@ -7,5 +7,5 @@ core = 7.x
 
 files[] = commerce_reports.module
 files[] = commerce_reports.admin.inc
+files[] = includes/views/commerce_reports_handler_field_date.inc
 files[] = includes/views/commerce_reports_handler_field_productquantity.inc
-files[] = includes/views/commerce_reports_handler_field_commerce_order_created.inc

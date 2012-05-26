@@ -12,13 +12,12 @@ function commerce_reports_views_handlers() {
       'commerce_reports_handler_field_productquantity' => array(
         'parent' => 'views_handler_field',
       ),
-      'commerce_reports_handler_field_timestamp' => array(
+      'commerce_reports_handler_field_date' => array(
         'parent' => 'views_handler_field',
       ),
     ),
   );
 }
-
 
 /**
  * Implements hook_views_data().
@@ -31,10 +30,16 @@ function commerce_reports_views_data_alter(&$data) {
     'click sortable' => TRUE,
   );
   
-  $data['commerce_order']['created_timestamp']['field'] = array(
-    'title' => t('Created timestamp'),
-    'handler' => 'commerce_reports_handler_field_commerce_order_created',
-    'click sortable' => TRUE,
-    'help' => t('Display the date, ideal for GROUP BY.'),
+  $data['commerce_order']['sales_data'] = array(
+    'title' => t('Sales data'),
+    'help' => t('Field containing the date of the order, with the ability to filter on granularity.'),
+    'real field' => 'created',
+    'field' => array(
+      'handler' => 'commerce_reports_handler_field_commerce_order_created',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_date',
+    ),
   );
 }
