@@ -5,7 +5,17 @@
  */
 class commerce_reports_handler_field_commerce_order_created extends views_handler_field {
 
-  var $formats = array('Y-m' => 'Monthly', 'Y-W' => 'Weekly', 'Y-m-d' => 'Daily');
+  var $formats = array(
+  	'Y-m' => 'Monthly', 
+  	'Y-W' => 'Weekly', 
+  	'Y-m-d' => 'Daily',
+  );
+  
+  var $intervals = array(
+  	'Y-m' => 'P1M', 
+  	'Y-W' => 'P1W', 
+  	'Y-m-d' => 'P1D',
+  );
 
   function option_definition() {
     $options = parent::option_definition();
@@ -35,6 +45,18 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
       '#title' => t('Granularity'),
       '#options' => $this->formats,
       '#default_value' => $this->options['default_granularity']
+    );
+    
+    $form['startDate'] = array(
+      '#type' => 'date',
+      '#title' => t('Start date'),
+      '#default_value' => array(),
+    );
+    
+    $form['endDate'] = array(
+      '#type' => 'date',
+      '#title' => t('End date'),
+      '#default_value' => array(),
     );
   }
   
@@ -77,21 +99,92 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
     return $this->options['default_granularity'];
   }
 
+  /**
+   * Adds the date to the query. 
+   * Adds GROUP BY and ORDER BY clause.
+   */
   function query() {
     $this->ensure_my_table();
     
-    $alias = sprintf("%s_%s_granularity", $this->table_alias, $this->real_field);
+    $this->field_alias = sprintf("%s_%s_granularity", $this->table_alias, $this->real_field);
+    
+    $params = $this->options['group_type'] != 'group' ? array('function' => $this->options['group_type']) : array();
+    $this->query->add_orderby($this->table_alias, $this->real_field, 'DESC', $this->field_alias, $params);
     
     $field_name = views_date_sql_format($this->getGranularity(), $this->table_alias.'.'.$this->real_field);
-    $params = $this->options['group_type'] != 'group' ? array('function' => $this->options['group_type']) : array();
-
-    $this->field_alias = $this->query->add_field(NULL, $field_name, $alias, $params);
-    
-    if ($this->options['group_type'] == 'group') {
-      $this->query->add_groupby($field_name);
-    }
+    $this->query->add_groupby($field_name);
 
     $this->add_additional_fields();
+  }
+  
+  function render($values) {
+    $dt = $this->get_value($values);
+    $value = $dt->format($this->getGranularity());
+    
+    return $this->sanitize_value($value);
+  }
+  
+  /**
+   * Interpolates the missing dates linearly.
+   */
+  function post_execute(&$values) {
+  	$retrieved = $values;
+  	$values = array();
+  	
+  	$totalRetrieved = count($retrieved);
+  	
+  	for ($i = $totalRetrieved - 1; $i >= 0; $i --) {
+  		$item = $retrieved[$i];
+  		
+  		$timestamp = new DateTime();
+      $timestamp->setTimestamp($item->{$this->field_alias});
+      $this->normalize($timestamp);
+      
+      $item->{$this->field_alias} = $timestamp;
+  		$values[] = $item;
+  		
+  		$current = clone $timestamp;
+  		
+  		if ($i != 0) {
+	  		$nextItem = $retrieved[$i - 1];
+        
+        $next = new DateTime();
+        $next->setTimestamp($nextItem->{$this->field_alias});
+        $this->normalize($next);
+	  		
+	  		$interval = new DateInterval($this->intervals[$this->getGranularity()]);
+	  		$current->add($interval);
+	  		
+		  	$period = new DatePeriod($current, $interval, $next);
+		  	
+		  	foreach ($period as $dt) {
+		  		$value = (object) array($this->field_alias => $dt);
+		  		
+		  		$values[] = $value;
+		  	}
+	  	}
+  	}
+  	
+  	$values = array_reverse($values);
+  }
+  
+  function normalize(DateTime $dt) {
+    $dt->setTime(0, 0);
+    
+    switch ($this->getGranularity()) {
+      case "Y-m":
+        $dt = $dt->modify("first day of this month");
+        
+        break;
+      case "Y-W":
+        $dt = $dt->modify("first day of this week");
+        
+        break;
+      case "Y-m-d":
+        break;
+    }
+    
+    return $dt;
   }
   
 }

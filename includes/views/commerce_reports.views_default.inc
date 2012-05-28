@@ -282,10 +282,11 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
   $handler->display->display_options['style_options']['empty_table'] = 0;
-  /* Field: Commerce Order: Sales data */
+  /* Field: MIN(Commerce Order: Sales data) */
   $handler->display->display_options['fields']['sales_data']['id'] = 'sales_data';
   $handler->display->display_options['fields']['sales_data']['table'] = 'commerce_order';
   $handler->display->display_options['fields']['sales_data']['field'] = 'sales_data';
+  $handler->display->display_options['fields']['sales_data']['group_type'] = 'min';
   $handler->display->display_options['fields']['sales_data']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['sales_data']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['sales_data']['alter']['absolute'] = 0;
@@ -393,12 +394,6 @@ function commerce_reports_views_default_views() {
   );
   $handler->display->display_options['fields']['commerce_order_total_1']['group_column'] = 'amount';
   $handler->display->display_options['fields']['commerce_order_total_1']['field_api_classes'] = 0;
-  /* Sort criterion: Commerce Order: Created date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'commerce_order';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  $handler->display->display_options['sorts']['created']['granularity'] = 'day';
   /* Filter criterion: Commerce Order: Order state */
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
@@ -444,6 +439,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['tab_options']['description'] = 'View daily and monthly sales totals.';
   $handler->display->display_options['tab_options']['weight'] = '0';
   $handler->display->display_options['tab_options']['name'] = 'management';
-    
+
   return $views;
 }
