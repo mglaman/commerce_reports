@@ -7,11 +7,12 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   	  'label' => 'Monthly',
   	  'interval' => 'P1M',
   	  'relative' => 'first day of this month',
+  	  'displayFormat' => 'F Y',
   	),
   	'o-W' => array(
   	  'label' => 'Weekly',
   	  'interval' => 'P1W',
-  	  'relative' => 'this week',
+  	  'relative' => 'this week'
   	),
   	'Y-m-d' => array(
   	  'label' => 'Daily',
@@ -173,7 +174,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
     
     // Add the interval boundaries if they're defined.
     if (!empty($this->startDate) && !empty($this->endDate)) {
-      $this->query->add_where_expression($this->options['group'], "{$this->real_field} BETWEEN {$this->startDate->getTimestamp()} AND {$this->endDate->getTimestamp()}");
+      $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate->getTimestamp()} AND {$this->endDate->getTimestamp()}");
     }
 
     $this->add_additional_fields();
@@ -181,7 +182,13 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   
   function render($values) {
     $dt = $this->get_value($values);
-    $value = format_date($dt->getTimestamp(), 'custom', $this->getFormat());
+    
+    $format = $this->getFormat();
+    if (!empty($this->granularities[$format]['displayFormat'])) {
+      $format = $this->granularities[$format]['displayFormat'];
+    }
+    
+    $value = format_date($dt->getTimestamp(), 'custom', $format);
     
     return $this->sanitize_value($value);
   }

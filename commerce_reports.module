@@ -6,13 +6,20 @@
 function commerce_reports_menu() {
   $items = array();
   
-  $items['admin/commerce/reports'] = array(
-    'title' => 'Reports',
-    'description' => 'Summary report for your store.',
+  $items['admin/commerce/reports/sales'] = array(
+    'title' => 'Sales Reports',
+    'description' => 'View report for store sales.',
     'page callback' => 'commerce_reports_overview_page',
     'access arguments' => array('access_commerce_reports'),
-    'type' => MENU_NORMAL_ITEM,
-    'weight' => 50,
+    'file' => 'commerce_reports.admin.inc',
+  );
+  
+  $items['admin/commerce/reports/sales/summary'] = array(
+    'title' => 'Sales summary',
+    'description' => 'View sales summary report for your store.',
+    'access arguments' => array('access_commerce_reports'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
     'file' => 'commerce_reports.admin.inc',
   );
 
@@ -20,13 +27,17 @@ function commerce_reports_menu() {
 }
 
 function commerce_reports_theme($existing, $type, $theme, $path){
-  return array(
-    'statistics' => array(
-      'variables' => array('sales' => NULL, 'statistics' => NULL),
-      'template' => 'statistics',
-      'path' => drupal_get_path('module', 'commerce_reports') .'/theme'
-    )
-  );
+  return array();
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function commerce_reports_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
+  if ($form['#id'] == 'views-exposed-form-commerce-reports-sales-sales') {
+    $form['granularity']['#description'] = t('Large daily reports may take a long time to display.');
+    $form['state']['#description'] = t('Only orders with selected statuses will be included in the report.');
+  }
 }
 
 /**

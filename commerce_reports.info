@@ -9,3 +9,5 @@ files[] = commerce_reports.module
 files[] = commerce_reports.admin.inc
 files[] = includes/views/commerce_reports_handler_field_date.inc
 files[] = includes/views/commerce_reports_handler_field_productquantity.inc
+
+stylesheets[all][] = commerce_reports.css
