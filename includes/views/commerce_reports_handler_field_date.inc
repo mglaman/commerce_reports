@@ -91,7 +91,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
     );
   }
   
-  function getGranularity() {
+  function getFormat() {
     if (!empty($this->options['exposed']) && !empty($this->granularity)) {
       return $this->granularity;
     }
@@ -111,7 +111,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
     $params = $this->options['group_type'] != 'group' ? array('function' => $this->options['group_type']) : array();
     $this->query->add_orderby($this->table_alias, $this->real_field, 'DESC', $this->field_alias, $params);
     
-    $field_name = views_date_sql_format($this->getGranularity(), $this->table_alias.'.'.$this->real_field);
+    $field_name = views_date_sql_format($this->getFormat(), $this->table_alias.'.'.$this->real_field);
     $this->query->add_groupby($field_name);
 
     $this->add_additional_fields();
@@ -119,7 +119,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   
   function render($values) {
     $dt = $this->get_value($values);
-    $value = $dt->format($this->getGranularity());
+    $value = $dt->format($this->getFormat());
     
     return $this->sanitize_value($value);
   }
@@ -152,7 +152,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
         $next->setTimestamp($nextItem->{$this->field_alias});
         $this->normalize($next);
 	  		
-	  		$interval = new DateInterval($this->intervals[$this->getGranularity()]);
+	  		$interval = new DateInterval($this->intervals[$this->getFormat()]);
 	  		$current->add($interval);
 	  		
 		  	$period = new DatePeriod($current, $interval, $next);
@@ -171,7 +171,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   function normalize(DateTime $dt) {
     $dt->setTime(0, 0);
     
-    switch ($this->getGranularity()) {
+    switch ($this->getFormat()) {
       case "Y-m":
         $dt = $dt->modify("first day of this month");
         
