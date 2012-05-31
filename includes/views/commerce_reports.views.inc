@@ -38,8 +38,14 @@ function commerce_reports_views_data_alter(&$data) {
       'handler' => 'commerce_reports_handler_field_commerce_order_created',
       'click sortable' => TRUE,
     ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
   );
+}
+
+function commerce_reports_datetime_form($date) {
+  $dt = new DateTime();
+  $timestamp = mktime(0, 0, 0, $date['month'], $date['day'], $date['year']);
+  
+  $dt->setTimestamp($timestamp);
+  
+  return $dt;
 }
