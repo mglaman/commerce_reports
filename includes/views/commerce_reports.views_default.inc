@@ -26,21 +26,59 @@ function commerce_reports_views_default_views() {
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
-  
+
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Product reports';
   $handler->display->display_options['group_by'] = TRUE;
-  $handler->display->display_options['access']['type'] = 'role';
-  $handler->display->display_options['access']['role'] = array(
-    3 => '3',
-  );
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'access commerce reports';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'sku' => 'sku',
+    'quantity' => 'quantity',
+    'commerce_total' => 'commerce_total',
+  );
+  $handler->display->display_options['style_options']['default'] = 'commerce_total';
+  $handler->display->display_options['style_options']['info'] = array(
+    'sku' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'quantity' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'commerce_total' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['style_options']['override'] = 1;
+  $handler->display->display_options['style_options']['sticky'] = 0;
+  $handler->display->display_options['style_options']['empty_table'] = 0;
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['empty'] = TRUE;
+  $handler->display->display_options['header']['area']['content'] = 'The table lists each product listed in the store, its amount sold and the revenue it produced.';
+  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['header']['area']['tokenize'] = 0;
   /* Relationship: Commerce Line Item: Order ID */
   $handler->display->display_options['relationships']['order_id']['id'] = 'order_id';
   $handler->display->display_options['relationships']['order_id']['table'] = 'commerce_line_item';
@@ -56,6 +94,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['sku']['table'] = 'commerce_product';
   $handler->display->display_options['fields']['sku']['field'] = 'sku';
   $handler->display->display_options['fields']['sku']['relationship'] = 'commerce_product_product_id';
+  $handler->display->display_options['fields']['sku']['label'] = 'Product';
   $handler->display->display_options['fields']['sku']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['sku']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['sku']['alter']['absolute'] = 0;
@@ -69,37 +108,73 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['sku']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['sku']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['sku']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['sku']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['sku']['element_label_colon'] = 0;
   $handler->display->display_options['fields']['sku']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['sku']['hide_empty'] = 0;
   $handler->display->display_options['fields']['sku']['empty_zero'] = 0;
   $handler->display->display_options['fields']['sku']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['sku']['link_to_product'] = 0;
-  /* Field: COUNT(Commerce Line Item: Line item ID) */
-  $handler->display->display_options['fields']['line_item_id']['id'] = 'line_item_id';
-  $handler->display->display_options['fields']['line_item_id']['table'] = 'commerce_line_item';
-  $handler->display->display_options['fields']['line_item_id']['field'] = 'line_item_id';
-  $handler->display->display_options['fields']['line_item_id']['group_type'] = 'count';
-  $handler->display->display_options['fields']['line_item_id']['label'] = 'Sold';
-  $handler->display->display_options['fields']['line_item_id']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['line_item_id']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['line_item_id']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['line_item_id']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['line_item_id']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['line_item_id']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['line_item_id']['format_plural'] = 0;
+  /* Field: SUM(Commerce Line Item: Quantity) */
+  $handler->display->display_options['fields']['quantity']['id'] = 'quantity';
+  $handler->display->display_options['fields']['quantity']['table'] = 'commerce_line_item';
+  $handler->display->display_options['fields']['quantity']['field'] = 'quantity';
+  $handler->display->display_options['fields']['quantity']['group_type'] = 'sum';
+  $handler->display->display_options['fields']['quantity']['label'] = 'Sold';
+  $handler->display->display_options['fields']['quantity']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['quantity']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['quantity']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['quantity']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['quantity']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['quantity']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['quantity']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['quantity']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['quantity']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['quantity']['set_precision'] = 0;
+  $handler->display->display_options['fields']['quantity']['precision'] = '0';
+  $handler->display->display_options['fields']['quantity']['format_plural'] = 0;
+  /* Field: SUM(Commerce Line item: Total) */
+  $handler->display->display_options['fields']['commerce_total']['id'] = 'commerce_total';
+  $handler->display->display_options['fields']['commerce_total']['table'] = 'field_data_commerce_total';
+  $handler->display->display_options['fields']['commerce_total']['field'] = 'commerce_total';
+  $handler->display->display_options['fields']['commerce_total']['group_type'] = 'sum';
+  $handler->display->display_options['fields']['commerce_total']['label'] = 'Revenue';
+  $handler->display->display_options['fields']['commerce_total']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['commerce_total']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['commerce_total']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['commerce_total']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['commerce_total']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['commerce_total']['click_sort_column'] = 'amount';
+  $handler->display->display_options['fields']['commerce_total']['type'] = 'commerce_price_formatted_amount';
+  $handler->display->display_options['fields']['commerce_total']['settings'] = array(
+    'calculation' => FALSE,
+  );
+  $handler->display->display_options['fields']['commerce_total']['group_column'] = 'amount';
+  $handler->display->display_options['fields']['commerce_total']['group_columns'] = array(
+    'currency_code' => 'currency_code',
+  );
+  $handler->display->display_options['fields']['commerce_total']['field_api_classes'] = 0;
   /* Sort criterion: COUNT(Commerce Line Item: Line item ID) */
   $handler->display->display_options['sorts']['line_item_id']['id'] = 'line_item_id';
   $handler->display->display_options['sorts']['line_item_id']['table'] = 'commerce_line_item';
@@ -122,7 +197,7 @@ function commerce_reports_views_default_views() {
     'pending' => 'pending',
     'completed' => 'completed',
   );
-  
+
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'admin/commerce/reports/products';
@@ -132,7 +207,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
-  
+
   $views[$view->name] = $view;
   
   /**
