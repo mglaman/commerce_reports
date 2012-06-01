@@ -39,6 +39,18 @@ function commerce_reports_views_data_alter(&$data) {
       'click sortable' => TRUE,
     ),
   );
+  
+  $data['users']['uid_commerce_orders'] = array(
+    'relationship' => array(
+      'title' => t('Orders'),
+      'help' => t("Relate this user to his or hers orders."),
+      'handler' => 'views_handler_relationship',
+      'base' => 'commerce_order',
+      'base field' => 'uid',
+      'field' => 'uid',
+      'label' => t('Order'),
+    ),
+  );
 }
 
 function commerce_reports_datetime_form($date) {
