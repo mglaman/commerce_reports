@@ -10,7 +10,7 @@ function commerce_reports_tax_menu() {
     'title' => 'Tax reporting',
     'description' => 'Tax reporting.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('commerce_reports_tax_settings'),
+    'page arguments' => array('commerce_reports_tax_generate'),
     'access arguments' =>  array('configure store'),
     'type' => MENU_LOCAL_TASK,
   );
@@ -28,9 +28,9 @@ function commerce_reports_tax_views_api() {
 }
 
 /**
- * Admin settings form
+ * Tax report generation form.
  */
-function commerce_reports_tax_settings() {
+function commerce_reports_tax_generate() {
   $form = array();
 
   $form['commerce_reports_tax_help'] = array(
@@ -45,66 +45,27 @@ function commerce_reports_tax_settings() {
     '#suffix' => '</p>',
   );
 
-  $form['commerce_reports_tax_rebuild'] = array(
+  $form['commerce_reports_tax_generate'] = array(
     '#type' => 'submit',
     '#value' => t('Rebuild tax database'),
-    '#submit' => array('commerce_reports_tax_build'),
   );
 
   return $form;
 }
 
 /**
- * Build the table of tax information.
- *
- * TODO You should be able to generate multiple reports, and it should be able to store these next to each other.
- * TODO All of these reports should be able to be generated with different parameters, like period and entity_type.
- * TODO All this logic should be wrapped in the Batch API.
+ * Submit handler for generation form.
  */
-function commerce_reports_tax_generate() {
-  // Clear the database
-  db_query('TRUNCATE {commerce_reports_tax}');
-
-  // Key the rates
-  $rates = array();
-  foreach (commerce_tax_rates() as $rate) {
-    $rates[$rate['price_component']] = $rate['name'];
-  }
-
-  // Load all completed orders in the system
-  $query = new EntityFieldQuery;
-  $result = $query
-    ->entityCondition('entity_type', 'commerce_order')
-    ->propertyCondition('status', 'completed')
-    ->execute();
-    
-  if ($result) {
-    $orders = entity_load('commerce_order', array_keys($result['commerce_order']));
-
-    // Iterate the orders and break each order down into its components
-    $taxes = array();
-    foreach ($orders as $order) {
-      $wrapper = entity_metadata_wrapper('commerce_order', $order);
-      $order_data = $wrapper->commerce_order_total->data->value();
-
-      // Add the taxes
-      foreach ($order_data['components'] as $component) {
-        if (array_key_exists($component['name'], $rates)) {
-          // Build the new record for the tax table.
-          $row = new stdClass;
-          $row->order_id = $wrapper->order_id->value();
-          $row->tax = $rates[$component['name']];
-          $row->amount = (int) $component['price']['amount'];
-          
-          // Write the record
-          drupal_write_record('commerce_reports_tax', $row);
-        }
-      }
-      
-    }
-    
-    drupal_set_message(t('Finished rebuilding the tax report table.'));
-  } else {
-    drupal_set_message(t("There weren't any orders to report on."));
-  }
+function commerce_reports_tax_generate_submit($form, &$form_state) {
+  $batch = array(
+    'title' => t('Generating tax report'),
+    'operations' => array(
+      array('_commerce_reports_tax_create', array()),
+      array('_commerce_reports_tax_generatre', array()),
+    ),
+    'finished' => '_commerce_reports_tax_finished',
+    'file' => 'commerce_reports_tax.batch.inc',
+  );
+  
+  batch_set($batch);
 }
