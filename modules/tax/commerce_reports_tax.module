@@ -19,21 +19,6 @@ function commerce_reports_tax_menu() {
 }
 
 /**
- * Implements hook_schema_alter().
- */
-function commerce_reports_tax_schema_alter(&$schema) {
-  $rates = commerce_tax_rates();
-  foreach ($rates as $type => $rate) {
-    $schema['commerce_reports_tax']['fields'][$type] = array(
-      'type' => 'int',
-      'not null' => FALSE,
-      'default' => NULL,
-      'description' => $rate['display_title'],
-    );
-  }
-}
-
-/**
  * Implements hook_views_api().
  */
 function commerce_reports_tax_views_api() {
@@ -51,6 +36,12 @@ function commerce_reports_tax_settings() {
   $form['commerce_reports_tax_help'] = array(
     '#prefix' => '<p>',
     '#markup' => t('Due to the complexity of most taxation systems, the information needed to display a tax report must be built the first time you install this module.'),
+    '#suffix' => '</p>',
+  );
+  
+  $form['commerce_reports_tax_experimental'] = array(
+    '#prefix' => '<p>',
+    '#markup' => t('This module is still experimental and will possibly not work as expected. It could also be that certain features are dissabled.'),
     '#suffix' => '</p>',
   );
 
@@ -97,6 +88,9 @@ function commerce_reports_tax_build() {
     $row->order_id = $wrapper->order_id->value();
     $row->created = $wrapper->created->value();
     $row->currency_code = $wrapper->commerce_order_total->currency_code->value();
+    
+    dpm($wrapper);
+    dpm($order_data);
 
     // Add the taxes
     foreach ($order_data['components'] as $component) {

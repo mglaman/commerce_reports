@@ -1,6 +1,6 @@
 name = Tax reports
 description = Generate tax reports.
-package = Commerce (contrib)
+package = Commerce
 dependencies[] = commerce_price
 dependencies[] = commerce_tax
 core = 7.x
