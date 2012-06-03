@@ -3,8 +3,12 @@
 /**
  * Implementation of hook_schema().
  */
+ 
 /**
  * Implements hook_field_schema()
+ *
+ * TODO Add an extra table containing metadata about different reports.
+ * TODO Add an extra field to commerce_reports_tax linking to the different reports.
  */
 function commerce_reports_tax_schema() {
   $schema = array();
@@ -31,7 +35,7 @@ function commerce_reports_tax_schema() {
         'description' => 'The applied amount of tax.',
       ),
     ),
-    'primary key' => array('order_id'),
+    'primary key' => array('order_id', 'tax'),
   );
 
 
