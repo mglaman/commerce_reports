@@ -2,8 +2,32 @@
 
 
 function _commerce_reports_tax_create(&$context) {
-  // Clear the database
+  $context['message'] = t('Preparing to extract tax information from orders and generate report.');
+  
+  // If we are re-generating, clear the data from the previous report.
   db_query('TRUNCATE {commerce_reports_tax}');
+  
+  // Retrieve the different configured rates for later usage.
+  $rates = array();
+  foreach (commerce_tax_rates() as $rate) {
+    $rates[$rate['price_component']] = $rate['name'];
+  }
+  
+  // Create query object that will be used in the next step.
+  
+  // It should contain all the parameters like order status
+  // and time period that the report should reflect.
+  $query = new EntityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'commerce_order')
+    ->propertyCondition('status', 'completed')
+    ->entityOrderBy('entity_id', 'ASC');
+  
+  $context['results'] = array(
+    'rates' => $rates,
+    'query' => $query,
+    'orders' => array()
+  );
 }
 
 /**
@@ -14,23 +38,32 @@ function _commerce_reports_tax_create(&$context) {
  * TODO Make actual use of the Batch API.
  */
 function _commerce_reports_tax_generate(&$context) {
-  // Key the rates
-  $rates = array();
-  foreach (commerce_tax_rates() as $rate) {
-    $rates[$rate['price_component']] = $rate['name'];
+  if (empty($context['sandbox'])) {
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['current'] = 0;
+    
+    $maxQuery = clone $context['results']['query'];
+    $context['sandbox']['max'] = $maxQuery
+      ->count()
+      ->execute();
   }
+  
+  watchdog('commerce_reports_tax', print_r($context['sandbox'], true));
+  
+  $rates =& $context['results']['rates'];
+  $query = clone $context['results']['query'];
 
-  // Load all completed orders in the system
-  $query = new EntityFieldQuery;
+  // As the order of the query is ascending, we just add an extra condition that filters all the previous orders out.
+  // We also limit the query to a certain amount of orders for this iteration.
   $result = $query
-    ->entityCondition('entity_type', 'commerce_order')
-    ->propertyCondition('status', 'completed')
+    ->entityCondition('entity_id', $context['sandbox']['current'], '>')
+    ->range(0, 1)
     ->execute();
     
   if ($result) {
     $orders = entity_load('commerce_order', array_keys($result['commerce_order']));
 
-    // Iterate the orders and break each order down into its components
+    // Iterate the orders and break each order down into its components.
     $taxes = array();
     foreach ($orders as $order) {
       $wrapper = entity_metadata_wrapper('commerce_order', $order);
@@ -45,18 +78,23 @@ function _commerce_reports_tax_generate(&$context) {
           $row->tax = $rates[$component['name']];
           $row->amount = (int) $component['price']['amount'];
           
-          // Write the record
+          // Write the record.
           drupal_write_record('commerce_reports_tax', $row);
         }
       }
       
+      $context['results']['orders'][] = $row->order_id;
+      $context['sandbox']['progress']++;
+      $context['sandbox']['current'] = $row->order_id;
     }
-    
-    drupal_set_message(t('Finished rebuilding the tax report table.'));
-  } else {
-    drupal_set_message(t("There weren't any orders to report on."));
+  }
+  
+  // Report back to the user.
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
   }
 }
 
 function _commerce_reports_tax_finished($success, $results, $operations) {
+  watchdog('commerce_reports_tax', print_r($results['orders'], true));
 }

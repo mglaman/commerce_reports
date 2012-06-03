@@ -61,10 +61,10 @@ function commerce_reports_tax_generate_submit($form, &$form_state) {
     'title' => t('Generating tax report'),
     'operations' => array(
       array('_commerce_reports_tax_create', array()),
-      array('_commerce_reports_tax_generatre', array()),
+      array('_commerce_reports_tax_generate', array()),
     ),
     'finished' => '_commerce_reports_tax_finished',
-    'file' => 'commerce_reports_tax.batch.inc',
+    'file' => drupal_get_path('module', 'commerce_reports_tax') . '/commerce_reports_tax.batch.inc',
   );
   
   batch_set($batch);
