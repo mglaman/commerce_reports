@@ -4,3 +4,9 @@ package = Commerce
 dependencies[] = commerce_price
 dependencies[] = commerce_tax
 core = 7.x
+
+files[] = commerce_reports_tax.install
+files[] = commerce_reports_tax.module
+files[] = commerce_reports_tax.batch.inc
+files[] = commerce_reports_tax.views.inc
+files[] = commerce_reports_tax.views.default.inc
