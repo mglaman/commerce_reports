@@ -24,6 +24,7 @@ function commerce_reports_tax_menu() {
 function commerce_reports_tax_views_api() {
   return array(
     'api' => 3,
+    'path' => drupal_get_path('module', 'commerce_reports_tax') . '/includes/views',
   );
 }
 
