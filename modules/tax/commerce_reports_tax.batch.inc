@@ -5,11 +5,25 @@ function _commerce_reports_tax_create(&$context) {
   
   // If we are re-generating, clear the data from the previous report.
   db_query('TRUNCATE {commerce_reports_tax}');
+  db_query('TRUNCATE {commerce_reports_tax_rate}');
   
-  // Retrieve the different configured rates for later usage.
+  // Retrieve the different configured rates for later usage and cache them to the database.
+  // This is necessary because we can't just JOIN the tax table when viewing the report,
+  // the details of the tax type may have been changed or the type might have been deleted.
   $rates = array();
   foreach (commerce_tax_rates() as $rate) {
-    $rates[$rate['price_component']] = $rate['name'];
+    $rates[$rate['price_component']] = $rate;
+    
+    $row = new stdClass;
+    // Report_id is a dummy field at this moment. In the future we want to be able to distinguish different reports.
+    $row->report_id = 1;
+    $row->name = $rate['name'];
+    $row->type = $rate['type'];
+    $row->title = $rate['title'];
+    $row->rate = $rate['rate'];
+    
+    // Write the record.
+    drupal_write_record('commerce_reports_tax_rate', $row);
   }
   
   // Create query object that will be used in the next step.
@@ -67,21 +81,40 @@ function _commerce_reports_tax_generate(&$context) {
     foreach ($orders as $order) {
       $wrapper = entity_metadata_wrapper('commerce_order', $order);
       $order_data = $wrapper->commerce_order_total->data->value();
+      
+      $rows = array();
+      $base_price = 0;
 
       // Add the taxes
       foreach ($order_data['components'] as $component) {
         if (array_key_exists($component['name'], $rates)) {
           // Build the new record for the tax table.
           $row = new stdClass;
+          
           // Report_id is a dummy field at this moment. In the future we want to be able to distinguish different reports.
           $row->report_id = 1;
           $row->order_id = $wrapper->order_id->value();
-          $row->tax = $rates[$component['name']];
-          $row->amount = (int) $component['price']['amount'];
-          
-          // Write the record.
-          drupal_write_record('commerce_reports_tax', $row);
+          $row->tax = $rates[$component['name']]['name'];
+          $row->currency_code = $wrapper->commerce_order_total->currency_code->value();
+          $row->taxed = (int) $component['price']['amount'];
+          watchdog('commerce_reports_tax', print_r($order_data, true));
+
+          // Store the record to an array.
+          // We still need to add the taxable price and we can only be sure
+          // that we know this information after this loop finished running.
+          $rows[] = $row;
+        } elseif ($component['name'] == 'base_price') {
+          // Set the base price.
+          $base_price = $component['price']['amount'];
         }
+      }
+      
+      foreach ($rows as $row) {
+        // Add the taxable price.
+        $row->taxable = $base_price;
+        
+        // Write the record.
+        drupal_write_record('commerce_reports_tax', $row);
       }
       
       $context['results']['orders'][] = $row->order_id;

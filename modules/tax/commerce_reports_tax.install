@@ -29,12 +29,24 @@ function commerce_reports_tax_schema() {
         'not null' => TRUE,
       ),
       'tax' => array(
-        'description' => 'The internal name of the tax applied.',
+        'description' => 'The machine-name of the applied rate.',
         'type' => 'varchar',
         'length' => 64,
         'not null' => TRUE,
       ),
-      'amount' => array(
+      'currency_code' => array(
+         'description' => 'The currency of the taxes collected, as per the currency of the total order amount.',
+         'type' => 'varchar',
+         'length' => 32,
+         'not null' => TRUE,
+      ),
+      'taxable' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => NULL,
+        'description' => 'The applied amount of tax.',
+      ),
+      'taxed' => array(
         'type' => 'int',
         'not null' => FALSE,
         'default' => NULL,
@@ -43,7 +55,43 @@ function commerce_reports_tax_schema() {
     ),
     'primary key' => array('report_id', 'order_id', 'tax'),
   );
-
+  
+  $schema['commerce_reports_tax_rate'] = array(
+    'description' => 'Cache information about tax types.',
+    'fields' => array(
+      'report_id' => array(
+        'description' => 'Report ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The machine-name of the rate.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The machine-name of the rate\'s commerce_tax_type.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'The administrative title of the rate',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'rate' => array(
+        'description' => 'The percentage used to calculate the tax expressed as a decimal.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('report_id', 'name'),
+  );
 
   return $schema;
 }
