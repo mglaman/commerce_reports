@@ -1,6 +1,5 @@
 <?php
 
-
 function _commerce_reports_tax_create(&$context) {
   $context['message'] = t('Preparing to extract tax information from orders and generate report.');
   
@@ -74,6 +73,8 @@ function _commerce_reports_tax_generate(&$context) {
         if (array_key_exists($component['name'], $rates)) {
           // Build the new record for the tax table.
           $row = new stdClass;
+          // Report_id is a dummy field at this moment. In the future we want to be able to distinguish different reports.
+          $row->report_id = 1;
           $row->order_id = $wrapper->order_id->value();
           $row->tax = $rates[$component['name']];
           $row->amount = (int) $component['price']['amount'];

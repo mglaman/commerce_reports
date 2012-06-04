@@ -16,9 +16,15 @@ function commerce_reports_tax_schema() {
   $schema['commerce_reports_tax'] = array(
     'description' => 'Cache information about tax on sales.',
     'fields' => array(
+      'report_id' => array(
+        'description' => 'Report ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
       'order_id' => array(
         'description' => 'Order ID.',
-        'type' => 'serial',
+        'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
@@ -35,7 +41,7 @@ function commerce_reports_tax_schema() {
         'description' => 'The applied amount of tax.',
       ),
     ),
-    'primary key' => array('order_id', 'tax'),
+    'primary key' => array('report_id', 'order_id', 'tax'),
   );
 
 
