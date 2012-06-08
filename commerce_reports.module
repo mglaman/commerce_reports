@@ -73,14 +73,12 @@ function commerce_reports_views_api() {
 }
 
 /**
- * Implements hook_date_formats().
+ * Implements hook_date_format_types().
  */
 function commerce_reports_date_formats() {
   return array(
     array(
-      'type' => 'commerce_reports',
-      'format' => 'l N F o',
-      'locales' => array(),
+      'commerce_reports' => ('Commerce Reports'),
     )
   );
 }
