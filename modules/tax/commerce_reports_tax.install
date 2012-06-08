@@ -12,9 +12,9 @@
  */
 function commerce_reports_tax_schema() {
   $schema = array();
-
+  
   $schema['commerce_reports_tax'] = array(
-    'description' => 'Cache information about tax on sales.',
+    'description' => 'Commerce tax reports.',
     'fields' => array(
       'report_id' => array(
         'description' => 'Report ID.',
@@ -22,8 +22,102 @@ function commerce_reports_tax_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
+      'title' => array(
+        'description' => 'The administrative title of the report.',
+        'type' => 'varchar',
+        'length' => 254,
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the report was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the report was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'order_statuses' => array(
+        'description' => 'A serialized array of the order statuses contained within the report.',
+        'not null' => FALSE,
+        'type' => 'blob',
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized array of additional data.',
+      ),
+      'start' => array(
+        'description' => 'The Unix timestamp when of the start time of the report.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'end' => array(
+        'description' => 'The Unix timestamp when of the start time of the report.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'detailled' => array(
+        'description' => 'A boolean indicating if the report should contain information about individual orders.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('report_id'),
+  );
+
+  $schema['commerce_reports_tax_rate_orders'] = array(
+    'description' => 'Information about the tax rates applied to individual orders.',
+    'fields' => array(
+      'report_id' => array(
+        'description' => 'Report ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'tax' => array(
+        'description' => 'The machine-name of the applied rate.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
       'order_id' => array(
         'description' => 'Order ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'currency_code' => array(
+         'description' => 'The currency of the taxes collected, as per the currency of the total order amount.',
+         'type' => 'varchar',
+         'length' => 32,
+         'not null' => TRUE,
+      ),
+      'taxable' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => NULL,
+        'description' => 'The applied amount of tax.',
+      ),
+      'taxed' => array(
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => NULL,
+        'description' => 'The applied amount of tax.',
+      ),
+    ),
+    'primary key' => array('report_id', 'tax', 'order_id'),
+  );
+  
+  $schema['commerce_reports_tax_rate_aggregate'] = array(
+    'description' => 'Aggregated information about the tax rates in a report.',
+    'fields' => array(
+      'report_id' => array(
+        'description' => 'Report ID.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -53,15 +147,15 @@ function commerce_reports_tax_schema() {
         'description' => 'The applied amount of tax.',
       ),
     ),
-    'primary key' => array('report_id', 'order_id', 'tax'),
+    'primary key' => array('report_id', 'tax', 'currency_code'),
   );
   
   $schema['commerce_reports_tax_rate'] = array(
-    'description' => 'Cache information about tax types.',
+    'description' => 'Information about the different tax rates contained in a report.',
     'fields' => array(
       'report_id' => array(
         'description' => 'Report ID.',
-        'type' => 'serial',
+        'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
@@ -72,9 +166,9 @@ function commerce_reports_tax_schema() {
         'not null' => TRUE,
       ),
       'type' => array(
-        'description' => 'The machine-name of the rate\'s commerce_tax_type.',
+        'description' => 'The administrative title of the rate\'s commerce_tax_type.',
         'type' => 'varchar',
-        'length' => 64,
+        'length' => 255,
         'not null' => TRUE,
       ),
       'title' => array(
