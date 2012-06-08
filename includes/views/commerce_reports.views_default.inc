@@ -6,11 +6,6 @@
 
 /**
  * Implements hook_views_default_views().
- *
- * Includes:
- * - Sales report
- * - Top selling
- * - Payment gateway
  */
 function commerce_reports_views_default_views() {
 
