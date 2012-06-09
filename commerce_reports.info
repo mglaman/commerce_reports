@@ -1,4 +1,4 @@
-name = Commerce Reports
+name = Reports
 description = Reporting module for Drupal Commerce.
 package = Commerce
 dependencies[] = commerce
