@@ -3,7 +3,7 @@
 /**
  * Implements hook_views_api().
  */
-function commerce_reports_views_api() {
+function commerce_reports_segmentation_views_api() {
   return array(
     'api' => 3,
     'path' => drupal_get_path('module', 'commerce_reports') . '/includes/views',
