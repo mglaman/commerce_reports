@@ -9,7 +9,6 @@ function commerce_reports_menu() {
   $items['admin/commerce/reports'] = array(
     'title' => 'Reports',
     'description' => 'View reports for your store.',
-    'position' => 'right',
     'access arguments' => array('access commerce reports'), // Inherited by children.
     'page callback' => 'system_admin_menu_block_page',
     'file path' => drupal_get_path('module', 'system'),
@@ -19,6 +18,7 @@ function commerce_reports_menu() {
   $items['admin/commerce/reports/sales'] = array(
     'title' => 'Sales reports',
     'description' => 'View report for store sales.',
+    'access arguments' => array('access commerce reports'),
     'page callback' => 'commerce_reports_overview_page',
     'file' => 'commerce_reports.admin.inc',
     'weight' => 50,
