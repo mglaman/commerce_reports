@@ -221,14 +221,14 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   	// If not, add these boundaries and let the interpolation logic do the rest.
   	
   	// Check if start date is included.
-  	if (end($retrieved)->{$this->field_alias} > $this->startDate) {
+  	if (!empty($this->startDate) && (end($retrieved)->{$this->field_alias} > $this->startDate)) {
   	  $value = (object) array($this->field_alias => $this->startDate);
   	  
       $totalRetrieved = array_push($retrieved, $value);
   	}
   	
   	// Check if end date is included.
-  	if (reset($retrieved)->{$this->field_alias} < $this->endDate) {
+  	if (!empty($this->endDate) && (reset($retrieved)->{$this->field_alias} < $this->endDate)) {
   	  $value = (object) array($this->field_alias => clone $this->endDate);
   	  
       $totalRetrieved = array_unshift($retrieved, $value);
