@@ -1,26 +1,6 @@
 <?php
 
 /**
- * Implements hook_menu().
- */
-function commerce_reports_tax_menu() {
-  $items = array();
-
-  $items['admin/commerce/config/taxes/reports'] = array(
-    'title' => 'Tax reporting',
-    'description' => 'Tax reporting.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('commerce_reports_tax_generate'),
-    //'access callback' => 'commerce_order_access',
-    //'access arguments' =>  array('configure store'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'commerce_reports_tax.admin.inc',
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_views_api().
  */
 function commerce_reports_tax_views_api() {
@@ -57,18 +37,28 @@ function commerce_reports_tax_entity_info() {
 }
 
 /**
- * Implements hook_entity_property_info_alter().
+ * Implements hook_permission().
  */
-function commerce_reports_tax_entity_property_info_alter(&$info) {
-  $properties =& $info['commerce_reports_tax']['properties'];
-  
-  $properties['start']['type'] = 'date';
-  $properties['end']['type'] = 'date';
+function commerce_reports_tax_permission() {
+  return array(
+    'access commerce tax reports' => array(
+      'title' => t('Access commerce tax reports'),
+    ),
+    'manage commerce tax reports' => array(
+      'title' => t('Manage commerce tax reports'),
+    ),
+  );
 }
 
-// TODO Apply access control across the whole module.
+/**
+ * Callback for Entity API access.
+ */
 function commerce_reports_tax_access($op, $type = NULL, $account = NULL) {
-  return user_access('administer store', $account);
+  if ($op = "view") {
+    return user_access('access commerce tax reports', $account);
+  } else {
+    return user_access('manage commerce tax reports', $account);
+  }
 }
 
 function commerce_reports_tax_uri($report) {
