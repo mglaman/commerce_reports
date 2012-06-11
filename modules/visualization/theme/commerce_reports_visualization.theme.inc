@@ -7,7 +7,12 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   $type = $options['type'];
   
   $fields = $view->field;
-  $data = $view->style_plugin->rendered_fields;
+
+  if ($options['invertXAxis']) {
+    $data = array_reverse($view->style_plugin->rendered_fields);
+  } else {
+    $data = $view->style_plugin->rendered_fields;
+  }
   
   $highchart = new stdClass();
 

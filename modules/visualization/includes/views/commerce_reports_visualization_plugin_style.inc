@@ -18,6 +18,7 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
     
     $options['fields'] = array('default' => array());
     $options['xAxis'] = array('default' => '');
+    $options['invertXAxis'] = array('default' => FALSE);
     
     return $options;
   }
@@ -61,6 +62,12 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
       '#options' => $fields,
       '#default_value' => $this->options['xAxis'],
       '#empty_value' => FALSE,
+    );
+    
+    $form['invertXAxis'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Should the x-axis get inverted?'),
+      '#default_value' => $this->options['invertXAxis'],
     );
   }
 
