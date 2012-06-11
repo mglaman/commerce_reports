@@ -36,7 +36,13 @@ function commerce_reports_menu() {
 }
 
 function commerce_reports_theme($existing, $type, $theme, $path){
-  return array();
+  return array(
+    'sales_overview' => array(
+      'variables' => array('date' => array(), 'data' => array()),
+      'template' => 'sales_overview',
+      'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
+    ),
+  );
 }
 
 /**
@@ -79,6 +85,30 @@ function commerce_reports_date_formats() {
       'commerce_reports' => ('Commerce Reports'),
     )
   );
+}
+
+function commerce_reports_currency_format($amount, $currency_code, $convert = TRUE) {
+  $currency = commerce_currency_load($currency_code);
+  
+  if ($convert) {
+    $amount = commerce_currency_amount_to_decimal($amount, $currency_code);
+  }
+  
+  $price = number_format(commerce_currency_round(abs($amount), $currency), 0, $currency['decimal_separator'], $currency['thousands_separator']);
+  
+  // Establish the replacement values to format this price for its currency.
+  $replacements = array(
+    '@code_before' => $currency['code_placement'] == 'before' ? $currency['code'] : '', 
+    '@symbol_before' => $currency['symbol_placement'] == 'before' ? $currency['symbol'] : '', 
+    '@price' => $price, 
+    '@symbol_after' => $currency['symbol_placement'] == 'after' ? $currency['symbol'] : '', 
+    '@code_after' => $currency['code_placement'] == 'after' ? $currency['code'] : '', 
+    '@negative' => $amount < 0 ? '-' : '', 
+    '@symbol_spacer' => $currency['symbol_spacer'], 
+    '@code_spacer' => $currency['code_spacer'],
+  );
+
+  return trim(t('@code_before@code_spacer@negative@symbol_before@price@symbol_spacer@symbol_after@code_spacer@code_after', $replacements));
 }
 
 function commerce_reports_get_date($date, $label) {

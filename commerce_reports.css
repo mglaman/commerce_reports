@@ -3,3 +3,37 @@
   float: none;
   padding: 0;
 }
+
+table.sales-overview {
+  width: 33%;
+  display: inline-block;
+  border: none;
+}
+
+table.sales-overview caption {
+  display: block;
+  width: 100%;
+  text-transform: uppercase;
+  border-bottom: 1px #cccccc solid;
+  text-align: left;
+}
+
+table.sales-overview tr {
+  border: none;
+  background: none;
+  width: 100%;
+}
+
+table.sales-overview tr th {
+  text-transform: none;
+  border: none;
+  background: none;
+}
+
+table.sales-overview tr td {
+  border: none;
+  font-size: 100%;
+  padding: 16px 10px;
+  font-size: 3.8em;
+  padding-right: 32px;
+}

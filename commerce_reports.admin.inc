@@ -5,8 +5,21 @@
  */
 function commerce_reports_overview_page() {
   return array(
+    commerce_reports_sales_block(commerce_reports_get_date('today', t('Today'))),
+    commerce_reports_sales_block(commerce_reports_get_date('yesterday', t('Yesterday'))),
+    commerce_reports_sales_block(commerce_reports_get_date('first day of this month midnight', t('Month-to-date'))),
     commerce_reports_sales_overview(),
     commerce_reports_customer_statistics()
+  );
+}
+
+function commerce_reports_sales_block($date) {
+  $data = commerce_reports_sales_data($date['timestamp']);
+  
+  return array(
+    '#theme' => 'sales_overview',
+    '#date' => $date,
+    '#data' => $data,
   );
 }
 
@@ -14,13 +27,9 @@ function commerce_reports_overview_page() {
  * Generates table with sales overview data.
  */
 function commerce_reports_sales_overview() {
-  $sales = commerce_reports_sales(commerce_reports_get_date('today', t('Today')));
-  $sales = array_merge($sales, commerce_reports_sales(commerce_reports_get_date('yesterday', t('Yesterday'))));
-  
   $month = commerce_reports_get_date('first day of this month midnight', t('Month-to-date'));
   $monthly = commerce_reports_sales_data($month['timestamp']);
-  $monthlyFormatted = commerce_reports_sales_format($monthly, $month);
-  $sales = array_merge($sales, $monthlyFormatted);
+  $sales = array();
   
   $daysInMonth = format_date($month['timestamp'], 'custom', 't');
   $monthlyAverage = array();
