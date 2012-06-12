@@ -29,6 +29,8 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
     $fields = $this->display->handler->get_field_labels();
     
     foreach ($fields as $field => $column) {
+      $handler = $this->display->handler->handlers['field'][$field];
+      
       $form['fields'][$field] = array(
         '#type' => 'fieldset',
         '#title' => $field,
@@ -53,7 +55,21 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
         '#options' => $fields,
         '#default_value' => $this->options['fields'][$field]['label'],
         '#empty_value' => FALSE,
+        '#dependency' => array('style_options', 'fields', $field, 'type'),
       );
+      
+      if ($handler->click_sortable()) {
+        $form['fields'][$field]['sort'] = array(
+          '#type' => 'select',
+          '#title' => t('Sort'),
+          '#options' => array(
+            'DESC' => t('Descending'),
+            'ASC' => t('Ascending'),
+          ),
+          '#default_value' => $this->options['fields'][$field]['sort'],
+          '#empty_value' => FALSE,
+        );
+      }
     }
     
     $form['xAxis'] = array(
@@ -69,6 +85,18 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
       '#title' => t('Should the x-axis get inverted?'),
       '#default_value' => $this->options['invertXAxis'],
     );
+  }
+  
+  function build_sort() {
+    foreach ($this->options['fields'] as $field => $option) {
+      $handler = $this->display->handler->handlers['field'][$field];
+      
+      if ($option['sort'] && $handler->click_sortable()) {
+        $handler->click_sort($option['sort']);
+      }
+    }
+    
+    return FALSE;
   }
 
   function options_validate(&$form, &$form_state) {

@@ -57,7 +57,6 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   // Series.
   $highchart->series = array();
   foreach ($options['fields'] as $name => $column) {
-    dpm($column);
     if (!empty($column['type'])) {
       $field = $fields[$name];
       
@@ -92,6 +91,4 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   $highchart->credits->enabled = FALSE;
 
   $vars['chart'] = $highchart;
-  
-  dpm($highchart);
 }
