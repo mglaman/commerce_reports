@@ -573,10 +573,10 @@ function commerce_reports_views_default_views() {
     'commerce_order_total' => 'commerce_order_total',
     'commerce_order_total_1' => 'commerce_order_total_1',
   );
-  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['default'] = 'sales_data';
   $handler->display->display_options['style_options']['info'] = array(
     'sales_data' => array(
-      'sortable' => 0,
+      'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',

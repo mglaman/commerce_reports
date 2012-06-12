@@ -28,7 +28,11 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
     );
     
     $options['default_granularity'] = array(
-      'default' => FALSE,
+      'default' => 'Y-m',
+    );
+    
+    $options['default_period'] = array(
+      'default' => 'P1M',
     );
     
     return $options;
@@ -125,6 +129,15 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
       '#options' => $this->options(),
       '#default_value' => $this->options['default_granularity']
     );
+    
+    $form['default_period'] = array(
+      '#type' => 'select',
+      '#title' => t('Default time period'),
+      '#options' => array(
+        'P1M' => t('One month'),
+        'P12M' => t('One year'),
+      ),
+    );
   }
   
   function options() {
@@ -162,10 +175,8 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
     
     $this->field_alias = sprintf("%s_%s_granularity", $this->table_alias, $this->real_field);
     
-    // Adding the field to teh order by clause automatically adds it to the query.
-    // We sort the results in an descending order, because this is expected in the interpolation algorithm.
     $params = $this->options['group_type'] != 'group' ? array('function' => $this->options['group_type']) : array();
-    $this->query->add_orderby($this->table_alias, $this->real_field, 'DESC', $this->field_alias, $params);
+    $this->query->add_field($this->table_alias, $this->real_field, $this->field_alias, $params);
     
     // We group by the field using a SQL function to transform the timestamp to certain formats.
     // This way the database does the aggregation for us.
@@ -197,8 +208,28 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
    * Interpolates the missing dates linearly.
    */
   function post_execute(&$values) {
-    $totalRetrieved = count($values);
+    foreach ($values as &$record) {
+	    $timestamp = new DateTime();
+      $timestamp->setTimestamp($record->{$this->field_alias});
+      $this->toFirstDay($timestamp);
+      
+      $record->{$this->field_alias} = $timestamp;
+	  }
+	  
+    // Determine order direction.
+    foreach ($this->query->orderby as $order) {
+      if ($order['field'] == $this->field_alias) {
+        $descending = ($order['direction'] == 'DESC');
+        break;
+      }
+    }
     
+    // If there is no order direction, then we don't need interpolation.
+    if (!isset($descending)) {
+      return;
+    }
+    
+    $totalRetrieved = count($values);
     if ($totalRetrieved == 0) {
       return;
     }
@@ -208,34 +239,53 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   	
   	// Create the interval using the chosen granularity. 
 	  $interval = $this->getInterval();
-	  
-	  foreach ($retrieved as &$record) {
-	    $timestamp = new DateTime();
-      $timestamp->setTimestamp($record->{$this->field_alias});
-      $this->toFirstDay($timestamp);
-      
-      $record->{$this->field_alias} = $timestamp;
-	  }
   	
   	// First see if the returned data contains the requested date interval.
   	// If not, add these boundaries and let the interpolation logic do the rest.
   	
-  	// Check if start date is included.
-  	if (!empty($this->startDate) && (end($retrieved)->{$this->field_alias} > $this->startDate)) {
-  	  $value = (object) array($this->field_alias => $this->startDate);
-  	  
-      $totalRetrieved = array_push($retrieved, $value);
-  	}
+  	// If no endDate is set, set it to today.
+	  if (empty($this->endDate)) {
+	    $this->endDate = new DateTime();
+	    $this->toFirstDay($this->endDate);
+	  }
+	  
+	  // If no startDate is set, set it to the end date minus the default period.
+	  if (empty($this->startDate)) {
+	    $this->startDate = clone $this->endDate;
+	    $this->startDate->sub(new DateInterval($this->options['default_period']));
+	  }
+	  
+	  if ($descending) {
+	    $firstDate = end($retrieved)->{$this->field_alias};
+	    $lastDate = reset($retrieved)->{$this->field_alias};
+	  } else {
+	    $firstDate = reset($retrieved)->{$this->field_alias};
+	    $lastDate = end($retrieved)->{$this->field_alias};
+	  }
   	
   	// Check if end date is included.
-  	if (!empty($this->endDate) && (reset($retrieved)->{$this->field_alias} < $this->endDate)) {
+  	if ($lastDate < $this->endDate) {  	  
   	  $value = (object) array($this->field_alias => clone $this->endDate);
   	  
-      $totalRetrieved = array_unshift($retrieved, $value);
+  	  if ($descending) {
+        $totalRetrieved = array_unshift($retrieved, $value);
+      } else {
+        $totalRetrieved = array_push($retrieved, $value);
+      }
   	}
   	
-  	// Next we run through all the results and we change the UNIX timestamps integer into DateTime objects.
-  	// This is easy for processing. Note that we loop backwards through the array of results.
+  	// Check if start date is included.
+  	if ($firstDate > $this->startDate) {
+  	  $value = (object) array($this->field_alias => $this->startDate);
+  	  
+  	  if ($descending) {
+        $totalRetrieved = array_push($retrieved, $value);
+      } else {
+        $totalRetrieved = array_unshift($retrieved, $value);
+      }
+  	}
+  	
+  	// Note that we loop backwards through the array of results.
   	for ($i = $totalRetrieved - 1; $i >= 0; $i --) {
   		$item = $retrieved[$i];
   		$values[] = $item;
@@ -243,13 +293,17 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   		// We always interpolate between two dates. If we have arrived at the start of the array,
   		// interpolation isn't necessary anymore.
   		if ($i != 0) {
+  		  $nextItem = $retrieved[$i - 1];
+  		  
     		// In PHP, objects are passed by reference. We clone the current timestamp to use 
     		// it in the interpolation algorithm.
-    		$current = clone $item->{$this->field_alias};
-  		
-  		  // Get the next result item.
-	  		$nextItem = $retrieved[$i - 1];
-        $next = clone $nextItem->{$this->field_alias};
+    		if ($descending) {
+    		  $current = clone $item->{$this->field_alias};
+          $next = clone $nextItem->{$this->field_alias};
+    		} else {
+    		  $next = clone $item->{$this->field_alias};
+          $current = clone $nextItem->{$this->field_alias};
+    		}
 
 	  		// DatePeriod includes the starting date, but not the ending date.
 	  		// Add one interval to avoid double date entries. This is why we clone the timestamp.
@@ -258,15 +312,19 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
 	  		// Linear interpolation between the two dates.
 		  	$period = new DatePeriod($current, $interval, $next);
 
+        $interpolated = array();
 		  	foreach ($period as $dt) {
 		  		$value = (object) array($this->field_alias => $dt);
 		  		
-		  		$values[] = $value;
+		  		$interpolated[] = $value;
+		  	}
+		  	
+		  	if ($descending) {
+		  	  $values = array_merge($values, ($interpolated));
+		  	} else {
+		  	  $values = array_merge($values, array_reverse($interpolated));
 		  	}
 	  	}
   	}
-  	
-  	$values = array_reverse($values);
   }
-  
 }
