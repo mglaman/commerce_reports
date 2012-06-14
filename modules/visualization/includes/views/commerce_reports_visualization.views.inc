@@ -1,22 +1,15 @@
 <?php
 
-/**
- * Implements hook_views_default_views_alter()
- */
-function commerce_reports_visualization_views_default_views_alter(&$views) {
-  $sales = $views['commerce_reports_sales'];
-  $customers = $views['commerce_reports_customers'];
-  $products = $views['commerce_reports_products'];
+function commerce_reports_visualization_display($view, $name, $title, $type = 'block', $baseDisplay = 'default') {
+  // Retrieve our base display.
+  $default = $view->display[$baseDisplay];
   
-  commerce_reports_visualization($sales);
-  commerce_reports_visualization($customers);
-  commerce_reports_visualization($products);
-}
-
-function commerce_reports_visualization($view, $type = 'block') {
-  $default = $view->display['default'];
+  // Add the display.
+  $handler = $view->new_display($type, $title, $name);
   
-  $handler = $view->new_display($type, 'Chart', 'chart');
+  // Setup the custom style plugin.
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'commerce_reports';
   
   $handler->display->display_options['defaults']['fields'] = FALSE;
   $handler->display->display_options['fields'] = $default->display_options['fields'];
@@ -31,9 +24,13 @@ function commerce_reports_visualization($view, $type = 'block') {
     $field['hide_alter_empty'] = 1;
     $field['empty'] = '0';
     
-    // Get rid of those nasty 
-    $field['type'] = 'commerce_price_raw_amount';
+    // Get rid of those nasty currency fields. We need raw data!
+    if ((!empty($field['type'])) && strstr($field['type'], 'commerce_price')) {
+      $field['type'] = 'commerce_reports_visualization';
+    }
   }
+  
+  return $handler;
 }
 
 /**
