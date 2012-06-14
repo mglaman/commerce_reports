@@ -40,7 +40,6 @@ function commerce_reports_visualization($view, $type = 'block') {
  * Implements hook_views_plugins().
  */
 function commerce_reports_visualization_views_plugins() {
-  dpm('commerce_reports_visualization_views_plugins');
   return array(
     'style' => array(
       'commerce_reports' => array(
