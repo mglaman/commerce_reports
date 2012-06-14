@@ -2,9 +2,7 @@
 
 function template_preprocess_commerce_reports_visualization(&$vars) {
   $view = $vars['view'];
-  
   $options = $vars['options'];
-  $type = $options['type'];
   
   $fields = $view->field;
 
