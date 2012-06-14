@@ -757,6 +757,47 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['tab_options']['weight'] = '-10';
   $handler->display->display_options['tab_options']['name'] = 'management';
   
+  /**
+   * Integration with commerce_reports_visualization.
+   */
+  if (module_exists('commerce_reports_visualization')) {
+    $handler = commerce_reports_visualization_display($view, 'chart', 'Chart');
+    
+    // Chart settings
+    $handler->display->display_options['defaults']['style_options'] = FALSE;
+    
+    $handler->display->display_options['style_options']['fields'] = array(
+      'sales_data' => array(
+        'type' => '0',
+        'label' => '0',
+        'sort' => 'DESC',
+      ),
+      'order_id' => array(
+        'type' => '0',
+        'label' => '0',
+        'sort' => '0',
+      ),
+      'commerce_order_total' => array(
+        'type' => 'line',
+        'label' => 'sales_data',
+        'sort' => '0',
+      ),
+      'commerce_order_total_1' => array(
+        'type' => 'line',
+        'label' => 'sales_data',
+        'sort' => '0',
+      ),
+    );
+    $handler->display->display_options['style_options']['xAxis'] = 'sales_data';
+    $handler->display->display_options['style_options']['invertXAxis'] = 0;
+    
+    // Date field: set period to one year and group monthly
+    $handler->display->display_options['defaults']['fields'] = FALSE;
+    
+    $handler->display->display_options['fields']['sales_data']['default_period'] = 'P12M';
+    $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m';
+  }
+  
   $views[$view->name] = $view;
   
   /**

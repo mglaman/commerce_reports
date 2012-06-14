@@ -8,6 +8,7 @@ function commerce_reports_overview_page() {
     commerce_reports_sales_block('ff7824695a12b49a79aee7d394cbd917'), // Today
     commerce_reports_sales_block('1a260a710ed0ccc9e8175e7301e597fe'), // Yesterday
     commerce_reports_sales_block('724c01e6b3c93b66c793ff63f7402697'), // Month-to-date
+    commerce_reports_sales_block('commerce_reports_sales-chart'), // Year chart
     commerce_reports_sales_overview(),
     commerce_reports_customer_statistics()
   );
