@@ -42,6 +42,11 @@ function commerce_reports_theme($existing, $type, $theme, $path){
       'template' => 'sales_overview',
       'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
     ),
+    'views_view_table__commerce_reports_sales_overview' => array(
+      'base hook' => 'views_view_table',
+      'template' => 'views-view-table--commerce-reports-sales-overview',
+      'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
+    ),
   );
 }
 

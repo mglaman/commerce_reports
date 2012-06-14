@@ -5,22 +5,21 @@
  */
 function commerce_reports_overview_page() {
   return array(
-    commerce_reports_sales_block(commerce_reports_get_date('today', t('Today'))),
-    commerce_reports_sales_block(commerce_reports_get_date('yesterday', t('Yesterday'))),
-    commerce_reports_sales_block(commerce_reports_get_date('first day of this month midnight', t('Month-to-date'))),
+    commerce_reports_sales_block('ff7824695a12b49a79aee7d394cbd917'), // Today
+    commerce_reports_sales_block('1a260a710ed0ccc9e8175e7301e597fe'), // Yesterday
+    commerce_reports_sales_block('724c01e6b3c93b66c793ff63f7402697'), // Month-to-date
     commerce_reports_sales_overview(),
     commerce_reports_customer_statistics()
   );
 }
 
-function commerce_reports_sales_block($date) {
-  $data = commerce_reports_sales_data($date['timestamp']);
+function commerce_reports_sales_block($id) {
+  $block = block_load('views', $id);
+  $array = module_invoke($block->module, 'block_view', $block->delta);
   
-  return array(
-    '#theme' => 'sales_overview',
-    '#date' => $date,
-    '#data' => $data,
-  );
+  $content = $array['content'];
+  
+  return $content;
 }
 
 /**
