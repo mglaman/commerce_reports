@@ -6,7 +6,7 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   
   $fields = $view->field;
 
-  if ($options['invertXAxis']) {
+  if (!empty($options['xAxis']['invert'])) {
     $data = array_reverse($view->style_plugin->rendered_fields);
   } else {
     $data = $view->style_plugin->rendered_fields;
@@ -26,17 +26,12 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
 
   // Tooltip.
   // Normally formatter is a function callback. For now we'll make it a string.
-  $highchart->tooltip->formatter = "function() {return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';}";
+  $highchart->tooltip->formatter = "function() {return '<b>'+ this.name +'</b>: '+ this.y;}";
   
   $xAxis = array();
-  $yAxis = array();
   foreach ($data as $row) {
-    if (!empty($options['xAxis'])) {
-      $xAxis[] = check_plain(strip_tags((string) $row[$options['xAxis']]));
-    }
-    
-    if (!empty($options['yAxis'])) {
-      $yAxis[] = check_plain(strip_tags((string) $row[$options['yAxis']]));
+    if (!empty($options['xAxis']['labelField'])) {
+      $xAxis[] = check_plain(strip_tags((string) $row[$options['xAxis']['labelField']]));
     }
   }
   
@@ -46,9 +41,11 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
     );
   }
   
-  if (!empty($yAxis)) {
+  if (!empty($options['yAxis']['title'])) {
     $highchart->yAxis = (object) array(
-      'categories' => $yAxis,
+      'title' => (object) array(
+        'text' => $options['yAxis']['title'],
+      ),
     );
   }
 
@@ -66,11 +63,11 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
       foreach ($data as $row) {
         $value = (int) $row[$name];
         
-        if (!empty($column['label']) && ($serie->type == 'pie')) {
+        //if (!empty($column['label']) && ($serie->type == 'pie')) {
           $serie->data[] = (object) array('name' => check_plain(strip_tags($row[$column['label']])), 'y' => $value);
-        } else {
-          $serie->data[] = $value;
-        }
+        //} else {
+        //  $serie->data[] = $value;
+        //}
       }
       
       $highchart->series[] = $serie;
@@ -80,10 +77,15 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   $highchart->plotOptions->pie = (object) array(
     'allowPointSelect' => TRUE,
     'cursor' => 'pointer',
-    'dataLabels' => array(
-      'enabled' => FALSE,
+    'dataLabels' => (object) array(
+      'enabled' => TRUE,
     ),
     'showInLegend' => TRUE,
+  );
+  $highchart->plotOptions->bar = (object) array(
+    'dataLabels' => (object) array(
+      'enabled' => TRUE,
+    ),
   );
 
   $highchart->credits->enabled = FALSE;

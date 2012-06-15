@@ -1,16 +1,22 @@
 <?php
 
 function commerce_reports_visualization_display($view, $name, $title, $type = 'block', $baseDisplay = 'default') {
-  // Retrieve our base display.
+  // Retrieve our base display
   $default = $view->display[$baseDisplay];
   
-  // Add the display.
+  // Add the display
   $handler = $view->new_display($type, $title, $name);
   
-  // Setup the custom style plugin.
+  // Disable the pager (show all items)
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  
+  // Setup the custom style plugin
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'commerce_reports';
   
+  // Set some general settings concerning fields
   $handler->display->display_options['defaults']['fields'] = FALSE;
   $handler->display->display_options['fields'] = $default->display_options['fields'];
   $handler->display->display_options['style_options']['info'] = $default->display_options['style_options']['info'];

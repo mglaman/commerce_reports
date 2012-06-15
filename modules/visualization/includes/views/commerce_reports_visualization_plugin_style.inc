@@ -17,8 +17,11 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
     $options = parent::option_definition();
     
     $options['fields'] = array('default' => array());
-    $options['xAxis'] = array('default' => '');
-    $options['invertXAxis'] = array('default' => FALSE);
+    
+    $options['yAxis']['title'] = array('default' => '');
+    
+    $options['xAxis']['labelField'] = array('default' => FALSE);
+    $options['xAxis']['invert'] = array('default' => FALSE);
     
     return $options;
   }
@@ -30,6 +33,13 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
     
     foreach ($fields as $field => $column) {
       $handler = $this->display->handler->handlers['field'][$field];
+      
+      $form['fields'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Field settings'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
       
       $form['fields'][$field] = array(
         '#type' => 'fieldset',
@@ -44,6 +54,8 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
         '#options' => array(
           'line' => 'Line chart',
           'pie' => 'Pie chart',
+          'bar' => 'Bar chart',
+          'column' => 'Column chart',
         ),
         '#default_value' => $this->options['fields'][$field]['type'],
         '#empty_value' => FALSE,
@@ -73,17 +85,36 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
     }
     
     $form['xAxis'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('X-axis settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => !empty($this->options['xAxis']['labelField']) || !empty($this->options['xAxis']['invert']),
+    );
+    
+    $form['xAxis']['labelField'] = array(
       '#type' => 'select',
       '#title' => t('X-axis labels'),
       '#options' => $fields,
-      '#default_value' => $this->options['xAxis'],
+      '#default_value' => $this->options['xAxis']['labelField'],
       '#empty_value' => FALSE,
     );
     
-    $form['invertXAxis'] = array(
+    $form['xAxis']['invert'] = array(
       '#type' => 'checkbox',
       '#title' => t('Should the x-axis get inverted?'),
-      '#default_value' => $this->options['invertXAxis'],
+      '#default_value' => $this->options['xAxis']['invert'],
+    );
+    
+    $form['yAxis'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Y-axis settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => empty($this->options['yAxis']['title']),
+    );
+    
+    $form['yAxis']['title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Y-axis title'),
     );
   }
   
