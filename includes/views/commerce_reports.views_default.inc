@@ -202,6 +202,65 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
+  
+  /**
+   * Integration with commerce_reports_visualization.
+   */
+  if (module_exists('commerce_reports_visualization')) {
+    /**
+     * Top products by revenue.
+     */
+    $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
+    
+    // Chart settings
+    $handler->display->display_options['defaults']['style_options'] = FALSE;
+    $handler->display->display_options['style_options']['fields'] = array(
+      'sku' => array(
+        'type' => '0',
+        'label' => '0',
+        'sort' => '0',
+      ),
+      'commerce_total' => array(
+        'type' => 'column',
+        'label' => '0',
+        'sort' => '0',
+      ),
+    );
+    $handler->display->display_options['style_options']['yAxis'] = array(
+      'title' => 'Currency',
+    );
+    $handler->display->display_options['style_options']['xAxis'] = array(
+      'labelField' => 'sku',
+      'invert' => 0,
+    );
+    
+    // Only render 10 products
+    $handler->display->display_options['pager']['type'] = 'some';
+    $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    
+    /**
+     * Top products by quantity.
+     */
+    $handler = commerce_reports_visualization_display($view, 'chart_quantity', 'Chart (by quantity sold)', 'block', 'chart_revenue');
+    
+    // Chart settings
+    $handler->display->display_options['defaults']['style_options'] = FALSE;
+    $handler->display->display_options['style_options']['fields'] = array(
+      'commerce_total' => array(
+        'type' => 'column',
+        'label' => 'sku',
+        'sort' => '0',
+      ),
+    );
+    $handler->display->display_options['style_options']['yAxis'] = array(
+      'title' => 'Quantity',
+    );
+    $handler->display->display_options['style_options']['xAxis'] = array(
+      'labelField' => 'sku',
+      'invert' => 0,
+    );
+  }
 
   $views[$view->name] = $view;
   
@@ -233,7 +292,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'name' => 'name',
-    'order_id_1' => 'order_id_1',
+    'order_id' => 'order_id',
     'quantity' => 'quantity',
     'commerce_total' => 'commerce_total',
     'commerce_total_1' => 'commerce_total_1',
@@ -247,7 +306,7 @@ function commerce_reports_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'order_id_1' => array(
+    'order_id' => array(
       'sortable' => 1,
       'default_sort_order' => 'desc',
       'align' => '',
@@ -325,31 +384,31 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['name']['overwrite_anonymous'] = 0;
   $handler->display->display_options['fields']['name']['format_username'] = 1;
   /* Field: COUNT(DISTINCT Commerce Line Item: Order ID) */
-  $handler->display->display_options['fields']['order_id_1']['id'] = 'order_id_1';
-  $handler->display->display_options['fields']['order_id_1']['table'] = 'commerce_line_item';
-  $handler->display->display_options['fields']['order_id_1']['field'] = 'order_id';
-  $handler->display->display_options['fields']['order_id_1']['relationship'] = 'commerce_line_items_line_item_id';
-  $handler->display->display_options['fields']['order_id_1']['group_type'] = 'count_distinct';
-  $handler->display->display_options['fields']['order_id_1']['label'] = 'Orders';
-  $handler->display->display_options['fields']['order_id_1']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['order_id_1']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['order_id_1']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['element_label_colon'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['order_id_1']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['order_id_1']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['order_id_1']['format_plural'] = 0;
+  $handler->display->display_options['fields']['order_id']['id'] = 'order_id';
+  $handler->display->display_options['fields']['order_id']['table'] = 'commerce_line_item';
+  $handler->display->display_options['fields']['order_id']['field'] = 'order_id';
+  $handler->display->display_options['fields']['order_id']['relationship'] = 'commerce_line_items_line_item_id';
+  $handler->display->display_options['fields']['order_id']['group_type'] = 'count_distinct';
+  $handler->display->display_options['fields']['order_id']['label'] = 'Orders';
+  $handler->display->display_options['fields']['order_id']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['order_id']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['order_id']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['order_id']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['order_id']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['order_id']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['order_id']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['order_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['order_id']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['order_id']['format_plural'] = 0;
   /* Field: SUM(Commerce Line Item: Quantity) */
   $handler->display->display_options['fields']['quantity']['id'] = 'quantity';
   $handler->display->display_options['fields']['quantity']['table'] = 'commerce_line_item';
@@ -464,6 +523,48 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
+  
+  /**
+   * Integration with commerce_reports_visualization.
+   */
+  if (module_exists('commerce_reports_visualization')) {
+    /**
+     * Top users by revenue.
+     */
+    $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
+    
+    // Chart settings
+    $handler->display->display_options['defaults']['style_options'] = FALSE;
+    
+    $handler->display->display_options['style_options']['fields'] = array(
+      'commerce_total' => array(
+        'type' => 'pie',
+        'label' => 'name',
+        'sort' => 'DESC',
+      ),
+    );
+    
+    // Only render 10 customers
+    $handler->display->display_options['pager']['type'] = 'some';
+    $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    
+    /**
+     * Top users by amount of orders.
+     */
+    $handler = commerce_reports_visualization_display($view, 'chart_orders', 'Chart (by orders)', 'block', 'chart_revenue');
+
+    // Chart settings
+    $handler->display->display_options['defaults']['style_options'] = FALSE;
+    $handler->display->display_options['style_options']['fields'] = array(
+      'commerce_total' => array(),
+      'order_id' => array(
+        'type' => 'pie',
+        'label' => 'name',
+        'sort' => 'DESC',
+      ),
+    );
+  }
    
   $views[$view->name] = $view;
 
@@ -788,8 +889,13 @@ function commerce_reports_views_default_views() {
         'sort' => '0',
       ),
     );
-    $handler->display->display_options['style_options']['xAxis'] = 'sales_data';
-    $handler->display->display_options['style_options']['invertXAxis'] = 0;
+    $handler->display->display_options['style_options']['yAxis'] = array(
+      'title' => 'Currency',
+    );
+    $handler->display->display_options['style_options']['xAxis'] = array(
+      'labelField' => 'sales_data',
+      'invert' => 0,
+    );
     
     // Date field: set period to one year and group monthly
     $handler->display->display_options['defaults']['fields'] = FALSE;
