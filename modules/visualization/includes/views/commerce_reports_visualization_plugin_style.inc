@@ -30,16 +30,16 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
     parent::options_form($form, $form_state);
     
     $fields = $this->display->handler->get_field_labels();
+          
+    $form['fields'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Field settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
     
     foreach ($fields as $field => $column) {
       $handler = $this->display->handler->handlers['field'][$field];
-      
-      $form['fields'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Field settings'),
-        '#collapsible' => TRUE,
-        '#collapsed' => TRUE,
-      );
       
       $form['fields'][$field] = array(
         '#type' => 'fieldset',

@@ -16,4 +16,4 @@
  
   highcharts_render($chart);
 ?>
-<div id="<?php print $chart->chart->renderTo; ?>" class="highcharts-chart" />
+<div id="<?php print $chart->chart->renderTo; ?>" class="highcharts-chart"></div>

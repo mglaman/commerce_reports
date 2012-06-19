@@ -63,11 +63,11 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
       foreach ($data as $row) {
         $value = (int) $row[$name];
         
-        //if (!empty($column['label']) && ($serie->type == 'pie')) {
+        if (!empty($column['label'])) {
           $serie->data[] = (object) array('name' => check_plain(strip_tags($row[$column['label']])), 'y' => $value);
-        //} else {
-        //  $serie->data[] = $value;
-        //}
+        } else {
+          $serie->data[] = $value;
+        }
       }
       
       $highchart->series[] = $serie;
