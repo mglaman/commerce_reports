@@ -134,6 +134,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
       '#type' => 'select',
       '#title' => t('Default time period'),
       '#options' => array(
+        'P7D' => t('One week'),
         'P1M' => t('One month'),
         'P12M' => t('One year'),
       ),
@@ -165,6 +166,22 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   function getInterval() {
     return new DateInterval($this->granularities[$this->getFormat()]['interval']);
   }
+  
+  function pre_query() {
+    // If no endDate is set, set it to today.
+	  if (empty($this->endDate)) {
+	    $this->endDate = new DateTime();
+	    $this->toFirstDay($this->endDate);
+	    
+	    $this->endDate->add($this->getInterval());
+	  }
+	  
+	  // If no startDate is set, set it to the end date minus the default period.
+	  if (empty($this->startDate)) {
+	    $this->startDate = clone $this->endDate;
+	    $this->startDate->sub(new DateInterval($this->options['default_period']));
+	  }
+  }
 
   /**
    * Adds the date to the query. 
@@ -183,10 +200,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
     $field_name = views_date_sql_format($this->getFormat(), $this->table_alias.'.'.$this->real_field);
     $this->query->add_groupby($field_name);
     
-    // Add the interval boundaries if they're defined.
-    if (!empty($this->startDate) && !empty($this->endDate)) {
-      $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate->getTimestamp()} AND {$this->endDate->getTimestamp()}");
-    }
+    $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate->getTimestamp()} AND {$this->endDate->getTimestamp()}");
 
     $this->add_additional_fields();
   }
@@ -229,11 +243,6 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
       return;
     }
     
-    $totalRetrieved = count($values);
-    if ($totalRetrieved == 0) {
-      return;
-    }
-    
   	$retrieved = $values;
   	$values = array();
   	
@@ -242,29 +251,18 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   	
   	// First see if the returned data contains the requested date interval.
   	// If not, add these boundaries and let the interpolation logic do the rest.
-  	
-  	// If no endDate is set, set it to today.
-	  if (empty($this->endDate)) {
-	    $this->endDate = new DateTime();
-	    $this->toFirstDay($this->endDate);
-	  }
-	  
-	  // If no startDate is set, set it to the end date minus the default period.
-	  if (empty($this->startDate)) {
-	    $this->startDate = clone $this->endDate;
-	    $this->startDate->sub(new DateInterval($this->options['default_period']));
-	  }
-	  
-	  if ($descending) {
-	    $firstDate = end($retrieved)->{$this->field_alias};
-	    $lastDate = reset($retrieved)->{$this->field_alias};
-	  } else {
-	    $firstDate = reset($retrieved)->{$this->field_alias};
-	    $lastDate = end($retrieved)->{$this->field_alias};
+  	if (count($retrieved)) {
+	    if ($descending) {
+	      $firstDate = end($retrieved)->{$this->field_alias};
+	      $lastDate = reset($retrieved)->{$this->field_alias};
+	    } else {
+	      $firstDate = reset($retrieved)->{$this->field_alias};
+	      $lastDate = end($retrieved)->{$this->field_alias};
+	    }
 	  }
   	
   	// Check if end date is included.
-  	if ($lastDate < $this->endDate) {  	  
+  	if (empty($lastDate) || ($lastDate < $this->endDate)) {  	  
   	  $value = (object) array($this->field_alias => clone $this->endDate);
   	  
   	  if ($descending) {
@@ -275,7 +273,7 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   	}
   	
   	// Check if start date is included.
-  	if ($firstDate > $this->startDate) {
+  	if (empty($firstDate) || ($firstDate > $this->startDate)) {
   	  $value = (object) array($this->field_alias => $this->startDate);
   	  
   	  if ($descending) {

@@ -4,47 +4,80 @@
   padding: 0;
 }
 
-div.sales-overview {
-  display: inline-block;
-  width: 33%;
-  padding: 2px;
-}
-
 div.sales-overview .view-content {
   display: inline-block;
   width: 100%
 }
-/**
-div.sales-overview h1 {
-  display: block;
-  width: 100%;
-  text-transform: uppercase;
-  border-bottom: 1px #cccccc solid;
-  text-align: left;
-}
 
-div.sales-overview table {
-  width: 33%;
+div.commerce-reports-dashboard-block {
+  border: 1px solid #666666;
   display: inline-block;
-  border: none;
-}
-
-div.sales-overview table tr {
-  border: none;
-  background: none;
   width: 100%;
+  margin: 5px 0;
 }
 
-div.sales-overview table tr th {
-  text-transform: none;
-  border: none;
-  background: none;
+div.commerce-reports-dashboard-block .section {
+  display: none;
 }
 
-div.sales-overview table tr td {
-  border: none;
-  font-size: 100%;
-  padding: 16px 10px;
-  font-size: 3.8em;
-  padding-right: 32px;
-}*/
+div.commerce-reports-dashboard-block .visible {
+  display: inline-block;
+}
+
+div.commerce-reports-dashboard-block .header {
+  display: block;
+  background: #222222;
+  height: 20px;
+  color: #cccccc;
+  padding: 5px;
+}
+
+div.commerce-reports-dashboard-block .header a {
+  color: white;
+}
+
+div.commerce-reports-dashboard-block .header h1, div.commerce-reports-dashboard-block .header span, div.commerce-reports-dashboard-block .header div.operations {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0;
+  padding: 0;
+}
+
+div.commerce-reports-dashboard-block .header h1 {
+  color: white;
+}
+
+div.commerce-reports-dashboard-block .header div.operations {
+  vertical-align: bottom;
+  height: 100%;
+  float: right;
+}
+
+div.commerce-reports-dashboard-block .header div.operations ul {
+  display: inline-block;
+  list-style: none;
+  vertical-align: bottom;
+  margin: 0;
+}
+
+div.commerce-reports-dashboard-block .header div.operations ul li {
+  display: inline-block;
+}
+
+div.commerce-reports-dashboard-block .header div.operations ul li a {
+  color: #ffffff;
+  text-shadow: #333 0 1px 0;
+  padding: 2px 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+div.commerce-reports-dashboard-block .header div.operations ul li a.active {
+  background: #bcbcbc;
+}
+
+div.commerce-reports-dashboard-block .header div.operations ul li a:hover {
+  text-decoration: none;
+  background: #555555;
+}
