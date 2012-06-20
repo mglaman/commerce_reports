@@ -26,6 +26,8 @@ jQuery(document).ready(function() {
       }
     });
     
+    block.find('.operations .switchSection').removeClass('active');
+    
     return false;
   });
 });

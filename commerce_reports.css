@@ -14,10 +14,15 @@ div.commerce-reports-dashboard-block {
   display: inline-block;
   width: 100%;
   margin: 5px 0;
+  vertical-align: top;
 }
 
 div.commerce-reports-dashboard-block .section {
   display: none;
+}
+
+div.commerce-reports-dashboard-block .section table {
+  margin: 0;
 }
 
 div.commerce-reports-dashboard-block .visible {

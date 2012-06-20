@@ -188,8 +188,8 @@ function commerce_reports_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'admin/commerce/reports/products';
-  $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Product reports';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Products';
   $handler->display->display_options['menu']['description'] = 'View product reports.';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'management';
@@ -339,14 +339,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
   $handler->display->display_options['style_options']['empty_table'] = 0;
-  /* Header: Global: Text area */
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = FALSE;
-  $handler->display->display_options['header']['area']['content'] = 'The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order. Clicking on a customer\'s name will take you to their account page.';
-  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
-  $handler->display->display_options['header']['area']['tokenize'] = 0;
   /* Relationship: User: Orders */
   $handler->display->display_options['relationships']['uid_commerce_orders']['id'] = 'uid_commerce_orders';
   $handler->display->display_options['relationships']['uid_commerce_orders']['table'] = 'users';
@@ -517,9 +509,18 @@ function commerce_reports_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['empty'] = FALSE;
+  $handler->display->display_options['header']['area']['content'] = 'The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order. Clicking on a customer\'s name will take you to their account page.';
+  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['header']['area']['tokenize'] = 0;
+  /* Path and menu */
   $handler->display->display_options['path'] = 'admin/commerce/reports/customers';
-  $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Customer reports';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Customers';
   $handler->display->display_options['menu']['description'] = 'View customer reports.';
   $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['name'] = 'management';
@@ -632,7 +633,7 @@ function commerce_reports_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'admin/commerce/reports/gateways';
-  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Payment gateways';
   $handler->display->display_options['menu']['description'] = 'View breakdown of payment gateway usage.';
   $handler->display->display_options['menu']['weight'] = '20';
@@ -846,9 +847,9 @@ function commerce_reports_views_default_views() {
 
   /* Display: Sales Reports */
   $handler = $view->new_display('page', 'Sales reports', 'sales');
-  $handler->display->display_options['path'] = 'admin/commerce/reports/sales/custom';
+  $handler->display->display_options['path'] = 'admin/commerce/reports/sales';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Sales report';
+  $handler->display->display_options['menu']['title'] = 'Sales';
   $handler->display->display_options['menu']['description'] = 'View sales reports.';
   $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['name'] = 'management';

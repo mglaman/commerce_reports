@@ -1,150 +1,9 @@
 <?php
 
-function commerce_reports_dashboard_page() {
-  drupal_add_js(drupal_get_path('module', 'commerce_reports') .'/commerce_reports.dashboard.js', 'file');
-  
-  return array(
-    commerce_reports_sales_dashboard_block(array(
-      'title' => t('Sales overview'),
-      'report' => array(
-        'title' => t('Sales reports'),
-        'path' => 'admin/commerce/reports/sales',
-      ),
-      'sections' => array(
-        'today' => array(
-          'module' => 'views',
-          'block' => 'ff7824695a12b49a79aee7d394cbd917',
-        ),
-        'yesterday' => array(
-          'module' => 'views',
-          'block' => '1a260a710ed0ccc9e8175e7301e597fe',
-        ),
-        'month' => array(
-          'module' => 'views',
-          'block' => '724c01e6b3c93b66c793ff63f7402697',
-        ),
-      ),
-    )),
-    commerce_reports_sales_dashboard_block(array(
-      'title' => t('Products'),
-      'switchSections' => TRUE,
-      'report' => array(
-        'title' => t('Product reports'),
-        'path' => 'admin/commerce/reports/products',
-      ),
-      'sections' => array(
-        'revenue' => array(
-          'title' => 'Revenue',
-          'module' => 'views',
-          'block' => 'commerce_reports_products-chart_revenue',
-        ),
-        'quantity' => array(
-          'title' => 'Quantity',
-          'module' => 'views',
-          'block' => '31eccd6666389cf554f290e91ef9848a',
-        ),
-      ),
-    )),
-    commerce_reports_sales_dashboard_block(array(
-      'title' => t('Sales'),
-      'switchSections' => TRUE,
-      'report' => array(
-        'title' => t('Sales reports'),
-        'path' => 'admin/commerce/reports/sales',
-      ),
-      'sections' => array(
-        'year' => array(
-          'title' => 'Year',
-          'module' => 'views',
-          'block' => 'cc437fbe6b867b448dc946fd925800a3',
-        ),
-        'month' => array(
-          'title' => 'Month',
-          'module' => 'views',
-          'block' => '1127e4706efe2c1eb8537a65a644e572',
-        ),
-        'week' => array(
-          'title' => 'Week',
-          'module' => 'views',
-          'block' => 'd70fc459675538d56c73a9f90574211a',
-        ),
-      ),
-    )),
-  );
-}
-
-/**
- * Dummy function that should be implemented to show overview.
- */
-function commerce_reports_overview_page() {
-  return array(
-    commerce_reports_sales_block('ff7824695a12b49a79aee7d394cbd917'), // Today
-    commerce_reports_sales_block('1a260a710ed0ccc9e8175e7301e597fe'), // Yesterday
-    commerce_reports_sales_block('724c01e6b3c93b66c793ff63f7402697'), // Month-to-date
-    commerce_reports_sales_block('commerce_reports_sales-chart'), // Year chart
-    commerce_reports_sales_overview(),
-    commerce_reports_customer_statistics()
-  );
-}
-
-function commerce_reports_sales_block($id) {
-  $block = block_load('views', $id);
-  $render = module_invoke($block->module, 'block_view', $block->delta);
-
-  return $render['content'];
-}
-
-function commerce_reports_sales_dashboard_block($options = array()) {
-  $render = array(
-    '#theme_wrappers' => array('commerce_reports_dashboard_block'),
-    'title' => $options['title'],
-    'report' => l($options['report']['title'], $options['report']['path']),
-  );
-  
-  $sectionLinks = array();
-  $first = reset(array_keys($options['sections']));
-  
-  foreach ($options['sections'] as $name => $information) {
-    $block = block_load($information['module'], $information['block']);
-    $block_render = module_invoke($block->module, 'block_view', $block->delta);
-    
-    $render['sections'][$name] = $block_render;
-    
-    if (!empty($options['switchSections'])) {
-      $link = array(
-        'title' => $information['title'],
-        'href' => 'admin/commerce/reports/dashboard',
-        'attributes' => array(
-          'class' => array(
-            'switchSection'
-          ),
-          'data-section' => $name,
-        ),
-      );
-
-      if ($name === $first) {
-        //$link['attributes']['class'][] = 'active';
-      }
-      
-      $sectionLinks[] = $link;
-    }
-  }
-  
-  $render['operations'] = theme('links', array('links' => $sectionLinks, 'attributes' => array()));
-  
-  if (!empty($options['switchSections'])) {
-    $render['visible'] = array($first);
-  } else {
-    $render['visible'] = array_keys($options['sections']);
-  }
-  
-  return $render;
-}
-
 /**
  * Generates table with sales overview data.
  */
-function commerce_reports_sales_overview() {
+function commerce_reports_sales() {
   $month = commerce_reports_get_date('first day of this month midnight', t('Month-to-date'));
   $monthly = commerce_reports_sales_data($month['timestamp']);
   $sales = array();
@@ -174,14 +33,14 @@ function commerce_reports_sales_overview() {
   return array(
     '#theme' => 'table',
     '#rows' => $sales,
-    '#header' => array(t('Sales Data'), t('Number of Orders'), t('Total Revenue'), t('Average Order')),
+    '#header' => array(t('Sales Data'), t('Number of Orders'), t('Total Revenue')),
   );
 }
 
 /**
  * Generates table with customer statistics.
  */
-function commerce_reports_customer_statistics() {
+function commerce_reports_customers() {
   $statistics = array();
   
   $totalRevenueQuery = db_select('commerce_payment_transaction', 'cpt')
@@ -226,4 +85,54 @@ function commerce_reports_customer_statistics() {
     '#rows' => $statistics,
     '#header' => array(array('data' => t('Statistics'), 'width' => '50%'), null),
   );
+}
+
+function commerce_reports_get_date($date, $label) {
+  $timestamp = strtotime($date);
+  
+  $info = array(
+    'timestamp' => $timestamp,
+    'absolute' => format_date($timestamp, 'commerce_reports'),
+    'relative' => $date,
+    'label' => $label,
+  );
+  
+  $info['combined'] = $info['label'] . ', ' . $info['absolute'];
+  
+  return $info;
+}
+
+function commerce_reports_sales_data($start = 0) {
+  $sales = array();
+  
+  $query = db_select('commerce_payment_transaction', 'cpt')
+    ->fields('cpt', array('currency_code'))
+    ->condition('created', $start, '>=');
+    
+  $query->addExpression('SUM(amount)', 'sum');
+  $query->addExpression('AVG(amount)', 'average');
+  $query->addExpression('COUNT(*)', 'count');
+  
+  $result = $query->execute();
+  
+  while ($row = $result->fetchAssoc()) {
+    $currency = $row['currency_code'];
+    unset($row['currency_code']);
+
+    if (empty($row['average'])) $row['average'] = 0;
+    
+    $sales[$currency] = $row;
+  }
+  
+  return $sales;
+}
+
+function commerce_reports_sales_format($data, $dateInfo, $style = 'combined') {
+  $sales = array();
+  
+  foreach ($data as $currency => $row) {
+    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency), !isset($row['average']) ? null : commerce_currency_format($row['average'], $currency));
+  }
+  
+  return $sales;
 }
