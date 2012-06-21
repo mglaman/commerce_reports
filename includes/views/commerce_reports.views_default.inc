@@ -215,20 +215,15 @@ function commerce_reports_views_default_views() {
     
     // Chart settings
     $handler->display->display_options['defaults']['style_options'] = FALSE;
+    $handler->display->display_options['style_options']['type'] = 'column';
     $handler->display->display_options['style_options']['fields'] = array(
-      'sku' => array(
-        'type' => '0',
-        'label' => '0',
-        'sort' => '0',
-      ),
       'commerce_total' => array(
-        'type' => 'column',
-        'label' => '0',
-        'sort' => '0',
+        'enabled' => TRUE,
+        'sort' => 'DESC',
       ),
     );
     $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Currency',
+      'title' => 'Amount',
     );
     $handler->display->display_options['style_options']['xAxis'] = array(
       'labelField' => 'sku',
@@ -247,11 +242,11 @@ function commerce_reports_views_default_views() {
     
     // Chart settings
     $handler->display->display_options['defaults']['style_options'] = FALSE;
+    $handler->display->display_options['style_options']['type'] = 'column';
     $handler->display->display_options['style_options']['fields'] = array(
-      'commerce_total' => array(
-        'type' => 'column',
-        'label' => 'sku',
-        'sort' => '0',
+      'quantity' => array(
+        'enabled' => TRUE,
+        'sort' => 'DESC',
       ),
     );
     $handler->display->display_options['style_options']['yAxis'] = array(
@@ -537,13 +532,17 @@ function commerce_reports_views_default_views() {
     
     // Chart settings
     $handler->display->display_options['defaults']['style_options'] = FALSE;
-    
+    $handler->display->display_options['style_options']['type'] = 'pie';
     $handler->display->display_options['style_options']['fields'] = array(
       'commerce_total' => array(
-        'type' => 'pie',
-        'label' => 'name',
+        'enabled' => TRUE,
         'sort' => 'DESC',
       ),
+    );
+    
+    $handler->display->display_options['style_options']['xAxis'] = array(
+      'labelField' => 'name',
+      'invert' => 0,
     );
     
     // Only render 10 customers
@@ -558,13 +557,17 @@ function commerce_reports_views_default_views() {
 
     // Chart settings
     $handler->display->display_options['defaults']['style_options'] = FALSE;
+    $handler->display->display_options['style_options']['type'] = 'pie';
     $handler->display->display_options['style_options']['fields'] = array(
-      'commerce_total' => array(),
       'order_id' => array(
-        'type' => 'pie',
-        'label' => 'name',
+        'enabled' => TRUE,
         'sort' => 'DESC',
       ),
+    );
+    
+    $handler->display->display_options['style_options']['xAxis'] = array(
+      'labelField' => 'name',
+      'invert' => 0,
     );
   }
    
@@ -872,30 +875,24 @@ function commerce_reports_views_default_views() {
     // Chart settings
     $handler->display->display_options['defaults']['style_options'] = FALSE;
     
+    $handler->display->display_options['style_options']['type'] = 'line';
+    
     $handler->display->display_options['style_options']['fields'] = array(
       'sales_data' => array(
-        'type' => '0',
-        'label' => '0',
+        'enabled' => FALSE,
         'sort' => 'DESC',
       ),
-      'order_id' => array(
-        'type' => '0',
-        'label' => '0',
-        'sort' => '0',
-      ),
       'commerce_order_total' => array(
-        'type' => 'line',
-        'label' => 'sales_data',
+        'enabled' => TRUE,
         'sort' => '0',
       ),
       'commerce_order_total_1' => array(
-        'type' => 'line',
-        'label' => 'sales_data',
+        'enabled' => TRUE,
         'sort' => '0',
       ),
     );
     $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Currency',
+      'title' => 'Amount',
     );
     $handler->display->display_options['style_options']['xAxis'] = array(
       'labelField' => 'sales_data',
@@ -915,25 +912,24 @@ function commerce_reports_views_default_views() {
     
     $handler->display->display_options['defaults']['style_options'] = FALSE;
     
+    $handler->display->display_options['style_options']['type'] = 'line';
+    
     $handler->display->display_options['style_options']['fields'] = array(
       'sales_data' => array(
-        'type' => '0',
-        'label' => '0',
+        'enabled' => FALSE,
         'sort' => 'DESC',
       ),
       'commerce_order_total' => array(
-        'type' => 'line',
-        'label' => 'sales_data',
+        'enabled' => TRUE,
         'sort' => '0',
       ),
       'commerce_order_total_1' => array(
-        'type' => 'line',
-        'label' => 'sales_data',
+        'enabled' => TRUE,
         'sort' => '0',
       ),
     );
     $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Currency',
+      'title' => 'Amount',
     );
     $handler->display->display_options['style_options']['xAxis'] = array(
       'labelField' => 'sales_data',
@@ -952,25 +948,24 @@ function commerce_reports_views_default_views() {
     
     $handler->display->display_options['defaults']['style_options'] = FALSE;
     
+    $handler->display->display_options['style_options']['type'] = 'line';
+    
     $handler->display->display_options['style_options']['fields'] = array(
       'sales_data' => array(
-        'type' => '0',
-        'label' => '0',
+        'enabled' => FALSE,
         'sort' => 'DESC',
       ),
       'commerce_order_total' => array(
-        'type' => 'line',
-        'label' => 'sales_data',
+        'enabled' => TRUE,
         'sort' => '0',
       ),
       'commerce_order_total_1' => array(
-        'type' => 'line',
-        'label' => 'sales_data',
+        'enabled' => TRUE,
         'sort' => '0',
       ),
     );
     $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Currency',
+      'title' => 'Amount',
     );
     $handler->display->display_options['style_options']['xAxis'] = array(
       'labelField' => 'sales_data',

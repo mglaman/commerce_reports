@@ -16,6 +16,8 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
   function option_definition() {
     $options = parent::option_definition();
     
+    $options['type'] = array('default' => 'line');
+    
     $options['fields'] = array('default' => array());
     
     $options['yAxis']['title'] = array('default' => '');
@@ -30,6 +32,19 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
     parent::options_form($form, $form_state);
     
     $fields = $this->display->handler->get_field_labels();
+    
+    $form['type'] = array(
+      '#type' => 'select',
+      '#title' => t('Chart type'),
+      '#options' => array(
+        'line' => 'Line chart',
+        'pie' => 'Pie chart',
+        'bar' => 'Bar chart',
+        'column' => 'Column chart',
+      ),
+      '#default_value' => $this->options['type'],
+      '#empty_value' => FALSE,
+    );
           
     $form['fields'] = array(
       '#type' => 'fieldset',
@@ -48,25 +63,10 @@ class commerce_reports_visualization_plugin_style extends views_plugin_style {
         '#collapsed' => empty($this->options['fields'][$field]),
       );
       
-      $form['fields'][$field]['type'] = array(
-        '#type' => 'select',
-        '#title' => t('Chart type'),
-        '#options' => array(
-          'line' => 'Line chart',
-          'pie' => 'Pie chart',
-          'bar' => 'Bar chart',
-          'column' => 'Column chart',
-        ),
-        '#default_value' => $this->options['fields'][$field]['type'],
-        '#empty_value' => FALSE,
-      );
-
-      $form['fields'][$field]['label'] = array(
-        '#type' => 'select',
-        '#title' => t('Label column'),
-        '#options' => $fields,
-        '#default_value' => $this->options['fields'][$field]['label'],
-        '#empty_value' => FALSE,
+      $form['fields'][$field]['enabled'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable this field in the chart'),
+        '#default_value' => $this->options['fields'][$field]['enabled'],
         '#dependency' => array('style_options', 'fields', $field, 'type'),
       );
       
