@@ -8,10 +8,10 @@ jQuery(document).ready(function() {
     block.find('.section').each(function(i, section) {
       if (jQuery(section).attr('data-section') == selectedSection) {
         jQuery(section).show();
-        var chartContainer = jQuery(section).find('.highcharts-chart');
+        var chartContainer = jQuery(section).find('.commerce_reports-chart');
         
         if (chartContainer.length == 1) {
-          var chart = Drupal.highcharts.charts[chartContainer.attr("id")];
+          var chart = Drupal.commerce_reports.charts[chartContainer.attr("id")];
           var chartHeight = chartContainer.height();
           
           if (chart !== undefined) {
@@ -27,6 +27,7 @@ jQuery(document).ready(function() {
     });
     
     block.find('.operations .switchSection').removeClass('active');
+    block.find('.operations .switchSection[data-section="' + selectedSection + '"]').addClass('active');
     
     return false;
   });

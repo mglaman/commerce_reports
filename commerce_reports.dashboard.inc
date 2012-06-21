@@ -5,7 +5,7 @@ function commerce_reports_dashboard() {
   
   return array(
     commerce_reports_sales_dashboard_block(array(
-      'title' => t('Sales overview'),
+      'title' => t('Overview'),
       'report' => array(
         'title' => t('Sales reports'),
         'path' => 'admin/commerce/reports/sales',

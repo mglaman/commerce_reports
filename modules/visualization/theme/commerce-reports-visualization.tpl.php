@@ -14,6 +14,11 @@
  * @todo is this file necessary since we have a theme function?
  */
  
-  highcharts_render($chart);
+  static $js_added = false;
+  if (!$js_added) {
+    drupal_add_js(drupal_get_path('module', 'commerce_reports_visualization') . '/js/visualization.js', array('scope' => 'footer'));
+    // Flag common JS loaded status.
+    $js_added = TRUE;
+  }
 ?>
-<div id="<?php print $chart->chart->renderTo; ?>" class="highcharts-chart"></div>
+<div id="<?php print $chart_id; ?>" class="commerce_reports-chart"></div>

@@ -11,7 +11,26 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   } else {
     $data = $view->style_plugin->rendered_fields;
   }
+
+  // Title.
+  $title = $view->human_name;
   
+  // Add highcharts library JS.
+  module_load_include('module', 'libraries', 'libraries');
+  $path = libraries_get_path('highcharts');
+  if (!empty($path)) {
+    drupal_add_js($path . '/js/highcharts.js');
+  }
+  
+  $vars['chart_id'] = 'commerce_reports_' . uniqid();
+
+  commerce_reports_highchart($vars['chart_id'], $title, $fields, $data, $options);
+}
+
+function commerce_reports_highchart($chart_id, $title, $fields = array(), $data = array(), $options = array()) {
+  /**
+   * Chart options.
+   */
   $highchart = new stdClass();
 
   // Chart.
@@ -20,13 +39,9 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
     'plotBorderWidth' => NULL,
     'plotShadow' => FALSE,
   );
-
-  // Title.
-  $highchart->title->text = $view->human_name;
-
-  // Tooltip.
-  // Normally formatter is a function callback. For now we'll make it a string.
-  $highchart->tooltip->formatter = "function() {return '<b>'+ this.name +'</b>: '+ this.y;}";
+  
+  // Set title
+  $highchart->title->text = $title;
   
   $xAxis = array();
   foreach ($data as $row) {
@@ -48,7 +63,7 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
       ),
     );
   }
-
+  
   // Series.
   $highchart->series = array();
   foreach ($options['fields'] as $name => $column) {
@@ -73,7 +88,7 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
       $highchart->series[] = $serie;
     }
   }
-
+  
   $highchart->plotOptions->pie = (object) array(
     'allowPointSelect' => TRUE,
     'cursor' => 'pointer',
@@ -89,6 +104,15 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   );
 
   $highchart->credits->enabled = FALSE;
+  
+  /**
+   * Chart rendering
+   */
+  // Pass this chart ID by reference to the options object.
+  $highchart->chart->renderTo = $chart_id;
+  // Add Drupal.settings for this chart.
+  drupal_add_js(array('commerce_reports' => array($chart_id => $highchart)), array('type' => 'setting'));
 
-  $vars['chart'] = $highchart;
+  // Add highchart options object methods, which can't be passed through Drupal.settings.
+  drupal_add_js("Drupal.settings.highcharts.{$chart_id}.tooltip.formatter = function() {return '<b>'+ this.name +'</b>: '+ this.y;}", array('type' => 'inline'));
 }

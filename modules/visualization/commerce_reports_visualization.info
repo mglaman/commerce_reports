@@ -2,7 +2,6 @@ name = Reports Visualization
 description = Adds visualization to the reporting module.
 package = Commerce
 dependencies[] = commerce_reports
-dependencies[] = highcharts
 core = 7.x
 
 files[] = commerce_reports_visualization.module
