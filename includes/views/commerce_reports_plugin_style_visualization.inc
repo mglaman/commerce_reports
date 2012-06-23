@@ -5,7 +5,7 @@
  *
  * @ingroup views_style_plugins
  */
-class commerce_reports_visualization_plugin_style extends views_plugin_style {
+class commerce_reports_plugin_style_visualization extends views_plugin_style {
 
 	function init(&$view, &$display, $options = NULL) {
 		parent::init($view, $display, $options);

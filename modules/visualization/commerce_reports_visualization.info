@@ -1,8 +1,0 @@
-name = Reports Visualization
-description = Adds visualization to the reporting module.
-package = Commerce
-dependencies[] = commerce_reports
-core = 7.x
-
-files[] = commerce_reports_visualization.module
-files[] = includes/views/commerce_reports_visualization_plugin_style.inc

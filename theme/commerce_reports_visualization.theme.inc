@@ -25,7 +25,7 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
    */
   static $js_added = false;
   if (!$js_added) {
-    drupal_add_js(drupal_get_path('module', 'commerce_reports_visualization') . '/js/visualization.js', array('scope' => 'footer'));
+    drupal_add_js(drupal_get_path('module', 'commerce_reports') . '/js/visualization.js', array('scope' => 'footer'));
     
     $js_added = TRUE;
   }

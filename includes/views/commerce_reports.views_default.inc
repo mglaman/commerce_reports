@@ -207,56 +207,54 @@ function commerce_reports_views_default_views() {
   /**
    * Integration with commerce_reports_visualization.
    */
-  if (module_exists('commerce_reports_visualization')) {
-    /**
-     * Top products by revenue.
-     */
-    $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
-    
-    // Chart settings
-    $handler->display->display_options['defaults']['style_options'] = FALSE;
-    $handler->display->display_options['style_options']['type'] = 'column';
-    $handler->display->display_options['style_options']['fields'] = array(
-      'commerce_total' => array(
-        'enabled' => TRUE,
-        'sort' => 'DESC',
-      ),
-    );
-    $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Amount',
-    );
-    $handler->display->display_options['style_options']['xAxis'] = array(
-      'labelField' => 'sku',
-      'invert' => 0,
-    );
-    
-    // Only render 10 products
-    $handler->display->display_options['pager']['type'] = 'some';
-    $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-    $handler->display->display_options['pager']['options']['offset'] = '0';
-    
-    /**
-     * Top products by quantity.
-     */
-    $handler = commerce_reports_visualization_display($view, 'chart_quantity', 'Chart (by quantity sold)', 'block', 'chart_revenue');
-    
-    // Chart settings
-    $handler->display->display_options['defaults']['style_options'] = FALSE;
-    $handler->display->display_options['style_options']['type'] = 'column';
-    $handler->display->display_options['style_options']['fields'] = array(
-      'quantity' => array(
-        'enabled' => TRUE,
-        'sort' => 'DESC',
-      ),
-    );
-    $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Quantity',
-    );
-    $handler->display->display_options['style_options']['xAxis'] = array(
-      'labelField' => 'sku',
-      'invert' => 0,
-    );
-  }
+  /**
+   * Top products by revenue.
+   */
+  $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
+  
+  // Chart settings
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['style_options']['type'] = 'column';
+  $handler->display->display_options['style_options']['fields'] = array(
+    'commerce_total' => array(
+      'enabled' => TRUE,
+      'sort' => 'DESC',
+    ),
+  );
+  $handler->display->display_options['style_options']['yAxis'] = array(
+    'title' => 'Amount',
+  );
+  $handler->display->display_options['style_options']['xAxis'] = array(
+    'labelField' => 'sku',
+    'invert' => 0,
+  );
+  
+  // Only render 10 products
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  
+  /**
+   * Top products by quantity.
+   */
+  $handler = commerce_reports_visualization_display($view, 'chart_quantity', 'Chart (by quantity sold)', 'block', 'chart_revenue');
+  
+  // Chart settings
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['style_options']['type'] = 'column';
+  $handler->display->display_options['style_options']['fields'] = array(
+    'quantity' => array(
+      'enabled' => TRUE,
+      'sort' => 'DESC',
+    ),
+  );
+  $handler->display->display_options['style_options']['yAxis'] = array(
+    'title' => 'Quantity',
+  );
+  $handler->display->display_options['style_options']['xAxis'] = array(
+    'labelField' => 'sku',
+    'invert' => 0,
+  );
 
   $views[$view->name] = $view;
   
@@ -524,52 +522,50 @@ function commerce_reports_views_default_views() {
   /**
    * Integration with commerce_reports_visualization.
    */
-  if (module_exists('commerce_reports_visualization')) {
-    /**
-     * Top users by revenue.
-     */
-    $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
-    
-    // Chart settings
-    $handler->display->display_options['defaults']['style_options'] = FALSE;
-    $handler->display->display_options['style_options']['type'] = 'pie';
-    $handler->display->display_options['style_options']['fields'] = array(
-      'commerce_total' => array(
-        'enabled' => TRUE,
-        'sort' => 'DESC',
-      ),
-    );
-    
-    $handler->display->display_options['style_options']['xAxis'] = array(
-      'labelField' => 'name',
-      'invert' => 0,
-    );
-    
-    // Only render 10 customers
-    $handler->display->display_options['pager']['type'] = 'some';
-    $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-    $handler->display->display_options['pager']['options']['offset'] = '0';
-    
-    /**
-     * Top users by amount of orders.
-     */
-    $handler = commerce_reports_visualization_display($view, 'chart_orders', 'Chart (by orders)', 'block', 'chart_revenue');
+  /**
+   * Top users by revenue.
+   */
+  $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
+  
+  // Chart settings
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['style_options']['type'] = 'pie';
+  $handler->display->display_options['style_options']['fields'] = array(
+    'commerce_total' => array(
+      'enabled' => TRUE,
+      'sort' => 'DESC',
+    ),
+  );
+  
+  $handler->display->display_options['style_options']['xAxis'] = array(
+    'labelField' => 'name',
+    'invert' => 0,
+  );
+  
+  // Only render 10 customers
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  
+  /**
+   * Top users by amount of orders.
+   */
+  $handler = commerce_reports_visualization_display($view, 'chart_orders', 'Chart (by orders)', 'block', 'chart_revenue');
 
-    // Chart settings
-    $handler->display->display_options['defaults']['style_options'] = FALSE;
-    $handler->display->display_options['style_options']['type'] = 'pie';
-    $handler->display->display_options['style_options']['fields'] = array(
-      'order_id' => array(
-        'enabled' => TRUE,
-        'sort' => 'DESC',
-      ),
-    );
-    
-    $handler->display->display_options['style_options']['xAxis'] = array(
-      'labelField' => 'name',
-      'invert' => 0,
-    );
-  }
+  // Chart settings
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['style_options']['type'] = 'pie';
+  $handler->display->display_options['style_options']['fields'] = array(
+    'order_id' => array(
+      'enabled' => TRUE,
+      'sort' => 'DESC',
+    ),
+  );
+  
+  $handler->display->display_options['style_options']['xAxis'] = array(
+    'labelField' => 'name',
+    'invert' => 0,
+  );
    
   $views[$view->name] = $view;
 
@@ -866,117 +862,115 @@ function commerce_reports_views_default_views() {
   /**
    * Integration with commerce_reports_visualization.
    */
-  if (module_exists('commerce_reports_visualization')) {
-    /**
-     * 12 month chart.
-     */
-    $handler = commerce_reports_visualization_display($view, 'chart_year', 'Chart (one year)');
-    
-    // Chart settings
-    $handler->display->display_options['defaults']['style_options'] = FALSE;
-    
-    $handler->display->display_options['style_options']['type'] = 'line';
-    
-    $handler->display->display_options['style_options']['fields'] = array(
-      'sales_data' => array(
-        'enabled' => FALSE,
-        'sort' => 'DESC',
-      ),
-      'commerce_order_total' => array(
-        'enabled' => TRUE,
-        'sort' => '0',
-      ),
-      'commerce_order_total_1' => array(
-        'enabled' => TRUE,
-        'sort' => '0',
-      ),
-    );
-    $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Amount',
-    );
-    $handler->display->display_options['style_options']['xAxis'] = array(
-      'labelField' => 'sales_data',
-      'invert' => 0,
-    );
-    
-    // Date field: set period to one year and group monthly
-    $handler->display->display_options['defaults']['fields'] = FALSE;
-    
-    $handler->display->display_options['fields']['sales_data']['default_period'] = 'P12M';
-    $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m';
-    
-    /**
-     * 1 month chart.
-     */
-    $handler = commerce_reports_visualization_display($view, 'chart_month', 'Chart (one month)', 'block', 'chart_year');
-    
-    $handler->display->display_options['defaults']['style_options'] = FALSE;
-    
-    $handler->display->display_options['style_options']['type'] = 'line';
-    
-    $handler->display->display_options['style_options']['fields'] = array(
-      'sales_data' => array(
-        'enabled' => FALSE,
-        'sort' => 'DESC',
-      ),
-      'commerce_order_total' => array(
-        'enabled' => TRUE,
-        'sort' => '0',
-      ),
-      'commerce_order_total_1' => array(
-        'enabled' => TRUE,
-        'sort' => '0',
-      ),
-    );
-    $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Amount',
-    );
-    $handler->display->display_options['style_options']['xAxis'] = array(
-      'labelField' => 'sales_data',
-      'invert' => 0,
-    );
-    
-    $handler->display->display_options['defaults']['fields'] = FALSE;
-    
-    $handler->display->display_options['fields']['sales_data']['default_period'] = 'P1M';
-    $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
-    
-    /**
-     * 1 week chart.
-     */
-    $handler = commerce_reports_visualization_display($view, 'chart_week', 'Chart (one week)', 'block', 'chart_year');
-    
-    $handler->display->display_options['defaults']['style_options'] = FALSE;
-    
-    $handler->display->display_options['style_options']['type'] = 'line';
-    
-    $handler->display->display_options['style_options']['fields'] = array(
-      'sales_data' => array(
-        'enabled' => FALSE,
-        'sort' => 'DESC',
-      ),
-      'commerce_order_total' => array(
-        'enabled' => TRUE,
-        'sort' => '0',
-      ),
-      'commerce_order_total_1' => array(
-        'enabled' => TRUE,
-        'sort' => '0',
-      ),
-    );
-    $handler->display->display_options['style_options']['yAxis'] = array(
-      'title' => 'Amount',
-    );
-    $handler->display->display_options['style_options']['xAxis'] = array(
-      'labelField' => 'sales_data',
-      'invert' => 0,
-    );
-    
-    $handler->display->display_options['defaults']['fields'] = FALSE;
-    
-    $handler->display->display_options['fields']['sales_data']['default_period'] = 'P7D';
-    $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
-  }
+  /**
+   * 12 month chart.
+   */
+  $handler = commerce_reports_visualization_display($view, 'chart_year', 'Chart (one year)');
+  
+  // Chart settings
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  
+  $handler->display->display_options['style_options']['type'] = 'line';
+  
+  $handler->display->display_options['style_options']['fields'] = array(
+    'sales_data' => array(
+      'enabled' => FALSE,
+      'sort' => 'DESC',
+    ),
+    'commerce_order_total' => array(
+      'enabled' => TRUE,
+      'sort' => '0',
+    ),
+    'commerce_order_total_1' => array(
+      'enabled' => TRUE,
+      'sort' => '0',
+    ),
+  );
+  $handler->display->display_options['style_options']['yAxis'] = array(
+    'title' => 'Amount',
+  );
+  $handler->display->display_options['style_options']['xAxis'] = array(
+    'labelField' => 'sales_data',
+    'invert' => 0,
+  );
+  
+  // Date field: set period to one year and group monthly
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  
+  $handler->display->display_options['fields']['sales_data']['default_period'] = 'P12M';
+  $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m';
+  
+  /**
+   * 1 month chart.
+   */
+  $handler = commerce_reports_visualization_display($view, 'chart_month', 'Chart (one month)', 'block', 'chart_year');
+  
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  
+  $handler->display->display_options['style_options']['type'] = 'line';
+  
+  $handler->display->display_options['style_options']['fields'] = array(
+    'sales_data' => array(
+      'enabled' => FALSE,
+      'sort' => 'DESC',
+    ),
+    'commerce_order_total' => array(
+      'enabled' => TRUE,
+      'sort' => '0',
+    ),
+    'commerce_order_total_1' => array(
+      'enabled' => TRUE,
+      'sort' => '0',
+    ),
+  );
+  $handler->display->display_options['style_options']['yAxis'] = array(
+    'title' => 'Amount',
+  );
+  $handler->display->display_options['style_options']['xAxis'] = array(
+    'labelField' => 'sales_data',
+    'invert' => 0,
+  );
+  
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  
+  $handler->display->display_options['fields']['sales_data']['default_period'] = 'P1M';
+  $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
+  
+  /**
+   * 1 week chart.
+   */
+  $handler = commerce_reports_visualization_display($view, 'chart_week', 'Chart (one week)', 'block', 'chart_year');
+  
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  
+  $handler->display->display_options['style_options']['type'] = 'line';
+  
+  $handler->display->display_options['style_options']['fields'] = array(
+    'sales_data' => array(
+      'enabled' => FALSE,
+      'sort' => 'DESC',
+    ),
+    'commerce_order_total' => array(
+      'enabled' => TRUE,
+      'sort' => '0',
+    ),
+    'commerce_order_total_1' => array(
+      'enabled' => TRUE,
+      'sort' => '0',
+    ),
+  );
+  $handler->display->display_options['style_options']['yAxis'] = array(
+    'title' => 'Amount',
+  );
+  $handler->display->display_options['style_options']['xAxis'] = array(
+    'labelField' => 'sales_data',
+    'invert' => 0,
+  );
+  
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  
+  $handler->display->display_options['fields']['sales_data']['default_period'] = 'P7D';
+  $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
   
   $views[$view->name] = $view;
   

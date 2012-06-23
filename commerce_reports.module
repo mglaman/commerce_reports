@@ -111,6 +111,44 @@ function commerce_reports_date_formats() {
   );
 }
 
+/**
+ * Implements hook_field_formatter_info().
+ */
+function commerce_reports_field_formatter_info() {
+  return array(
+    'commerce_reports_visualization' => array(
+      'label' => t('Formatted amount for visualization'),
+      'field types' => array('commerce_price'),
+      'settings' => array(
+        'calculation' => FALSE,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function commerce_reports_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  
+  foreach ($items as $delta => $item) {
+    if (is_null($item['amount'])) {
+      continue;
+    }
+    
+    switch ($display['type']) {
+      case 'commerce_reports_visualization':
+        $element[$delta] = array(
+          '#markup' => commerce_currency_amount_to_decimal($item['amount'], $item['currency_code']),
+        );
+        break;
+    }
+  }
+  
+  return $element;
+}
+
 function commerce_reports_currency_format($amount, $currency_code, $convert = TRUE) {
   $currency = commerce_currency_load($currency_code);
   

@@ -10,5 +10,6 @@ files[] = commerce_reports.admin.inc
 files[] = commerce_reports.dashboard.inc
 files[] = includes/views/commerce_reports_handler_field_date.inc
 files[] = includes/views/commerce_reports_handler_field_productquantity.inc
+files[] = includes/views/commerce_reports_plugin_style_visualization.inc
 
 stylesheets[all][] = commerce_reports.css
