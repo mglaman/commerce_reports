@@ -14,13 +14,22 @@ function commerce_reports_menu() {
     'file' => 'commerce_reports.dashboard.inc',
     'weight' => 50,
   );
-  
   $items['admin/commerce/reports/dashboard'] = array(
     'title' => 'Dashboard',
     'description' => 'View reports for your store.',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'file' => 'commerce_reports.dashboard.inc',
     'weight' => 0,
+  );
+  
+  $items['admin/commerce/config/reports'] = array(
+    'title' => 'Reports settings',
+    'description' => 'Configure reports settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('commerce_reports_settings_form'),
+    'access arguments' => array('access commerce reports'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'commerce_reports.admin.inc',
   );
 
   return $items;
@@ -172,3 +181,4 @@ function commerce_reports_currency_format($amount, $currency_code, $convert = TR
 
   return trim(t('@code_before@code_spacer@negative@symbol_before@price@symbol_spacer@symbol_after@code_spacer@code_after', $replacements));
 }
+

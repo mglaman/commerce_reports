@@ -15,7 +15,9 @@ jQuery(document).ready(function() {
           var chartHeight = chartContainer.height();
           
           if (chart !== undefined) {
-            chart.setSize(currentWidth, chartHeight, false);
+            if (chart.resize !== undefined) {
+              chart.resize(currentWidth, chartHeight);
+            }
           }
         }
         

@@ -16,9 +16,10 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   $title = $view->human_name;
   
   $vars['chart_id'] = 'commerce_reports_' . uniqid();
-
-  commerce_reports_highchart($vars['chart_id'], $title, $fields, $data, $options);
-  //commerce_reports_gva($vars['chart_id'], $title, $fields, $data, $options);
+  
+  module_load_include('inc', 'commerce_reports', 'commerce_reports.visualization');
+  $library = commerce_reports_library();
+  call_user_func($library['callback'], $vars['chart_id'], $title, $fields, $data, $options);
   
   /**
    * Load javascript.
@@ -37,6 +38,8 @@ function commerce_reports_gva($chart_id, $title, $fields = array(), $data = arra
    */
   $chartOptions = array(
     'title' => $title,
+    'width' => '100%',
+    'height' => '100%',
   );
   
   /**
@@ -106,7 +109,7 @@ function commerce_reports_gva($chart_id, $title, $fields = array(), $data = arra
   }
 }
 
-function commerce_reports_highchart($chart_id, $title, $fields = array(), $data = array(), $options = array()) {
+function commerce_reports_highcharts($chart_id, $title, $fields = array(), $data = array(), $options = array()) {
   /**
    * Chart options.
    */
@@ -207,11 +210,8 @@ function commerce_reports_highchart($chart_id, $title, $fields = array(), $data 
   if (!$js_added) {
     module_load_include('module', 'libraries', 'libraries');
     $path = libraries_get_path('highcharts');
+    drupal_add_js($path . '/js/highcharts.js');
     
-    if (!empty($path)) {
-      drupal_add_js($path . '/js/highcharts.js');
-      
-      $js_added = TRUE;
-    }
+    $js_added = TRUE;
   }
 }

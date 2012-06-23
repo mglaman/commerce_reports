@@ -9,11 +9,15 @@ Drupal.behaviors.commerce_reports = {
     $.each($(".commerce_reports-chart", context).not(".commerce_reports-processed"), function(idx, value) {
       var chart_id = $(value).attr("id");
       var chart = Drupal.settings.commerce_reports[chart_id];
-      
+
       if (chart !== undefined) {
         switch (chart['library']) {
           case 'highcharts':
             Drupal.commerce_reports.charts[chart_id] = new Highcharts.Chart(chart.options);
+            
+            Drupal.commerce_reports.charts[chart_id].resize = function(width, height) {
+              this.setSize(width, height, false);
+            }
             break;
             
           case 'google_visualization':
@@ -38,6 +42,10 @@ Drupal.behaviors.commerce_reports = {
               }
               
               if (Drupal.commerce_reports.charts[chart_id] !== undefined) {
+                Drupal.commerce_reports.charts[chart_id].resize = function(width, height) {
+                  this.draw(data, chart.options);
+                }
+            
                 Drupal.commerce_reports.charts[chart_id].draw(data, chart.options);
               }
             }
