@@ -1,7 +1,7 @@
 <?php
 
 function commerce_reports_dashboard() {
-  drupal_add_js(drupal_get_path('module', 'commerce_reports') .'/commerce_reports.dashboard.js', 'file');
+  drupal_add_js(drupal_get_path('module', 'commerce_reports') .'/js/dashboard.js', 'file');
   
   return array(
     commerce_reports_sales_dashboard_block(array(

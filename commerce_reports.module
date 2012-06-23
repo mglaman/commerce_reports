@@ -59,7 +59,7 @@ function commerce_reports_block_info() {
 }
 
 function commerce_reports_block_view($delta = '') {
-  module_load_include('inc', 'commerce_reports', 'commerce_reports.admin');
+  module_load_include('inc', 'commerce_reports', 'commerce_reports.blocks');
   
   switch ($delta) {
     case 'commerce_reports_sales':
