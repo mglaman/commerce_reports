@@ -1,6 +1,0 @@
-name = Sales segmentation
-description = View graphical report of sales by segment.
-package = Commerce
-dependencies[] = commerce
-dependencies[] = views_data_export
-core = 7.x
