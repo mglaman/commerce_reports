@@ -4,7 +4,7 @@ function commerce_reports_dashboard() {
   drupal_add_js(drupal_get_path('module', 'commerce_reports') .'/js/dashboard.js', 'file');
   
   return array(
-    commerce_reports_sales_dashboard_block(array(
+    commerce_reports_sales_dashboard_block('overview', array(
       'title' => t('Overview'),
       'report' => array(
         'title' => t('Sales reports'),
@@ -25,7 +25,7 @@ function commerce_reports_dashboard() {
         ),
       ),
     )),
-    commerce_reports_sales_dashboard_block(array(
+    commerce_reports_sales_dashboard_block('sales', array(
       'title' => t('Sales'),
       'switchSections' => TRUE,
       'report' => array(
@@ -50,7 +50,7 @@ function commerce_reports_dashboard() {
         ),
       ),
     )),
-    commerce_reports_sales_dashboard_block(array(
+    commerce_reports_sales_dashboard_block('customers', array(
       'title' => t('Customers'),
       'width' => 33,
       'report' => array(
@@ -64,7 +64,7 @@ function commerce_reports_dashboard() {
         ),
       ),
     )),
-    commerce_reports_sales_dashboard_block(array(
+    commerce_reports_sales_dashboard_block('products', array(
       'title' => t('Products'),
       'switchSections' => TRUE,
       'width' => 33,
@@ -85,7 +85,7 @@ function commerce_reports_dashboard() {
         ),
       ),
     )),
-    commerce_reports_sales_dashboard_block(array(
+    commerce_reports_sales_dashboard_block('statistics', array(
       'title' => t('Statistics'),
       'width' => 33,
       'sections' => array(
@@ -101,13 +101,23 @@ function commerce_reports_dashboard() {
         ),
       ),
     )),
+    commerce_reports_sales_dashboard_block('map', array(
+      'title' => t('Where are your customers?'),
+      'sections' => array(
+        'map' => array(
+          'module' => 'commerce_reports',
+          'block' => 'commerce_reports_customer_map',
+        ),
+      ),
+    )),
   );
 }
 
-function commerce_reports_sales_dashboard_block($options = array()) {
+function commerce_reports_sales_dashboard_block($name, $options = array()) {
   $render = array(
     '#theme_wrappers' => array('commerce_reports_dashboard_block'),
     '#title' => $options['title'],
+    '#name' => $name,
     '#report' => !empty($options['report']) ? l($options['report']['title'], $options['report']['path']) : NULL,
     '#width' => !empty($options['width']) ? $options['width'] : NULL,
   );

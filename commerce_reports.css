@@ -87,3 +87,9 @@ div.commerce-reports-dashboard-block .header div.operations ul li a:hover {
   text-decoration: none;
   background: #555555;
 }
+
+/* Specific styling for individual blocks */
+div.commerce-reports-dashboard-overview-block div.section-yesterday {
+  margin-left: auto;
+  margin-right: auto;
+}

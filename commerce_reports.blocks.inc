@@ -136,3 +136,35 @@ function commerce_reports_sales_format($data, $dateInfo, $style = 'combined') {
   
   return $sales;
 }
+
+function commerce_reports_customer_map() {
+  $query = db_select('field_data_commerce_customer_address', 'ca');
+  $query->addField('ca', 'commerce_customer_address_country', 'country');
+  $query->groupBy('country')
+    ->addExpression('COUNT(*)', 'count');
+    
+  $result = $query->execute();
+  
+  $options = array(
+    'title' => 'Customer map',
+    'fields' => array(
+      'country' => array(
+        'label' => t('Country'),
+      ),
+      'count' => array(
+        'enabled' => TRUE,
+        'label' => t('Amount'),
+      ),
+    ),
+    'xAxis' => array(
+      'labelField' => 'country',
+    ),
+    'data' => $result->fetchAll(PDO::FETCH_ASSOC),
+    'type' => 'column',
+  );
+  
+  return array(
+    '#theme' => 'commerce_reports_visualization',
+    '#options' => $options,
+  );
+}

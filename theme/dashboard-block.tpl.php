@@ -1,6 +1,6 @@
 <?php if (!empty($block['#children'])) {
   $attributes = array(
-    'class' => array('commerce-reports-dashboard-block'),
+    'class' => array('commerce-reports-dashboard-block', 'commerce-reports-dashboard-' . $block['#name'] . '-block'),
   );
   
   if (!empty($block['#width'])) {
@@ -20,11 +20,12 @@
     <?php } ?>
   </div>
   <?php
-    $sectionWidth =  floor((1. / (count($block['#visible']))) * 100);
+    $sectionWidth =  (1. / (count($block['#visible']))) * 100;
   
+    $i = 0;
     foreach ($block['sections'] as $name => $render) {
       if (($name != '#children') && ($name != '#printed')) { 
-        $class = array('section');
+        $class = array('section', 'section-' . $name);
         
         if (in_array($name, array_values($block['#visible']), TRUE)) {
           $class[] = 'visible';
@@ -33,11 +34,12 @@
         if (!empty($render['#width'])) {
           $width = $render['#width'];
         } else {
-          $width = $sectionWidth;
+          $width = floor($sectionWidth);
         }
   ?>
         <div<?php print drupal_attributes(array('class' => $class, 'data-section' => $name, 'style' => 'width: ' . $width . '%')) ?>><?php print $render['#children']; ?></div>
   <?php
+        $i ++;
       }
     } 
   ?>

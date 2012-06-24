@@ -1,25 +1,36 @@
 <?php
 
 function template_preprocess_commerce_reports_visualization(&$vars) {
-  $view = $vars['view'];
   $options = $vars['options'];
   
-  $fields = $view->field;
-
-  if (!empty($options['xAxis']['invert'])) {
-    $data = array_reverse($view->style_plugin->rendered_fields);
-  } else {
+  if (!empty($vars['view'])) {
+    $view = $vars['view'];
+    
+    // Fields
+    foreach ($view->field as $name => $field) {
+      $options['fields'][$name]['label'] = $field->options['label'];
+    }
+    
+    // Title.
+    if (empty($options['title'])) {
+      $options['title'] = $view->human_name;
+    }
+    
+    // Data
     $data = $view->style_plugin->rendered_fields;
+  } else {
+    $data = $options['data'];
   }
 
-  // Title.
-  $title = $view->human_name;
+  if (!empty($options['xAxis']['invert'])) {
+    $data = array_reverse($data);
+  }
   
   $vars['chart_id'] = 'commerce_reports_' . uniqid();
   
   module_load_include('inc', 'commerce_reports', 'commerce_reports.visualization');
   $library = commerce_reports_library();
-  call_user_func($library['callback'], $vars['chart_id'], $title, $fields, $data, $options);
+  call_user_func($library['callback'], $vars['chart_id'], $data, $options);
   
   /**
    * Load javascript.
@@ -32,12 +43,12 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   }
 }
 
-function commerce_reports_gva($chart_id, $title, $fields = array(), $data = array(), $options = array()) {
+function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
   /**
    * Chart options
    */
   $chartOptions = array(
-    'title' => $title,
+    'title' => $options['title'],
     'width' => '100%',
     'height' => '100%',
   );
@@ -51,16 +62,12 @@ function commerce_reports_gva($chart_id, $title, $fields = array(), $data = arra
   $headerRow = array();
   
   if (!empty($options['xAxis']['labelField'])) {
-    $field = $fields[$options['xAxis']['labelField']];
-      
-    $headerRow[] = $field->options['label'];
+    $headerRow[] = $options['fields'][$options['xAxis']['labelField']]['label'];
   }
   
   foreach ($options['fields'] as $name => $column) {
     if (!empty($column['enabled'])) {
-      $field = $fields[$name];
-      
-      $headerRow[] = $field->options['label'];
+      $headerRow[] = $column['label'];
     }
   }
   
@@ -68,7 +75,6 @@ function commerce_reports_gva($chart_id, $title, $fields = array(), $data = arra
   
   // Then add data, row per row.
   foreach ($data as $row) {
-    $field = $fields[$name];
     $dataRow = array();
     
     if (!empty($options['xAxis']['labelField'])) {
@@ -109,7 +115,7 @@ function commerce_reports_gva($chart_id, $title, $fields = array(), $data = arra
   }
 }
 
-function commerce_reports_highcharts($chart_id, $title, $fields = array(), $data = array(), $options = array()) {
+function commerce_reports_highcharts($chart_id, $data = array(), $options = array()) {
   /**
    * Chart options.
    */
@@ -123,7 +129,7 @@ function commerce_reports_highcharts($chart_id, $title, $fields = array(), $data
   );
   
   // Set title
-  $highchart->title->text = $title;
+  $highchart->title->text = $options['title'];
   
   $xAxis = array();
   if (!empty($options['xAxis']['labelField'])) {
@@ -150,10 +156,8 @@ function commerce_reports_highcharts($chart_id, $title, $fields = array(), $data
   $highchart->series = array();
   foreach ($options['fields'] as $name => $column) {
     if (!empty($column['enabled'])) {
-      $field = $fields[$name];
-      
       $serie = new StdClass();
-      $serie->name = $field->options['label'];    
+      $serie->name = $column['label'];
       $serie->type = $options['type'];
       
       $serie->data = array();

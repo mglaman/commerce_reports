@@ -40,6 +40,12 @@ function commerce_reports_menu() {
  */
 function commerce_reports_theme($existing, $type, $theme, $path){
   return array(
+    'commerce_reports_visualization' => array(
+      'variables' => array('options' => array('title' => NULL, 'xAxis' => array(), 'fields' => array(), 'type' => 'line', 'data' => array())),
+      'template' => 'commerce_reports_visualization',
+      'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
+      'file' => 'commerce_reports_visualization.theme.inc',
+    ),
     'commerce_reports_dashboard_block' => array(
       'render element' => 'block',
       'template' => 'dashboard-block',
@@ -64,6 +70,9 @@ function commerce_reports_block_info() {
     'commerce_reports_customers' => array(
       'info' => t('Commerce Reports: Customer statistics'),
     ),
+    'commerce_reports_customer_map' => array(
+      'info' => t('Commerce Reports: Customer map'),
+    ),
   );
 }
 
@@ -75,6 +84,8 @@ function commerce_reports_block_view($delta = '') {
       return commerce_reports_sales();
     case 'commerce_reports_customers':
       return commerce_reports_customers();
+    case 'commerce_reports_customer_map':
+      return commerce_reports_customer_map();
   }
 }
 
