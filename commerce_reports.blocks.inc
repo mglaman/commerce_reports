@@ -33,7 +33,7 @@ function commerce_reports_sales() {
   return array(
     '#theme' => 'table',
     '#rows' => $sales,
-    '#header' => array(t('Sales Data'), t('Number of Orders'), t('Total Revenue')),
+    '#header' => array(array('data' => t('Sales Data')), array('data' => t('Number of Orders')), array('data' => t('Total Revenue'))),
   );
 }
 
@@ -131,7 +131,7 @@ function commerce_reports_sales_format($data, $dateInfo, $style = 'combined') {
   $sales = array();
   
   foreach ($data as $currency => $row) {
-    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency), !isset($row['average']) ? null : commerce_currency_format($row['average'], $currency));
+    $sales[] = array($dateInfo[$style], $row['count'], commerce_currency_format($row['sum'], $currency));
   }
   
   return $sales;

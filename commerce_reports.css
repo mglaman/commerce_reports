@@ -22,6 +22,7 @@ div.commerce-reports-dashboard-block .section {
 }
 
 div.commerce-reports-dashboard-block .section table {
+  width: 100%;
   margin: 0;
 }
 
