@@ -21,7 +21,6 @@ Drupal.behaviors.commerce_reports = {
             break;
             
           case 'google_visualization':
-            console.log(chart);
             function drawChart() {
               var data = google.visualization.arrayToDataTable(chart.dataArray);
               var chartElement = document.getElementById(chart.chart_id);
@@ -39,6 +38,10 @@ Drupal.behaviors.commerce_reports = {
                   Drupal.commerce_reports.charts[chart_id] = new google.visualization.ColumnChart(chartElement);
                   break;
                   
+                case 'map':
+                  chart.options['height'] = 600;
+                  Drupal.commerce_reports.charts[chart_id] = new google.visualization.GeoMap(chartElement);
+                  break;
               }
               
               if (Drupal.commerce_reports.charts[chart_id] !== undefined) {

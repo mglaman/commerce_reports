@@ -29,7 +29,7 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   $vars['chart_id'] = 'commerce_reports_' . uniqid();
   
   module_load_include('inc', 'commerce_reports', 'commerce_reports.visualization');
-  $library = commerce_reports_library();
+  $library = commerce_reports_library($options['type']);
   call_user_func($library['callback'], $vars['chart_id'], $data, $options);
   
   /**
@@ -49,9 +49,15 @@ function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
    */
   $chartOptions = array(
     'title' => $options['title'],
-    'width' => '100%',
-    'height' => '100%',
+    'width' => !empty($options['width']) ? $options['width'] : '100%',
+    'height' => !empty($options['height']) ? $options['height'] : '100%',
   );
+  
+  switch ($options['type']) {
+    case 'map':
+      $chartOptions['dataMode'] = !empty($options['dataMode']) ? $options['dataMode'] : 'regions';
+      break;
+  }
   
   /**
    * Prepare table array with data.
@@ -106,12 +112,21 @@ function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
   /**
    * Load library
    */
-  static $js_added = FALSE;
-  if (!$js_added) {
+  static $js_added = array();
+  if (empty($js_added['file'])) {
     drupal_add_js('https://www.google.com/jsapi', 'external');
+    
+    $js_added['file'] = TRUE;
+  }
+  
+  if (in_array($options['type'], array('line', 'column', 'pie')) && empty($js_added['corechart'])) {
     drupal_add_js('google.load("visualization", "1", {packages:["corechart"]});', array('type' => 'inline'));
     
-    $js_added = TRUE;
+    $js_added['corechart'] = TRUE;
+  } elseif (in_array($options['type'], array('map')) && empty($js_added['geomap'])) {
+    drupal_add_js('google.load("visualization", "1", {packages:["geomap"]});', array('type' => 'inline'));
+    
+    $js_added['geomap'] = TRUE;
   }
 }
 

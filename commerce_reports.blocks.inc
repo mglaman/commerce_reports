@@ -160,7 +160,8 @@ function commerce_reports_customer_map() {
       'labelField' => 'country',
     ),
     'data' => $result->fetchAll(PDO::FETCH_ASSOC),
-    'type' => 'column',
+    'type' => 'map',
+    'height' => '400px',
   );
   
   return array(

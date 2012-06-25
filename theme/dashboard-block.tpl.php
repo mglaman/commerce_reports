@@ -24,20 +24,24 @@
   
     $i = 0;
     foreach ($block['sections'] as $name => $render) {
-      if (($name != '#children') && ($name != '#printed')) { 
-        $class = array('section', 'section-' . $name);
+      if (($name != '#children') && ($name != '#printed')) {
+        $attributes = array(
+          'class' => array('section', 'section-' . $name),
+          'data-section' => $name,
+          'style' => '',
+        );
         
         if (in_array($name, array_values($block['#visible']), TRUE)) {
-          $class[] = 'visible';
+          $attributes['class'][] = 'visible';
         }
         
         if (!empty($render['#width'])) {
-          $width = $render['#width'];
+          $attributes['style'] .= 'width: ' . $render['#width'] . '%';
         } else {
-          $width = floor($sectionWidth);
+          $attributes['style'] .= 'width: ' . floor($sectionWidth) . '%';
         }
   ?>
-        <div<?php print drupal_attributes(array('class' => $class, 'data-section' => $name, 'style' => 'width: ' . $width . '%')) ?>><?php print $render['#children']; ?></div>
+        <div<?php print drupal_attributes($attributes) ?>><?php print $render['#children']; ?></div>
   <?php
         $i ++;
       }
