@@ -1,0 +1,37 @@
+<?php
+/**
+ * @file
+ * Unit tests for the commerce reports module.
+ */
+ 
+class CommerceReportsProductsTestCase extends CommerceBaseTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Product reports',
+      'description' => 'Test the product reports.',
+      'group' => 'Drupal Commerce',
+    );
+  }
+  
+  function setUp() {
+    $modules = parent::setUpHelper('all', array('commerce_reports'));
+    parent::setUp($modules);
+
+    $this->customer = $this->createStoreCustomer();
+    cache_clear_all(); // Just in case
+  }
+  
+  function testReports() {
+    $product = $this->createDummyProduct('', '', 5);
+    debug(print_r($product, TRUE));
+    $order = $this->createDummyOrder($this->customer->uid, array($product->product_id => 1), 'completed');
+    debug(print_r($order, TRUE));
+    
+    $report = views_get_view_result('commerce_reports_products', 'default');
+    foreach ($report as $line) {
+      debug($line);
+    }
+  }
+  
+}
