@@ -1,5 +1,7 @@
 <?php
 
+debug('views_default');
+
 /**
  * Views for commerce orders for report displays.
  */
@@ -47,7 +49,6 @@ function commerce_reports_visualization_display($view, $name, $title, $type = 'b
  * Implements hook_views_default_views().
  */
 function commerce_reports_views_default_views() {
-
   /**
    * Commerce reports: Products
    */
@@ -542,6 +543,7 @@ function commerce_reports_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   /* Header: Global: Text area */
+  $handler->display->display_options['defaults']['header'] = FALSE;
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
@@ -616,7 +618,7 @@ function commerce_reports_views_default_views() {
   $view->description = 'View payment gateway usage breakdown.';
   $view->tag = 'commerce_reports';
   $view->base_table = 'commerce_payment_transaction';
-  $view->human_name = 'Payment gateway usage';
+  $view->human_name = 'Payment gateway reports';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -670,6 +672,15 @@ function commerce_reports_views_default_views() {
   
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  /* Header: Global: Text area */
+  $handler->display->display_options['defaults']['header'] = FALSE;
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['empty'] = FALSE;
+  $handler->display->display_options['header']['area']['content'] = 'Here you can find basic information about the usage of the various payment gateways. Each line represents some gateway and statistics associated with that gateway.';
+  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['header']['area']['tokenize'] = 0;
   $handler->display->display_options['path'] = 'admin/commerce/reports/gateways';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Payment gateways';

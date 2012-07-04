@@ -6,4 +6,7 @@
 function commerce_reports_install() {
   // Set default for date format.
   variable_set('date_format_commerce_reports', 'l N F o');
+  
+  // Set module weight.
+  db_query("UPDATE {system} SET weight = 11 WHERE name = 'commerce_reports'");
 }

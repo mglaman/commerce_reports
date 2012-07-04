@@ -2,16 +2,15 @@ name = Reports
 description = Reporting module for Drupal Commerce.
 package = Commerce
 dependencies[] = commerce
-dependencies[] = views_data_export
 core = 7.x
 
-files[] = commerce_reports.module
-files[] = commerce_reports.admin.inc
-files[] = commerce_reports.blocks.inc
-files[] = commerce_reports.visualization.inc
-files[] = commerce_reports.dashboard.inc
+; Views includes
+files[] = includes/views/commerce_reports.views.inc
+
+; Views handlers
 files[] = includes/views/commerce_reports_handler_field_date.inc
-files[] = includes/views/commerce_reports_handler_field_productquantity.inc
+
+; Views plugins
 files[] = includes/views/commerce_reports_plugin_style_visualization.inc
 
 ; Tests

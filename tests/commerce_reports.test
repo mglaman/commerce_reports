@@ -15,20 +15,26 @@ class CommerceReportsProductsTestCase extends CommerceBaseTestCase {
   }
   
   function setUp() {
+    $this->resetAll();
+    
     $modules = parent::setUpHelper('all', array('commerce_reports'));
+    debug($modules);
     parent::setUp($modules);
-
+    
     $this->customer = $this->createStoreCustomer();
     cache_clear_all(); // Just in case
+    views_invalidate_cache();
   }
   
   function testReports() {
-    $product = $this->createDummyProduct('', '', 5);
+    /*$product = $this->createDummyProduct('', '', 5);
     debug(print_r($product, TRUE));
     $order = $this->createDummyOrder($this->customer->uid, array($product->product_id => 1), 'completed');
-    debug(print_r($order, TRUE));
+    debug(print_r($order, TRUE));*/
     
-    $report = views_get_view_result('commerce_reports_products', 'default');
+    debug('fuck this shit');
+    
+    $report = views_get_view_result('commerce_reports_customers', 'default');
     foreach ($report as $line) {
       debug($line);
     }

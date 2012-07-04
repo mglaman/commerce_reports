@@ -1,6 +1,6 @@
 <?php
 
-class commerce_reports_handler_field_commerce_order_created extends views_handler_field {
+class commerce_reports_handler_field_date extends views_handler_field {
 
   var $granularities = array(
   	'Y-m' => array(
@@ -21,7 +21,9 @@ class commerce_reports_handler_field_commerce_order_created extends views_handle
   );
 
   function option_definition() {
+    debug('date before option_def');
     $options = parent::option_definition();
+    debug('date after option_def');
     
     $options['exposed'] = array(
       'default' => FALSE,
