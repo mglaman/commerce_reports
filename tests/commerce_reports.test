@@ -32,7 +32,7 @@ class CommerceReportsProductsTestCase extends CommerceBaseTestCase {
     $order = $this->createDummyOrder($this->customer->uid, array($product->product_id => 1), 'completed');
     debug(print_r($order, TRUE));*/
     
-    debug('fuck this shit');
+    debug('pre-test');
     
     $report = views_get_view_result('commerce_reports_customers', 'default');
     foreach ($report as $line) {
