@@ -1,7 +1,5 @@
 <?php
 
-debug('views_default');
-
 /**
  * Views for commerce orders for report displays.
  */

@@ -1,7 +1,5 @@
 <?php
 
-debug('views');
-
 /**
  * Implements hook_views_handlers().
  */

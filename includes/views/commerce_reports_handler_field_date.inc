@@ -21,9 +21,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
   );
 
   function option_definition() {
-    debug('date before option_def');
     $options = parent::option_definition();
-    debug('date after option_def');
     
     $options['exposed'] = array(
       'default' => FALSE,
