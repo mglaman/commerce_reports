@@ -537,6 +537,15 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['filters']['status']['value'] = '1';
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Commerce Order: Order status */
+  $handler->display->display_options['filters']['status_1']['id'] = 'status_1';
+  $handler->display->display_options['filters']['status_1']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['status_1']['field'] = 'status';
+  $handler->display->display_options['filters']['status_1']['relationship'] = 'uid_commerce_orders';
+  $handler->display->display_options['filters']['status_1']['value'] = array(
+    'pending' => 'pending',
+    'completed' => 'completed',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
