@@ -979,6 +979,15 @@ function commerce_reports_views_default_views() {
 
   /* Display: Sales Reports */
   $handler = $view->new_display('page', 'Sales reports', 'sales');
+  /* Header: Global: Text area */
+  $handler->display->display_options['defaults']['header'] = FALSE;
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['empty'] = FALSE;
+  $handler->display->display_options['header']['area']['content'] = 'Here you can find a customizable and filterable sales report. You can break down sales monthly, weekly or daily, specify a time period and which order statusses should be included. Each line indicates the total amount of orders, the total revenue and the average revenue per order for a certain day, week or month.';
+  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['header']['area']['tokenize'] = 0;
   $handler->display->display_options['path'] = 'admin/commerce/reports/sales';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Sales';
