@@ -618,11 +618,11 @@ function commerce_reports_views_default_views() {
   $views[$view->name] = $view;
 
   /**
-   * Commerce reports: Gateways
+   * Commerce reports: Payment methods
    */
   $view = new view;
-  $view->name = 'commerce_reports_gateways';
-  $view->description = 'View payment gateway usage breakdown.';
+  $view->name = 'commerce_reports_payment_methods';
+  $view->description = 'View payment methods usage breakdown.';
   $view->tag = 'commerce_reports';
   $view->base_table = 'commerce_payment_transaction';
   $view->human_name = 'Payment gateway reports';
@@ -632,7 +632,7 @@ function commerce_reports_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Payment gateways';
+  $handler->display->display_options['title'] = 'Payment methods';
   $handler->display->display_options['group_by'] = TRUE;
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'access commerce reports';
@@ -761,12 +761,12 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['empty'] = FALSE;
-  $handler->display->display_options['header']['area']['content'] = 'Here you can find basic information about the usage of the various payment gateways. Each line represents some gateway and statistics associated with that gateway.';
+  $handler->display->display_options['header']['area']['content'] = 'Here you can find basic information about the usage of the various payment methods. Each line represents some gateway and statistics associated with that gateway.';
   $handler->display->display_options['header']['area']['format'] = 'filtered_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
-  $handler->display->display_options['path'] = 'admin/commerce/reports/gateways';
+  $handler->display->display_options['path'] = 'admin/commerce/reports/payment-methods';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Payment gateways';
+  $handler->display->display_options['menu']['title'] = 'Payment methods';
   $handler->display->display_options['menu']['description'] = 'View breakdown of payment gateway usage.';
   $handler->display->display_options['menu']['weight'] = '20';
   $handler->display->display_options['menu']['name'] = 'management';
