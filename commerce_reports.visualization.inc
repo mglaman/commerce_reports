@@ -5,7 +5,7 @@ function commerce_reports_library($type = FALSE) {
   $library = variable_get('commerce_reports_visualization', 'gva');
   
   if (!empty($libraries[$library]) && !empty($libraries[$library]['enabled']) && 
-    !empty($libraries[$library]['callback']) && (!empty($type) || in_array($type, $libraries[$library]['types']))) {
+    !empty($libraries[$library]['callback']) && (!empty($type) && in_array($type, $libraries[$library]['types']))) {
     return $libraries[$library];
   } else {
     return reset($libraries);
