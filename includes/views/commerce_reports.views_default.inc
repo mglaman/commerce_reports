@@ -43,6 +43,20 @@ function commerce_reports_visualization_display($view, $name, $title, $type = 'b
   return $handler;
 }
 
+function commerce_reports_data_export($view) {
+  if (empty($view->display['page']) || empty($view->display['page']->display_options['path'])) {
+    return;
+  }
+  
+  $handler = $view->new_display('views_data_export', 'Data export', 'views_data_export');
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+  $handler->display->display_options['path'] = $view->display['page']->display_options['path'] . '/csv';
+  $handler->display->display_options['displays'] = array(
+    'page' => 'page',
+  );
+}
+
 /**
  * Implements hook_views_default_views().
  */
@@ -293,6 +307,13 @@ function commerce_reports_views_default_views() {
     'labelField' => 'sku',
     'invert' => 0,
   );
+  
+  /**
+   * Integration with views data export.
+   */
+  if (module_exists('views_data_export')) {
+    commerce_reports_data_export($view);
+  }
 
   $views[$view->name] = $view;
   
@@ -614,6 +635,13 @@ function commerce_reports_views_default_views() {
     'labelField' => 'name',
     'invert' => 0,
   );
+  
+  /**
+   * Integration with views data export.
+   */
+  if (module_exists('views_data_export')) {
+    commerce_reports_data_export($view);
+  }
    
   $views[$view->name] = $view;
 
@@ -771,6 +799,13 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '20';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
+  
+  /**
+   * Integration with views data export.
+   */
+  if (module_exists('views_data_export')) {
+    commerce_reports_data_export($view);
+  }
 
   $views[$view->name] = $view;
 
@@ -978,7 +1013,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['filters']['state']['expose']['reduce'] = 0;
 
   /* Display: Sales Reports */
-  $handler = $view->new_display('page', 'Sales reports', 'sales');
+  $handler = $view->new_display('page', 'Sales reports', 'page');
   /* Header: Global: Text area */
   $handler->display->display_options['defaults']['header'] = FALSE;
   $handler->display->display_options['header']['area']['id'] = 'area';
@@ -1113,6 +1148,13 @@ function commerce_reports_views_default_views() {
   
   $handler->display->display_options['fields']['sales_data']['default_period'] = 'P7D';
   $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
+  
+  /**
+   * Integration with views data export.
+   */
+  if (module_exists('views_data_export')) {
+    commerce_reports_data_export($view);
+  }
   
   $views[$view->name] = $view;
   
