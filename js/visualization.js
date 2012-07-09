@@ -46,6 +46,14 @@ Drupal.behaviors.commerce_reports = {
               
               if (Drupal.commerce_reports.charts[chart_id] !== undefined) {
                 Drupal.commerce_reports.charts[chart_id].resize = function(width, height) {
+                  if (width !== undefined) {
+                    chart.options['width'] = width;
+                  }
+                  
+                  if (height !== undefined) {
+                    chart.options['height'] = height;
+                  }
+                  
                   this.draw(data, chart.options);
                 }
             

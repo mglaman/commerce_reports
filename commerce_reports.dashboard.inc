@@ -145,7 +145,7 @@ function commerce_reports_sales_dashboard_block($name, $options = array()) {
       );
 
       if ($name === $first) {
-        $link['attributes']['class'][] = 'active';
+        $link['attributes']['class'][] = 'activated';
       }
       
       $sectionLinks[] = $link;

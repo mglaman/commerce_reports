@@ -18,6 +18,7 @@ div.commerce-reports-dashboard-block {
 }
 
 div.commerce-reports-dashboard-block .section {
+  overflow: hidden;
   display: none;
 }
 
@@ -79,8 +80,8 @@ div.commerce-reports-dashboard-block .header div.operations ul li a {
   border-radius: 10px;
 }
 
-div.commerce-reports-dashboard-block .header div.operations ul li a.active {
-  background: #bcbcbc;
+div.commerce-reports-dashboard-block .header div.operations ul li a.activated {
+  background: #acacac;
 }
 
 div.commerce-reports-dashboard-block .header div.operations ul li a:hover {
