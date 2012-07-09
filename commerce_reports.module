@@ -42,7 +42,7 @@ function commerce_reports_theme($existing, $type, $theme, $path){
   return array(
     'commerce_reports_visualization' => array(
       'variables' => array('options' => array('title' => NULL, 'xAxis' => array(), 'fields' => array(), 'type' => 'line', 'data' => array())),
-      'template' => 'commerce_reports_visualization',
+      'template' => 'commerce-reports-visualization',
       'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
       'file' => 'commerce_reports_visualization.theme.inc',
     ),
