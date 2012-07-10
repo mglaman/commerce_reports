@@ -13,13 +13,8 @@ function commerce_reports_tax_form($form, &$form_state, $report, $op = 'edit') {
   );
    
   $form['detailled'] = array(
-    '#type' => 'radios',
-    '#title' => t('Type'),
-    '#description' => t('Wheter or not tax information about individual orders should be generated.'),
-    '#options' => array(
-      '0' => 'Standard report',
-      '1' => 'Extended report (includes information about orders)',
-    ),
+    '#type' => 'checkbox',
+    '#title' => t('Include tax information about individual orders in this report.'),
   );
   
   $form['timeframe'] = array(

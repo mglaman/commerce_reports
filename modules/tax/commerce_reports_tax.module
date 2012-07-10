@@ -8,6 +8,12 @@ function commerce_reports_tax_help($path, $arg) {
     case 'admin/commerce/reports/tax':
       return '<p>' . t('The results of tax reports are saved to the database and can be retrieved for later viewing. Here you can create, manage and generate tax reports.') . '</p>';
       
+    case 'admin/commerce/reports/tax/%':
+      return '<p>' . t('This is a cached overview of your tax report, the results below are not an up-to-date representation of the tax collected by your store. It is rather a snapshot of the situation when the report was last generated. You can regenerate this report or change its parameters on the previous page.') . '</p>';
+      
+    case 'admin/commerce/reports/tax/%/%':
+      return '<p>' . t('The entries below show detailed information about your tax report. Each entry represents the amount of collected tax per order grouped by tax type. It is a snapshot of the situation when the report was last generated. You can regenerate this report or change its parameters on the overview page.') . '</p>';
+      
   }
 }
 

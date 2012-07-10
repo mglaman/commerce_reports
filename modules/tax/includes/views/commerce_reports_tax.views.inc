@@ -1,6 +1,22 @@
 <?php
 
 /**
+ * Implements hook_views_handlers().
+ */
+function commerce_reports_tax_views_handlers() {
+  return array(
+    'info' => array(
+      'path' => drupal_get_path('module', 'commerce_reports_tax') . '/includes/views',
+    ),
+    'handlers' => array(
+      'commerce_reports_tax_handler_field_operations' => array(
+        'parent' => 'views_handler_field',
+      ),
+    ),
+  );
+}
+
+/**
  * Implements hook_views_data()
  */
 function commerce_reports_tax_views_data() {
@@ -171,6 +187,14 @@ function commerce_reports_tax_views_data() {
     ),
     'sort' => array(
       'handler' => 'views_handler_sort',
+    ),
+  );
+  
+  $data['commerce_reports_tax_rate_aggregate']['operations'] = array(
+    'title' => t('Operations'),
+    'help' => t('Operations for tax rate aggregates.'),
+    'field' => array(
+      'handler' => 'commerce_reports_tax_handler_field_operations',
     ),
   );
   
