@@ -247,14 +247,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['defaults']['header'] = FALSE;
-  /* Header: Global: Text area */
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = TRUE;
-  $handler->display->display_options['header']['area']['content'] = 'The table lists each product listed in the store, its amount sold and the revenue it produced.';
-  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
-  $handler->display->display_options['header']['area']['tokenize'] = 0;
   
   /**
    * Integration with commerce_reports_visualization.
@@ -570,15 +562,6 @@ function commerce_reports_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
-  /* Header: Global: Text area */
-  $handler->display->display_options['defaults']['header'] = FALSE;
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = FALSE;
-  $handler->display->display_options['header']['area']['content'] = 'The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order. Clicking on a customer\'s name will take you to their account page.';
-  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
-  $handler->display->display_options['header']['area']['tokenize'] = 0;
   /* Path and menu */
   $handler->display->display_options['path'] = 'admin/commerce/reports/customers';
   $handler->display->display_options['menu']['type'] = 'tab';
@@ -783,15 +766,6 @@ function commerce_reports_views_default_views() {
   
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
-  /* Header: Global: Text area */
-  $handler->display->display_options['defaults']['header'] = FALSE;
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = FALSE;
-  $handler->display->display_options['header']['area']['content'] = 'Here you can find basic information about the usage of the various payment methods. Each line represents some gateway and statistics associated with that gateway.';
-  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
-  $handler->display->display_options['header']['area']['tokenize'] = 0;
   $handler->display->display_options['path'] = 'admin/commerce/reports/payment-methods';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Payment methods';
@@ -1014,15 +988,6 @@ function commerce_reports_views_default_views() {
 
   /* Display: Sales Reports */
   $handler = $view->new_display('page', 'Sales reports', 'page');
-  /* Header: Global: Text area */
-  $handler->display->display_options['defaults']['header'] = FALSE;
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = FALSE;
-  $handler->display->display_options['header']['area']['content'] = 'Here you can find a customizable and filterable sales report. You can break down sales monthly, weekly or daily, specify a time period and which order statusses should be included. Each line indicates the total amount of orders, the total revenue and the average revenue per order for a certain day, week or month.';
-  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
-  $handler->display->display_options['header']['area']['tokenize'] = 0;
   $handler->display->display_options['path'] = 'admin/commerce/reports/sales';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Sales';

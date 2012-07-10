@@ -1,6 +1,28 @@
 <?php
 
 /**
+ * Implements hook_help().
+ */
+function commerce_reports_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#commerce_reports':
+      return 'hi!';
+      
+    case 'admin/commerce/reports/products':
+      return '<p>' . t('The table lists each product listed in the store, its amount sold and the revenue it produced.') . '</p>';
+      
+    case 'admin/commerce/reports/customers':
+      return '<p>' . t('The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order. Clicking on a customer\'s name will take you to their account page.') . '</p>';
+      
+    case 'admin/commerce/reports/sales':
+      return '<p>' . t('Here you can find a customizable and filterable sales report. You can break down sales monthly, weekly or daily, specify a time period and which order statusses should be included. Each line indicates the total amount of orders, the total revenue and the average revenue per order for a certain day, week or month.') . '</p>';
+      
+    case 'admin/commerce/reports/payment-methods':
+      return '<p>' . t('Here you can find basic information about the usage of the various payment methods. Each line represents some gateway and statistics associated with that gateway.') . '</p>';
+  }
+}
+
+/**
  * Implements hook_menu().
  */
 function commerce_reports_menu() {
