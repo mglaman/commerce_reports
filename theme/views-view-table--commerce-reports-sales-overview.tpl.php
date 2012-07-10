@@ -19,9 +19,6 @@
  */
 ?>
 <table <?php if ($classes) { print 'class="'. $classes . '" '; } ?><?php print $attributes; ?>>
-  <?php if (!empty($view->display_handler->options['title'])) { ?>
-    <caption><?php print $view->display_handler->options['title']; ?></caption>
-  <?php } ?>
   <?php if (!empty($header)) { ?>
     <thead>
       <tr>

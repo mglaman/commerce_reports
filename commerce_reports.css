@@ -11,8 +11,7 @@ div.sales-overview .view-content {
 
 div.commerce-reports-dashboard-block {
   border: 1px solid #666666;
-  display: inline-block;
-  width: 100%;
+  display: block;
   margin: 5px 0;
   vertical-align: top;
 }
@@ -37,6 +36,8 @@ div.commerce-reports-dashboard-block .header {
   height: 20px;
   color: #cccccc;
   padding: 5px;
+  overflow: hidden;
+  position: relative;
 }
 
 div.commerce-reports-dashboard-block .header a {
@@ -52,12 +53,21 @@ div.commerce-reports-dashboard-block .header h1, div.commerce-reports-dashboard-
 
 div.commerce-reports-dashboard-block .header h1 {
   color: white;
+  font-size: 1em;
+  float: left;
+}
+
+div.commerce-reports-dashboard-block .header span {
+	margin-left: 5px;
+  font-size: 0.7em;
 }
 
 div.commerce-reports-dashboard-block .header div.operations {
-  vertical-align: bottom;
+  vertical-align: top;
   height: 100%;
-  float: right;
+  position: absolute;
+  top: 5px;
+  right: 2px;
 }
 
 div.commerce-reports-dashboard-block .header div.operations ul {
@@ -72,6 +82,7 @@ div.commerce-reports-dashboard-block .header div.operations ul li {
 }
 
 div.commerce-reports-dashboard-block .header div.operations ul li a {
+  font-size: 0.8em;
   color: #ffffff;
   text-shadow: #333 0 1px 0;
   padding: 2px 10px;
@@ -93,4 +104,83 @@ div.commerce-reports-dashboard-block .header div.operations ul li a:hover {
 div.commerce-reports-dashboard-overview-block div.section-yesterday {
   margin-left: auto;
   margin-right: auto;
+}
+
+/* ==================================================================================================================== */
+/* ! The 1140px Grid V2 by Andy Taylor \ http://cssgrid.net \ http://www.twitter.com/andytlr \ http://www.andytlr.com   */
+/* ==================================================================================================================== */
+
+.row {
+width: 100%;
+max-width: 1140px;
+min-width: 755px;
+margin: 0 auto;
+overflow: hidden;
+}
+
+.onecol, .twocol, .threecol, .fourcol, .fivecol, .sixcol, .sevencol, .eightcol, .ninecol, .tencol, .elevencol {
+margin-right: 3.8%;
+float: left;
+min-height: 1px;
+}
+
+.row .onecol {
+width: 4.85%;
+}
+
+.row .twocol {
+width: 13.45%;
+}
+
+.row .threecol {
+width: 22.05%;
+}
+
+.row .fourcol {
+width: 30.75%;
+}
+
+.row .fivecol {
+width: 39.45%;
+}
+
+.row .sixcol {
+width: 48%;
+}
+
+.row .sevencol {
+width: 56.75%;
+}
+
+.row .eightcol {
+width: 65.4%;
+}
+
+.row .ninecol {
+width: 74.05%;
+}
+
+.row .tencol {
+width: 82.7%;
+}
+
+.row .elevencol {
+width: 91.35%;
+}
+
+.row .twelvecol {
+width: 100%;
+float: left;
+}
+
+.last {
+margin-right: 0px;
+}
+
+img, object, embed {
+max-width: 100%;
+}
+
+img {
+	height: auto;
 }

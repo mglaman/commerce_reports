@@ -29,7 +29,7 @@ jQuery(document).ready(function() {
     }
     
     block.height(currentHeight);
-    //block.width(currentWidth);
+    block.width(currentWidth);
     
     block.find('.operations .switchSection').removeClass('activated');
     block.find('.operations .switchSection[data-section="' + selectedSection + '"]').addClass('activated');
