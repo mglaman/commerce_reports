@@ -5,9 +5,6 @@
  */
 function commerce_reports_help($path, $arg) {
   switch ($path) {
-    case 'admin/help#commerce_reports':
-      return 'hi!';
-      
     case 'admin/commerce/reports/products':
       return '<p>' . t('The table lists each product listed in the store, its amount sold and the revenue it produced.') . '</p>';
       

@@ -1,6 +1,26 @@
 <?php
 
 /**
+ * Implements hook_help().
+ */
+function commerce_reports_tax_help($path, $arg) {
+  switch ($path) {
+    case 'admin/commerce/reports/tax':
+      return '<p>' . t('The results of tax reports are saved to the database and can be retrieved for later viewing. Here you can create, manage and generate tax reports.') . '</p>';
+      
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function commerce_reports_tax_menu_alter(&$items) {
+  $items['admin/commerce/reports/tax']['title'] = 'Tax';
+  $items['admin/commerce/reports/tax']['type'] = MENU_LOCAL_TASK;
+  $items['admin/commerce/reports/tax']['weight'] = 50;
+}
+
+/**
  * Implements hook_views_api().
  */
 function commerce_reports_tax_views_api() {
