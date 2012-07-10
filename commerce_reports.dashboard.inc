@@ -147,8 +147,6 @@ function commerce_reports_dashboard() {
     ),
   );
   
-  dpm($render);
-  
   return $render;
 }
 
