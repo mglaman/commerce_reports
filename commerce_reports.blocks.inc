@@ -142,6 +142,7 @@ function commerce_reports_customer_map() {
   $query->addField('ca', 'commerce_customer_address_country', 'country');
   $query->groupBy('country')
     ->addExpression('COUNT(*)', 'count');
+  $query->condition('bundle', 'billing');
     
   $result = $query->execute();
   
