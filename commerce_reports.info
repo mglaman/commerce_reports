@@ -17,3 +17,5 @@ files[] = includes/views/commerce_reports_plugin_style_visualization.inc
 files[] = tests/commerce_reports.test
 
 stylesheets[all][] = commerce_reports.css
+
+configure = admin/commerce/config/reports
