@@ -98,6 +98,141 @@ class CommerceReportsBaseTestCase extends CommerceBaseTestCase {
     }
   }
   
+  protected function getTotal() {
+    $total = 0;
+    
+    foreach ($this->orders as $order) {
+      foreach ($order['products'] as $product_id => $quantity) {
+        $total += $quantity * $this->products[$product_id]->commerce_price['und'][0]['amount'];
+      }
+    }
+    
+    return $total;
+  }
+  
+}
+
+class CommerceReportsSalesOverviewTestCase extends CommerceReportsBaseTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Sales overview reports',
+      'description' => 'Test the sales overview reports.',
+      'group' => 'Drupal Commerce',
+    );
+  }
+  
+  protected function _test($data = array()) {
+    foreach ($data as $display => $information) {
+      $report = views_get_view_result('commerce_reports_sales_overview', $display);
+      $line = reset($report);
+      
+      foreach ($information as &$metric) {
+        if (empty($metric)) {
+          $metric = NULL;
+        }
+      }
+      
+      $this->assertEqual($information['count'], $line->commerce_line_item_field_data_commerce_line_items_quantity, t('The expected amount of orders is equal to the derived amount of orders.'));
+      $this->assertEqual($information['amount'], $line->commerce_line_item_field_data_commerce_line_items__field_dat, t('The expected total amount is equal to the derived total amount.'));
+      
+      debug($information);
+      debug($line);
+    }
+  }
+  
+  public function testTodayOverview() {
+    $this->createOrders(10, TRUE, array(time()));
+    
+    $total = $this->getTotal();
+    
+    $testData = array(
+      'today' => array(
+        'count' => 10,
+        'amount' => $total,
+      ),
+      'yesterday' => array(
+        'count' => 0,
+        'amount' => 0,
+      ),
+      'month' => array(
+        'count' => 10,
+        'amount' => $total,
+      ),
+    );
+    
+    $this->_test($testData);
+  }
+  
+  public function testYesterdayOverview() {
+    $this->createOrders(10, TRUE, array(time() - 86400));
+    
+    $total = $this->getTotal();
+    
+    $testData = array(
+      'today' => array(
+        'count' => 0,
+        'amount' => 0,
+      ),
+      'yesterday' => array(
+        'count' => 10,
+        'amount' => $total,
+      ),
+      'month' => array(
+        'count' => 10,
+        'amount' => $total,
+      ),
+    );
+    
+    $this->_test($testData);
+  }
+  
+  public function testMonthlyOverview() {
+    $this->createOrders(10, TRUE, array(time() - 3 * 86400, time() - 5 * 86400, time() - 15 * 86400, time() - 20 * 86400, time() - 30 * 86400));
+    
+    $total = $this->getTotal();
+    
+    $testData = array(
+      'today' => array(
+        'count' => 0,
+        'amount' => 0,
+      ),
+      'yesterday' => array(
+        'count' => 0,
+        'amount' => 0,
+      ),
+      'month' => array(
+        'count' => 10,
+        'amount' => $total,
+      ),
+    );
+    
+    $this->_test($testData);
+  }
+  
+  public function testOutsideOverviewScope() {
+    $this->createOrders(10, TRUE, array(time() - 31 * 86400));
+    
+    $total = $this->getTotal();
+    
+    $testData = array(
+      'today' => array(
+        'count' => 0,
+        'amount' => 0,
+      ),
+      'yesterday' => array(
+        'count' => 0,
+        'amount' => 0,
+      ),
+      'month' => array(
+        'count' => 0,
+        'amount' => 0,
+      ),
+    );
+    
+    $this->_test($testData);
+  }
+
 }
 
 class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
