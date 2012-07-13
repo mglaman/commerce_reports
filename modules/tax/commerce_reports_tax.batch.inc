@@ -26,10 +26,6 @@ function _commerce_reports_tax_create($report, &$context) {
 
 /**
  * Build the table of tax information.
- *
- * TODO You should be able to generate multiple reports, and it should be able to store these next to each other.
- * TODO All of these reports should be able to be generated with different parameters, like period and entity_type.
- * TODO Make actual use of the Batch API.
  */
 function _commerce_reports_tax_generate(&$context) {
   $report =& $context['results']['report'];
@@ -177,8 +173,8 @@ function _commerce_reports_tax_finished($success, $results, $operations) {
       }
     }
     
-    watchdog('commerce_reports_tax', print_r($results['orders'], true));
+    drupal_set_message(t('Successfully generated tax report.'));
   } else {
-    // TODO Destroy any data we might have generated.
+    drupal_set_message(t('There was a problem whilst generating the tax report. The information might be incomplete or erroneous.'));
   }
 }

@@ -13,7 +13,7 @@ function commerce_reports_tax_views_default_views() {
   $view->description = 'This view shows a cached tax report, the results below are not an up-to-date representation of the tax collected by your store. It is rather a snapshot of the situation when the report was last generated.';
   $view->tag = 'commerce_reports_tax';
   $view->base_table = 'commerce_reports_tax_rate_aggregate';
-  $view->human_name = 'Commerce Tax reports';
+  $view->human_name = 'Tax reports';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -29,6 +29,14 @@ function commerce_reports_tax_views_default_views() {
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['style_plugin'] = 'table';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['content'] = 'There\'s no tax information available.';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['empty']['area']['tokenize'] = 0;
   /* Field: Commerce Reports Tax Rate: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'commerce_reports_tax_rate';
@@ -378,7 +386,7 @@ function commerce_reports_tax_views_default_views() {
   $view->description = 'This view shows detailed information about tax reports. Each entry represents the amount of collected tax per order grouped by tax type.';
   $view->tag = 'commerce_reports_tax';
   $view->base_table = 'commerce_reports_tax_rate_orders';
-  $view->human_name = 'Commerce Orders Tax report';
+  $view->human_name = 'Tax reports (orders)';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -471,30 +479,25 @@ function commerce_reports_tax_views_default_views() {
   $handler->display->display_options['relationships']['order_id']['table'] = 'commerce_reports_tax_rate_orders';
   $handler->display->display_options['relationships']['order_id']['field'] = 'order_id';
   $handler->display->display_options['relationships']['order_id']['required'] = 0;
-  /* Field: Commerce Reports Tax Order: ID */
-  $handler->display->display_options['fields']['report_id']['id'] = 'report_id';
-  $handler->display->display_options['fields']['report_id']['table'] = 'commerce_reports_tax_rate_orders';
-  $handler->display->display_options['fields']['report_id']['field'] = 'report_id';
-  $handler->display->display_options['fields']['report_id']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['report_id']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['report_id']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['report_id']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['report_id']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['report_id']['element_label_colon'] = 0;
-  $handler->display->display_options['fields']['report_id']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['report_id']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['report_id']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['report_id']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['report_id']['format_plural'] = 0;
+  /* Field: Commerce Reports Tax Order: Order number */
+  $handler->display->display_options['fields']['order_number']['id'] = 'order_number';
+  $handler->display->display_options['fields']['order_number']['table'] = 'commerce_order';
+  $handler->display->display_options['fields']['order_number']['field'] = 'order_number';
+  $handler->display->display_options['fields']['order_number']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['order_number']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['order_number']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['order_number']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['order_number']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['order_number']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['order_number']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['order_number']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['order_number']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['order_number']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['order_number']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['order_number']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['order_number']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['order_number']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['order_number']['link_to_order'] = 'admin';
   /* Field: Commerce Reports Tax Rate: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'commerce_reports_tax_rate';
@@ -623,30 +626,6 @@ function commerce_reports_tax_views_default_views() {
   $handler->display->display_options['fields']['taxed']['hide_empty'] = 0;
   $handler->display->display_options['fields']['taxed']['empty_zero'] = 0;
   $handler->display->display_options['fields']['taxed']['hide_alter_empty'] = 1;
-  /* Field: Commerce Order: Link */
-  $handler->display->display_options['fields']['view_order']['id'] = 'view_order';
-  $handler->display->display_options['fields']['view_order']['table'] = 'commerce_order';
-  $handler->display->display_options['fields']['view_order']['field'] = 'view_order';
-  $handler->display->display_options['fields']['view_order']['relationship'] = 'order_id';
-  $handler->display->display_options['fields']['view_order']['label'] = '';
-  $handler->display->display_options['fields']['view_order']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['view_order']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['view_order']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['view_order']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['view_order']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['view_order']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['view_order']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['view_order']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['view_order']['hide_alter_empty'] = 1;
   /* Contextual filter: Commerce Reports Tax Order: ID */
   $handler->display->display_options['arguments']['report_id']['id'] = 'report_id';
   $handler->display->display_options['arguments']['report_id']['table'] = 'commerce_reports_tax_rate_orders';

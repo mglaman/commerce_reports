@@ -1,6 +1,6 @@
 name = Tax reports
-description = Generate tax reports.
-package = Commerce
+description = Implements tax reports and provides an interface for viewing and managing them.
+package = Commerce (reporting)
 dependencies[] = commerce_price
 dependencies[] = commerce_tax
 dependencies[] = entity
@@ -19,3 +19,5 @@ files[] = commerce_reports_tax.module
 files[] = commerce_reports_tax.batch.inc
 files[] = commerce_reports_tax.views.inc
 files[] = commerce_reports_tax.views.default.inc
+
+configure = admin/commerce/reports/tax
