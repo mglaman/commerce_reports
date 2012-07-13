@@ -1,6 +1,6 @@
 name = Reports
-description = Reporting module for Drupal Commerce.
-package = Commerce
+description = Provides reporting for sales, products, customers and payment gateways.
+package = Commerce (reporting)
 dependencies[] = commerce
 core = 7.x
 
