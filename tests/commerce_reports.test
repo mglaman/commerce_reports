@@ -133,15 +133,18 @@ class CommerceReportsSalesOverviewTestCase extends CommerceReportsBaseTestCase {
         }
       }
       
-      $this->assertEqual($information['count'], $line->commerce_line_item_field_data_commerce_line_items_quantity, t('The expected amount of orders is equal to the derived amount of orders.'));
-      $this->assertEqual($information['amount'], $line->commerce_line_item_field_data_commerce_line_items__field_dat, t('The expected total amount is equal to the derived total amount.'));
+      $sales = $line->order_id;
+      if ($sales == 0) {
+        $sales = NULL;
+      }
       
-      debug($information);
-      debug($line);
+      $this->assertEqual($information['count'], $sales, t('The expected amount of orders is equal to the derived amount of orders.'));
+      $this->assertEqual($information['amount'], $line->field_data_commerce_order_total_commerce_order_total_amount, t('The expected total amount is equal to the derived total amount.'));
     }
   }
   
   public function testTodayOverview() {
+    $this->createCustomers(2);
     $this->createOrders(10, TRUE, array(time()));
     
     $total = $this->getTotal();
@@ -165,6 +168,7 @@ class CommerceReportsSalesOverviewTestCase extends CommerceReportsBaseTestCase {
   }
   
   public function testYesterdayOverview() {
+    $this->createCustomers(2);
     $this->createOrders(10, TRUE, array(time() - 86400));
     
     $total = $this->getTotal();
@@ -188,6 +192,7 @@ class CommerceReportsSalesOverviewTestCase extends CommerceReportsBaseTestCase {
   }
   
   public function testMonthlyOverview() {
+    $this->createCustomers(2);
     $this->createOrders(10, TRUE, array(time() - 3 * 86400, time() - 5 * 86400, time() - 15 * 86400, time() - 20 * 86400, time() - 30 * 86400));
     
     $total = $this->getTotal();
@@ -211,6 +216,7 @@ class CommerceReportsSalesOverviewTestCase extends CommerceReportsBaseTestCase {
   }
   
   public function testOutsideOverviewScope() {
+    $this->createCustomers(2);
     $this->createOrders(10, TRUE, array(time() - 31 * 86400));
     
     $total = $this->getTotal();
