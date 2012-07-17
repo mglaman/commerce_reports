@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * Implements hook_help().
+ */
+function commerce_reports_patterns_help($path, $arg) {
+  switch ($path) {
+    case 'admin/commerce/reports/patterns':
+      return '<p>' . t('Association rules are if/then statements that help uncover relationships between seemingly unrelated data in a relational database or other information repository. An example of an association rule would be "If a customer buys a dozen eggs, he is 80% likely to also purchase milk."') . '</p>';
+      
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_reports_patterns_menu() {
+  $items = array();
+  
+  $items['admin/commerce/reports/patterns'] = array(
+    'title' => 'Patterns',
+    'description' => 'Discover frequent patterns for your store.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('commerce_reports_patterns_form'),
+    'access arguments' => array('access commerce reports patterns'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 100,
+  );
+  
+  return $items;
+}
+
+function commerce_reports_patterns_form($form, &$form_state) {
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Generate'),
+  );
+  
+  return $form;
+}
+
+function commerce_reports_patterns_form_submit($form, &$form_state) {
+  // Implement.
+}
