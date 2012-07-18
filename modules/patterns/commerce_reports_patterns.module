@@ -31,6 +31,12 @@ function commerce_reports_patterns_menu() {
 }
 
 function commerce_reports_patterns_form($form, &$form_state) {
+  $form['min_support'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Minimum support'),
+    '#description' => t('The minimum support should be a decimal between 0 and 1 that indicates what the minimum relative amount of transactions an item set requires to be frequent.'),
+    '#size' => 6,
+  );
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Generate'),
@@ -39,14 +45,22 @@ function commerce_reports_patterns_form($form, &$form_state) {
   return $form;
 }
 
+function commerce_reports_patterns_form_validate($form, &$form_state) {
+  $min_support = (float) $form_state['values']['min_support'];
+  
+  if (($min_support <= 0) || ($min_support >= 1)) {
+    form_set_error('min_support', t('The minimum support should be a value between 0 and 1.'));
+  }
+}
+
 function commerce_reports_patterns_form_submit($form, &$form_state) {
-  $min_support = 8;
+  $min_support = (float) $form_state['values']['min_support'];
   
   $batch = array(
     'title' => t('Generating frequent itemsets'),
     'operations' => array(
-      array('commerce_reports_patterns_tidlist', array($min_support)),
-      array('commerce_reports_patterns_mine', array($min_support)),
+      array('commerce_reports_patterns_load', array($min_support)),
+      array('commerce_reports_patterns_mine', array()),
     ),
     'finished' => 'commerce_reports_patterns_finished',
     'file' => drupal_get_path('module', 'commerce_reports_patterns') . '/commerce_reports_patterns.batch.inc',
