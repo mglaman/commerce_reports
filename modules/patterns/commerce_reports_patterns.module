@@ -40,5 +40,17 @@ function commerce_reports_patterns_form($form, &$form_state) {
 }
 
 function commerce_reports_patterns_form_submit($form, &$form_state) {
-  // Implement.
+  $min_support = 8;
+  
+  $batch = array(
+    'title' => t('Generating frequent itemsets'),
+    'operations' => array(
+      array('commerce_reports_patterns_tidlist', array($min_support)),
+      array('commerce_reports_patterns_mine', array($min_support)),
+    ),
+    'finished' => 'commerce_reports_patterns_finished',
+    'file' => drupal_get_path('module', 'commerce_reports_patterns') . '/commerce_reports_patterns.batch.inc',
+  );
+  
+  batch_set($batch);
 }
