@@ -634,6 +634,14 @@ function commerce_reports_views_default_views() {
     'pending' => 'pending',
     'completed' => 'completed',
   );
+  /* Filter criterion: Commerce Line Item: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'commerce_line_item';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['relationship'] = 'commerce_line_items_line_item_id';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'product' => 'product',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -673,6 +681,14 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
+  /* Filter criterion: Commerce Line Item: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'commerce_line_item';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['relationship'] = 'commerce_line_items_line_item_id';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'product' => 'product',
+  );
   
   /**
    * Integration with commerce_reports_visualization.
