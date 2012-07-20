@@ -26,7 +26,7 @@
     foreach ($block['sections'] as $name => $render) {
       if (($name != '#children') && ($name != '#printed')) {
         $attributes = array(
-          'class' => array('section', 'section-' . $name),
+          'class' => array('commerce-reports-dashboard-section', 'commerce-reports-dashboard-section-' . $name),
           'data-section' => $name,
           'style' => '',
         );

@@ -6,8 +6,8 @@ jQuery(document).ready(function() {
     var currentHeight = block.height();
     var currentWidth = block.width();
     
-    var currentlyActive = block.find('.section:visible');
-    var nextActive = block.find('.section[data-section=\'' + selectedSection + '\']');
+    var currentlyActive = block.find('.commerce-reports-dashboard-section:visible');
+    var nextActive = block.find('.commerce-reports-dashboard-section[data-section=\'' + selectedSection + '\']');
     
     if ((currentlyActive && nextActive) && (currentlyActive[0] !=nextActive[0])) {
       var chartContainer = nextActive.find('.commerce_reports-chart');
