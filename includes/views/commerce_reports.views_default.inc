@@ -280,6 +280,43 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['defaults']['header'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Commerce Line Item: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'commerce_line_item';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'product' => 'product',
+  );
+  /* Filter criterion: Commerce Order: Order state */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['relationship'] = 'order_id';
+  $handler->display->display_options['filters']['state']['value'] = array(
+    'pending' => 'pending',
+    'completed' => 'completed',
+  );
+  /* Filter criterion: Commerce Product: SKU */
+  $handler->display->display_options['filters']['sku']['id'] = 'sku';
+  $handler->display->display_options['filters']['sku']['table'] = 'commerce_product';
+  $handler->display->display_options['filters']['sku']['field'] = 'sku';
+  $handler->display->display_options['filters']['sku']['relationship'] = 'commerce_product_product_id';
+  $handler->display->display_options['filters']['sku']['operator'] = 'word';
+  $handler->display->display_options['filters']['sku']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['sku']['expose']['operator_id'] = 'sku_op';
+  $handler->display->display_options['filters']['sku']['expose']['label'] = 'Search products (SKU)';
+  $handler->display->display_options['filters']['sku']['expose']['operator'] = 'sku_op';
+  $handler->display->display_options['filters']['sku']['expose']['identifier'] = 'sku';
+  $handler->display->display_options['filters']['sku']['expose']['required'] = 0;
+  $handler->display->display_options['filters']['sku']['expose']['multiple'] = FALSE;
+  $handler->display->display_options['path'] = 'admin/commerce/reports/products';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Products';
+  $handler->display->display_options['menu']['description'] = 'View product reports.';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'management';
+  $handler->display->display_options['menu']['context'] = 0;
   
   /**
    * Integration with commerce_reports_visualization.
