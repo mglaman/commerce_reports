@@ -110,6 +110,74 @@ class CommerceReportsBaseTestCase extends CommerceBaseTestCase {
     return $total;
   }
   
+  /**
+   * Helper function to get different combinations of permission sets.
+   *
+   * @param $set
+   *  Can be a single string (from the following) or can be an array containing
+   *  multiple values that should be merged:
+   *    'site admin': Admin permissions for Drupal core modules
+   *    'store admin': All commerce "administer X" permissions
+   */
+  protected function permissionBuilder($sets) {
+    if (is_string($sets)) {
+      $sets = array($sets);
+    }
+    $store_admin = array(
+      'access commerce reports',
+    );
+    
+    $final_permissions = parent::permissionBuilder($sets);
+    
+    foreach ($sets as $set) {
+      switch ($set) {
+        case 'store admin':
+          $final_permissions = array_unique(array_merge($final_permissions, $store_admin));
+          break;
+      }
+    }
+    
+    return $final_permissions;
+  }
+  
+}
+
+class CommerceReportsUITestCase extends CommerceReportsBaseTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Reports user interface',
+      'description' => 'Test the reports user interface.',
+      'group' => 'Drupal Commerce',
+    );
+  }
+  
+  protected function _getLinks($label) {
+    $links = $this->xpath('//a[normalize-space(text())=:label]', array(':label' => $label));
+    
+    return $links;
+  }
+  
+  public function testMenuIntegration() {
+    $admin = $this->createUserWithPermissionHelper(array('site admin', 'store admin'));
+    $this->drupalLogin($admin);
+    
+    $this->drupalGet('admin');
+    $links = $this->_getLinks(t('Reports'));
+    $this->assertEqual(count($links), 1, t("The correct amount of menu entries to 'Reports' was found on the administration page."));
+    $attributes = reset($links)->attributes();
+    $this->assertEqual($attributes['href'], '/?q=admin/reports', t('The menu entry points to the correct page.'));
+    
+    $this->drupalGet('admin/commerce');
+    $links = $this->_getLinks(t('Reports'));
+    $this->assertEqual(count($links), 1, t("The correct amount of menu entries to 'Reports' was found on the store administration page."));
+    $attributes = reset($links)->attributes();
+    $this->assertEqual($attributes['href'], '/?q=admin/commerce/reports', t('The menu entry points to the correct page.'));
+    
+    $this->drupalGet('admin/commerce/reports');
+    $this->assertResponse(200, t('Reports admin can access reports.'));
+  }
+  
 }
 
 class CommerceReportsSalesOverviewTestCase extends CommerceReportsBaseTestCase {
