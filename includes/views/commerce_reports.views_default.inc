@@ -1158,7 +1158,7 @@ function commerce_reports_views_default_views() {
   // Date field: set period to one year and group monthly
   $handler->display->display_options['defaults']['fields'] = FALSE;
   
-  $handler->display->display_options['fields']['sales_data']['default_period'] = 'P12M';
+  $handler->display->display_options['fields']['sales_data']['default_period'] = '31556926';
   $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m';
   
   /**
@@ -1194,7 +1194,7 @@ function commerce_reports_views_default_views() {
   
   $handler->display->display_options['defaults']['fields'] = FALSE;
   
-  $handler->display->display_options['fields']['sales_data']['default_period'] = 'P1M';
+  $handler->display->display_options['fields']['sales_data']['default_period'] = '2592000';
   $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
   
   /**
@@ -1230,7 +1230,7 @@ function commerce_reports_views_default_views() {
   
   $handler->display->display_options['defaults']['fields'] = FALSE;
   
-  $handler->display->display_options['fields']['sales_data']['default_period'] = 'P7D';
+  $handler->display->display_options['fields']['sales_data']['default_period'] = '604800';
   $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
   
   /**
