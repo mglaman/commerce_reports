@@ -3,21 +3,21 @@
 class commerce_reports_handler_field_date extends views_handler_field {
 
   var $granularities = array(
-  	'Y-m' => array(
-  	  'label' => 'Monthly',
-  	  'interval' => 'P1M',
-  	  'relative' => 'first day of this month',
-  	  'displayFormat' => 'F Y',
-  	),
-  	'o-W' => array(
-  	  'label' => 'Weekly',
-  	  'interval' => 'P1W',
-  	  'relative' => 'this week'
-  	),
-  	'Y-m-d' => array(
-  	  'label' => 'Daily',
-  	  'interval' => 'P1D',
-  	),
+    'Y-m' => array(
+      'label' => 'Monthly',
+      'interval' => 'P1M',
+      'relative' => 'first day of this month',
+      'displayFormat' => 'F Y',
+    ),
+    'o-W' => array(
+      'label' => 'Weekly',
+      'interval' => 'P1W',
+      'relative' => 'this week'
+    ),
+    'Y-m-d' => array(
+      'label' => 'Daily',
+      'interval' => 'P1D',
+    ),
   );
 
   function option_definition() {
@@ -169,18 +169,18 @@ class commerce_reports_handler_field_date extends views_handler_field {
   
   function pre_query() {
     // If no endDate is set, set it to today.
-	  if (empty($this->endDate)) {
-	    $this->endDate = new DateTime();
-	    $this->toFirstDay($this->endDate);
-	    
-	    $this->endDate->add($this->getInterval());
-	  }
-	  
-	  // If no startDate is set, set it to the end date minus the default period.
-	  if (empty($this->startDate)) {
-	    $this->startDate = clone $this->endDate;
-	    $this->startDate->sub(new DateInterval($this->options['default_period']));
-	  }
+    if (empty($this->endDate)) {
+      $this->endDate = new DateTime();
+      $this->toFirstDay($this->endDate);
+      
+      $this->endDate->add($this->getInterval());
+    }
+    
+    // If no startDate is set, set it to the end date minus the default period.
+    if (empty($this->startDate)) {
+      $this->startDate = clone $this->endDate;
+      $this->startDate->sub(new DateInterval($this->options['default_period']));
+    }
   }
 
   /**
@@ -223,13 +223,13 @@ class commerce_reports_handler_field_date extends views_handler_field {
    */
   function post_execute(&$values) {
     foreach ($values as &$record) {
-	    $timestamp = new DateTime();
+      $timestamp = new DateTime();
       $timestamp->setTimestamp($record->{$this->field_alias});
       $this->toFirstDay($timestamp);
       
       $record->{$this->field_alias} = $timestamp;
-	  }
-	  
+    }
+    
     // Determine order direction.
     foreach ($this->query->orderby as $order) {
       if ($order['field'] == $this->field_alias) {
@@ -243,86 +243,86 @@ class commerce_reports_handler_field_date extends views_handler_field {
       return;
     }
     
-  	$retrieved = $values;
-  	$values = array();
-  	
-  	// Create the interval using the chosen granularity. 
-	  $interval = $this->getInterval();
-  	
-  	// First see if the returned data contains the requested date interval.
-  	// If not, add these boundaries and let the interpolation logic do the rest.
-  	if (count($retrieved)) {
-	    if ($descending) {
-	      $firstDate = end($retrieved)->{$this->field_alias};
-	      $lastDate = reset($retrieved)->{$this->field_alias};
-	    } else {
-	      $firstDate = reset($retrieved)->{$this->field_alias};
-	      $lastDate = end($retrieved)->{$this->field_alias};
-	    }
-	  }
-  	
-  	// Check if end date is included.
-  	if (empty($lastDate) || ($lastDate < $this->endDate)) {  	  
-  	  $value = (object) array($this->field_alias => clone $this->endDate);
-  	  
-  	  if ($descending) {
+    $retrieved = $values;
+    $values = array();
+    
+    // Create the interval using the chosen granularity. 
+    $interval = $this->getInterval();
+    
+    // First see if the returned data contains the requested date interval.
+    // If not, add these boundaries and let the interpolation logic do the rest.
+    if (count($retrieved)) {
+      if ($descending) {
+        $firstDate = end($retrieved)->{$this->field_alias};
+        $lastDate = reset($retrieved)->{$this->field_alias};
+      } else {
+        $firstDate = reset($retrieved)->{$this->field_alias};
+        $lastDate = end($retrieved)->{$this->field_alias};
+      }
+    }
+    
+    // Check if end date is included.
+    if (empty($lastDate) || ($lastDate < $this->endDate)) {      
+      $value = (object) array($this->field_alias => clone $this->endDate);
+      
+      if ($descending) {
         $totalRetrieved = array_unshift($retrieved, $value);
       } else {
         $totalRetrieved = array_push($retrieved, $value);
       }
-  	}
-  	
-  	// Check if start date is included.
-  	if (empty($firstDate) || ($firstDate > $this->startDate)) {
-  	  $value = (object) array($this->field_alias => $this->startDate);
-  	  
-  	  if ($descending) {
+    }
+    
+    // Check if start date is included.
+    if (empty($firstDate) || ($firstDate > $this->startDate)) {
+      $value = (object) array($this->field_alias => $this->startDate);
+      
+      if ($descending) {
         $totalRetrieved = array_push($retrieved, $value);
       } else {
         $totalRetrieved = array_unshift($retrieved, $value);
       }
-  	}
-  	
-  	// Note that we loop backwards through the array of results.
-  	for ($i = $totalRetrieved - 1; $i >= 0; $i --) {
-  		$item = $retrieved[$i];
-  		$values[] = $item;
-  		
-  		// We always interpolate between two dates. If we have arrived at the start of the array,
-  		// interpolation isn't necessary anymore.
-  		if ($i != 0) {
-  		  $nextItem = $retrieved[$i - 1];
-  		  
-    		// In PHP, objects are passed by reference. We clone the current timestamp to use 
-    		// it in the interpolation algorithm.
-    		if ($descending) {
-    		  $current = clone $item->{$this->field_alias};
+    }
+    
+    // Note that we loop backwards through the array of results.
+    for ($i = $totalRetrieved - 1; $i >= 0; $i --) {
+      $item = $retrieved[$i];
+      $values[] = $item;
+      
+      // We always interpolate between two dates. If we have arrived at the start of the array,
+      // interpolation isn't necessary anymore.
+      if ($i != 0) {
+        $nextItem = $retrieved[$i - 1];
+        
+        // In PHP, objects are passed by reference. We clone the current timestamp to use 
+        // it in the interpolation algorithm.
+        if ($descending) {
+          $current = clone $item->{$this->field_alias};
           $next = clone $nextItem->{$this->field_alias};
-    		} else {
-    		  $next = clone $item->{$this->field_alias};
+        } else {
+          $next = clone $item->{$this->field_alias};
           $current = clone $nextItem->{$this->field_alias};
-    		}
+        }
 
-	  		// DatePeriod includes the starting date, but not the ending date.
-	  		// Add one interval to avoid double date entries. This is why we clone the timestamp.
-	  		$current->add($interval);
-	  		
-	  		// Linear interpolation between the two dates.
-		  	$period = new DatePeriod($current, $interval, $next);
+        // DatePeriod includes the starting date, but not the ending date.
+        // Add one interval to avoid double date entries. This is why we clone the timestamp.
+        $current->add($interval);
+        
+        // Linear interpolation between the two dates.
+        $period = new DatePeriod($current, $interval, $next);
 
         $interpolated = array();
-		  	foreach ($period as $dt) {
-		  		$value = (object) array($this->field_alias => $dt);
-		  		
-		  		$interpolated[] = $value;
-		  	}
-		  	
-		  	if ($descending) {
-		  	  $values = array_merge($values, ($interpolated));
-		  	} else {
-		  	  $values = array_merge($values, array_reverse($interpolated));
-		  	}
-	  	}
-  	}
+        foreach ($period as $dt) {
+          $value = (object) array($this->field_alias => $dt);
+          
+          $interpolated[] = $value;
+        }
+        
+        if ($descending) {
+          $values = array_merge($values, ($interpolated));
+        } else {
+          $values = array_merge($values, array_reverse($interpolated));
+        }
+      }
+    }
   }
 }
