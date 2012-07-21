@@ -5,18 +5,18 @@ class commerce_reports_handler_field_date extends views_handler_field {
   var $granularities = array(
     'Y-m' => array(
       'label' => 'Monthly',
-      'interval' => 'P1M',
+      'interval' => 2764800,
       'relative' => 'first day of this month',
       'displayFormat' => 'F Y',
     ),
     'o-W' => array(
       'label' => 'Weekly',
-      'interval' => 'P1W',
+      'interval' => 604800,
       'relative' => 'this week'
     ),
     'Y-m-d' => array(
       'label' => 'Daily',
-      'interval' => 'P1D',
+      'interval' => 86400,
     ),
   );
 
@@ -32,7 +32,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     );
     
     $options['default_period'] = array(
-      'default' => 'P1M',
+      'default' => '2592000',
     );
     
     return $options;
@@ -85,10 +85,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
     }
     
     if (is_array($input['startDate']) && is_array($input['endDate'])) {
-      $now = new DateTime();
-      
-      $start = commerce_reports_datetime_form($input['startDate']);
-      $end = commerce_reports_datetime_form($input['endDate']);
+      $start = mktime(0, 0, 0, $input['startDate']['month'], $input['startDate']['day'], $input['startDate']['year']);
+      $end = mktime(0, 0, 0, $input['endDate']['month'], $input['endDate']['day'], $input['endDate']['year']);
     } else {
       return FALSE;
     }
@@ -100,18 +98,20 @@ class commerce_reports_handler_field_date extends views_handler_field {
       return FALSE;
     }
     
-    $this->toFirstDay($this->startDate);
-    $this->toFirstDay($this->endDate);
+    $this->startDate = $this->convertTimestamp($this->startDate);
+    $this->endDate = $this->convertTimestamp($this->endDate);
     
     return TRUE;
   }
   
-  function toFirstDay(DateTime $dt) {
-    $dt->setTime(0, 1);
+  function convertTimestamp($timestamp) {
+    $timestamp = strtotime('today', $timestamp);
     
     if (!empty($this->granularities[$this->getFormat()]['relative'])) {
-      $dt->modify($this->granularities[$this->getFormat()]['relative']);
+      $timestamp = strtotime($this->granularities[$this->getFormat()]['relative'] , $timestamp);
     }
+    
+    return $timestamp;
   }
   
   function options_form(&$form, &$form_state) {
@@ -134,9 +134,9 @@ class commerce_reports_handler_field_date extends views_handler_field {
       '#type' => 'select',
       '#title' => t('Default time period'),
       '#options' => array(
-        'P7D' => t('One week'),
-        'P1M' => t('One month'),
-        'P12M' => t('One year'),
+        '604800' => t('One week'),
+        '2592000' => t('One month'),
+        '31556926' => t('One year'),
       ),
     );
   }
@@ -164,22 +164,21 @@ class commerce_reports_handler_field_date extends views_handler_field {
   }
   
   function getInterval() {
-    return new DateInterval($this->granularities[$this->getFormat()]['interval']);
+    return $this->granularities[$this->getFormat()]['interval'];
   }
   
+  /**
+   * Makes sure a start and end date are set
+   */
   function pre_query() {
     // If no endDate is set, set it to today.
     if (empty($this->endDate)) {
-      $this->endDate = new DateTime();
-      $this->toFirstDay($this->endDate);
-      
-      $this->endDate->add($this->getInterval());
+      $this->endDate = $this->convertTimestamp(time()) + $this->getInterval();
     }
     
     // If no startDate is set, set it to the end date minus the default period.
     if (empty($this->startDate)) {
-      $this->startDate = clone $this->endDate;
-      $this->startDate->sub(new DateInterval($this->options['default_period']));
+      $this->startDate = $this->endDate - $this->options['default_period'];
     }
   }
 
@@ -200,20 +199,20 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $field_name = views_date_sql_format($this->getFormat(), $this->table_alias.'.'.$this->real_field);
     $this->query->add_groupby($field_name);
     
-    $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate->getTimestamp()} AND {$this->endDate->getTimestamp()}");
+    $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate} AND {$this->endDate}");
 
     $this->add_additional_fields();
   }
   
   function render($values) {
-    $dt = $this->get_value($values);
+    $timestamp = $this->get_value($values);
     
     $format = $this->getFormat();
     if (!empty($this->granularities[$format]['displayFormat'])) {
       $format = $this->granularities[$format]['displayFormat'];
     }
     
-    $value = format_date($dt->getTimestamp(), 'custom', $format);
+    $value = format_date($timestamp, 'custom', $format);
     
     return $this->sanitize_value($value);
   }
@@ -223,11 +222,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
    */
   function post_execute(&$values) {
     foreach ($values as &$record) {
-      $timestamp = new DateTime();
-      $timestamp->setTimestamp($record->{$this->field_alias});
-      $this->toFirstDay($timestamp);
-      
-      $record->{$this->field_alias} = $timestamp;
+      $record->{$this->field_alias} = $this->convertTimestamp($record->{$this->field_alias});
     }
     
     // Determine order direction.
@@ -243,11 +238,10 @@ class commerce_reports_handler_field_date extends views_handler_field {
       return;
     }
     
+    $interval = $this->getInterval();
+    
     $retrieved = $values;
     $values = array();
-    
-    // Create the interval using the chosen granularity. 
-    $interval = $this->getInterval();
     
     // First see if the returned data contains the requested date interval.
     // If not, add these boundaries and let the interpolation logic do the rest.
@@ -263,7 +257,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     
     // Check if end date is included.
     if (empty($lastDate) || ($lastDate < $this->endDate)) {      
-      $value = (object) array($this->field_alias => clone $this->endDate);
+      $value = (object) array($this->field_alias => $this->endDate);
       
       if ($descending) {
         $totalRetrieved = array_unshift($retrieved, $value);
@@ -293,26 +287,17 @@ class commerce_reports_handler_field_date extends views_handler_field {
       if ($i != 0) {
         $nextItem = $retrieved[$i - 1];
         
-        // In PHP, objects are passed by reference. We clone the current timestamp to use 
-        // it in the interpolation algorithm.
         if ($descending) {
-          $current = clone $item->{$this->field_alias};
-          $next = clone $nextItem->{$this->field_alias};
+          $current = $item->{$this->field_alias};
+          $next = $nextItem->{$this->field_alias};
         } else {
-          $next = clone $item->{$this->field_alias};
-          $current = clone $nextItem->{$this->field_alias};
+          $next = $item->{$this->field_alias};
+          $current = $nextItem->{$this->field_alias};
         }
 
-        // DatePeriod includes the starting date, but not the ending date.
-        // Add one interval to avoid double date entries. This is why we clone the timestamp.
-        $current->add($interval);
-        
-        // Linear interpolation between the two dates.
-        $period = new DatePeriod($current, $interval, $next);
-
         $interpolated = array();
-        foreach ($period as $dt) {
-          $value = (object) array($this->field_alias => $dt);
+        for ($timestamp = $current + $interval; $timestamp < $next; $timestamp += $interval) {
+          $value = (object) array($this->field_alias => $timestamp);
           
           $interpolated[] = $value;
         }

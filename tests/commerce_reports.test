@@ -337,7 +337,7 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
     $possibleDates = array();
     
     foreach ($report as $line) {
-      $possibleDates[] = $line->commerce_order_created_granularity->getTimestamp();
+      $possibleDates[] = $line->commerce_order_created_granularity;
     }
     
     return $possibleDates;
@@ -365,18 +365,18 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
     $report = views_get_view_result('commerce_reports_sales', 'default');
     
     foreach ($report as $line) {
-      $created = $line->commerce_order_created_granularity->getTimestamp();
+      $created = $line->commerce_order_created_granularity;
       
       if (empty($sales[$created])) {
         $this->assertTrue(empty($line->order_id) && empty($line->field_data_commerce_order_total_commerce_order_total_amount) && empty($line->field_data_commerce_order_total_commerce_order_total_amount_1), t('There was no unintented activity.'));
       } else {
         $orders = $sales[$created]['orders'];
         $revenue = $sales[$created]['revenue'];
-        $average = floor($revenue / $orders);
+        $average = (int) floor($revenue / $orders);
         
         $this->assertEqual($line->order_id, $orders, t('The right amount of orders was reported.'));
         $this->assertEqual($line->field_data_commerce_order_total_commerce_order_total_amount, $revenue, t('The right amount of revenue was reported.'));
-        $this->assertEqual(floor((int) $line->field_data_commerce_order_total_commerce_order_total_amount_1), $average, t('The right average of revenue was reported.'));
+        $this->assertEqual((int) floor($line->field_data_commerce_order_total_commerce_order_total_amount_1), $average, t('The right average of revenue was reported.'));
       }
     }
   }

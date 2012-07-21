@@ -64,13 +64,3 @@ function commerce_reports_views_data_alter(&$data) {
     ),
   );
 }
-
-function commerce_reports_datetime_form($date) {
-  $dt = new DateTime();
-  $timestamp = mktime(0, 0, 0, $date['month'], $date['day'], $date['year']);
-  
-  $dt->setTimestamp($timestamp);
-  
-  return $dt;
-}
-
