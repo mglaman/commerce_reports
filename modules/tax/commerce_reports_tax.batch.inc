@@ -40,8 +40,6 @@ function _commerce_reports_tax_generate(&$context) {
       ->execute();
   }
   
-  watchdog('commerce_reports_tax', print_r($context['sandbox'], true));
-  
   $rates =& $context['results']['rates'];
   $query = clone $context['results']['query'];
 
@@ -175,6 +173,6 @@ function _commerce_reports_tax_finished($success, $results, $operations) {
     
     drupal_set_message(t('Successfully generated tax report.'));
   } else {
-    drupal_set_message(t('There was a problem whilst generating the tax report. The information might be incomplete or erroneous.'));
+    drupal_set_message(t('There was a problem whilst generating the tax report. The information might be incomplete or erroneous.'), 'error');
   }
 }

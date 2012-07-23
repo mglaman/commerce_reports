@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Views field handler for the created date on orders.
+ *
+ * Provides decent sorting, granularity and interpolation for missing dates.
+ */
 
 class commerce_reports_handler_field_date extends views_handler_field {
 
@@ -80,21 +86,24 @@ class commerce_reports_handler_field_date extends views_handler_field {
     
     if (!empty($input['granularity']) && in_array($input['granularity'], array_keys($this->options()))) {
       $this->granularity = $input['granularity'];
-    } else{
+    }
+    else {
       return FALSE;
     }
     
     if (is_array($input['startDate']) && is_array($input['endDate'])) {
       $start = mktime(0, 0, 0, $input['startDate']['month'], $input['startDate']['day'], $input['startDate']['year']);
       $end = mktime(0, 0, 0, $input['endDate']['month'], $input['endDate']['day'], $input['endDate']['year']);
-    } else {
+    }
+    else {
       return FALSE;
     }
     
     if ($end > $start) {
       $this->startDate = $start;
       $this->endDate = $end;
-    } else {
+    }
+    else {
       return FALSE;
     }
     
@@ -196,7 +205,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     
     // We group by the field using a SQL function to transform the timestamp to certain formats.
     // This way the database does the aggregation for us.
-    $field_name = views_date_sql_format($this->getFormat(), $this->table_alias.'.'.$this->real_field);
+    $field_name = views_date_sql_format($this->getFormat(), $this->table_alias . '.' . $this->real_field);
     $this->query->add_groupby($field_name);
     
     $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate} AND {$this->endDate}");
@@ -249,7 +258,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
       if ($descending) {
         $firstDate = end($retrieved)->{$this->field_alias};
         $lastDate = reset($retrieved)->{$this->field_alias};
-      } else {
+      }
+      else {
         $firstDate = reset($retrieved)->{$this->field_alias};
         $lastDate = end($retrieved)->{$this->field_alias};
       }
@@ -261,7 +271,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
       
       if ($descending) {
         $totalRetrieved = array_unshift($retrieved, $value);
-      } else {
+      }
+      else {
         $totalRetrieved = array_push($retrieved, $value);
       }
     }
@@ -272,7 +283,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
       
       if ($descending) {
         $totalRetrieved = array_push($retrieved, $value);
-      } else {
+      }
+      else {
         $totalRetrieved = array_unshift($retrieved, $value);
       }
     }
@@ -290,7 +302,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
         if ($descending) {
           $current = $item->{$this->field_alias};
           $next = $nextItem->{$this->field_alias};
-        } else {
+        }
+        else {
           $next = $item->{$this->field_alias};
           $current = $nextItem->{$this->field_alias};
         }
@@ -304,7 +317,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
         
         if ($descending) {
           $values = array_merge($values, ($interpolated));
-        } else {
+        }
+        else {
           $values = array_merge($values, array_reverse($interpolated));
         }
       }

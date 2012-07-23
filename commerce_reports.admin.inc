@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Settings form.
+ */
 
 function commerce_reports_settings_form($form, &$form_state) {
   module_load_include('inc', 'commerce_reports', 'commerce_reports.visualization');

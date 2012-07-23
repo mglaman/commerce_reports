@@ -369,7 +369,8 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
       
       if (empty($sales[$created])) {
         $this->assertTrue(empty($line->order_id) && empty($line->field_data_commerce_order_total_commerce_order_total_amount) && empty($line->field_data_commerce_order_total_commerce_order_total_amount_1), t('There was no unintented activity.'));
-      } else {
+      }
+      else {
         $orders = $sales[$created]['orders'];
         $revenue = $sales[$created]['revenue'];
         $average = (int) floor($revenue / $orders);

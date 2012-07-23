@@ -1,12 +1,16 @@
 <?php
+/**
+ * @file
+ * Default views.
+ */
 
 /**
  * Views for commerce orders for report displays.
  */
  
-function commerce_reports_visualization_display($view, $name, $title, $type = 'block', $baseDisplay = 'default') {
+function commerce_reports_visualization_display($view, $name, $title, $type = 'block', $base_display = 'default') {
   // Retrieve our base display
-  $default = $view->display[$baseDisplay];
+  $default = $view->display[$base_display];
   
   // Add the display
   $handler = $view->new_display($type, $title, $name);

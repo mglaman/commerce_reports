@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * The helper functions for the visualization part of the module.
+ */
 
 function commerce_reports_library($type = FALSE) {
   $libraries = commerce_reports_visualization();
@@ -7,7 +11,8 @@ function commerce_reports_library($type = FALSE) {
   if (!empty($libraries[$library]) && !empty($libraries[$library]['enabled']) && 
     !empty($libraries[$library]['callback']) && (!empty($type) && in_array($type, $libraries[$library]['types']))) {
     return $libraries[$library];
-  } else {
+  }
+  else {
     return reset($libraries);
   }
 }

@@ -1,7 +1,11 @@
 <?php
+/**
+ * @file
+ * Dashboard for reporting module.
+ */
 
 function commerce_reports_dashboard() {
-  drupal_add_js(drupal_get_path('module', 'commerce_reports') .'/js/dashboard.js', 'file');
+  drupal_add_js(drupal_get_path('module', 'commerce_reports') . '/js/dashboard.js', 'file');
   
   $render = array(
     array(
@@ -159,7 +163,7 @@ function commerce_reports_sales_dashboard_block($name, $options = array()) {
     '#width' => !empty($options['width']) ? $options['width'] : NULL,
   );
   
-  $sectionLinks = array();
+  $section_links = array();
   $first = reset(array_keys($options['sections']));
   
   foreach ($options['sections'] as $name => $information) {
@@ -185,15 +189,16 @@ function commerce_reports_sales_dashboard_block($name, $options = array()) {
         $link['attributes']['class'][] = 'activated';
       }
       
-      $sectionLinks[] = $link;
+      $section_links[] = $link;
     }
   }
   
-  $render['#operations'] = theme('links', array('links' => $sectionLinks, 'attributes' => array()));
+  $render['#operations'] = theme('links', array('links' => $section_links, 'attributes' => array()));
   
   if (!empty($options['switchSections'])) {
     $render['#visible'] = array($first);
-  } else {
+  }
+  else {
     $render['#visible'] = array_keys($options['sections']);
   }
   

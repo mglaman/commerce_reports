@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Views style plugin for visualization of data.
+ */
 
 /**
  * Style plugin uses views ui to configure views data for rendering charts.
@@ -7,10 +11,9 @@
  */
 class commerce_reports_plugin_style_visualization extends views_plugin_style {
 
-	function init(&$view, &$display, $options = NULL) {
-		parent::init($view, $display, $options);
-		
-	}
+  function init(&$view, &$display, $options = NULL) {
+    parent::init($view, $display, $options);
+  }
 
   // Set default options
   function option_definition() {
@@ -58,7 +61,7 @@ class commerce_reports_plugin_style_visualization extends views_plugin_style {
       
       $form['fields'][$field] = array(
         '#type' => 'fieldset',
-        '#title' => $field,
+        '#title' => check_plain($field),
         '#collapsible' => TRUE,
         '#collapsed' => empty($this->options['fields'][$field]),
       );

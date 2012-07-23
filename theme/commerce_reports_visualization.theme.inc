@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Theme file for the visualization part of the module.
+ */
 
 function template_preprocess_commerce_reports_visualization(&$vars) {
   $options = $vars['options'];
@@ -18,7 +22,8 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
     
     // Data
     $data = $view->style_plugin->rendered_fields;
-  } else {
+  }
+  else {
     $data = $options['data'];
   }
 
@@ -35,7 +40,7 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   /**
    * Load javascript.
    */
-  static $js_added = false;
+  static $js_added = FALSE;
   if (!$js_added) {
     drupal_add_js(drupal_get_path('module', 'commerce_reports') . '/js/visualization.js', array('scope' => 'footer'));
     
@@ -47,7 +52,7 @@ function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
   /**
    * Chart options
    */
-  $chartOptions = array(
+  $chart_options = array(
     'title' => $options['title'],
     'width' => !empty($options['width']) ? $options['width'] : '100%',
     'height' => !empty($options['height']) ? $options['height'] : '100%',
@@ -55,54 +60,54 @@ function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
   
   switch ($options['type']) {
     case 'map':
-      $chartOptions['dataMode'] = !empty($options['dataMode']) ? $options['dataMode'] : 'regions';
+      $chart_options['dataMode'] = !empty($options['dataMode']) ? $options['dataMode'] : 'regions';
       break;
   }
   
   /**
    * Prepare table array with data.
    */
-  $dataTable = array();
+  $table_data = array();
   
   // Add header row first.
-  $headerRow = array();
+  $header = array();
   
   if (!empty($options['xAxis']['labelField'])) {
-    $headerRow[] = $options['fields'][$options['xAxis']['labelField']]['label'];
+    $header[] = $options['fields'][$options['xAxis']['labelField']]['label'];
   }
   
   foreach ($options['fields'] as $name => $column) {
     if (!empty($column['enabled'])) {
-      $headerRow[] = $column['label'];
+      $header[] = $column['label'];
     }
   }
   
-  $dataTable[] = $headerRow;
+  $table_data[] = $header;
   
   // Then add data, row per row.
   foreach ($data as $row) {
-    $dataRow = array();
+    $table_row = array();
     
     if (!empty($options['xAxis']['labelField'])) {
-      $dataRow[] = check_plain(strip_tags((string) $row[$options['xAxis']['labelField']]));
+      $table_row[] = check_plain(strip_tags((string) $row[$options['xAxis']['labelField']]));
     }
     
     foreach ($options['fields'] as $name => $column) {
       if (!empty($column['enabled'])) {
         $value = (int) $row[$name];
 
-        $dataRow[] = $value;
+        $table_row[] = $value;
       }
     }
     
-    $dataTable[] = $dataRow;
+    $table_data[] = $table_row;
   }
   
   $information = array(
     'library' => 'google_visualization',
     'type' => $options['type'],
-    'options' => $chartOptions,
-    'dataArray' => $dataTable,
+    'options' => $chart_options,
+    'dataArray' => $table_data,
     'chart_id' => $chart_id,
   );
   
@@ -123,7 +128,8 @@ function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
     drupal_add_js('google.load("visualization", "1", {packages:["corechart"]});', array('type' => 'inline'));
     
     $js_added['corechart'] = TRUE;
-  } elseif (in_array($options['type'], array('map')) && empty($js_added['geomap'])) {
+  }
+  elseif (in_array($options['type'], array('map')) && empty($js_added['geomap'])) {
     drupal_add_js('google.load("visualization", "1", {packages:["geomap"]});', array('type' => 'inline'));
     
     $js_added['geomap'] = TRUE;
@@ -146,16 +152,16 @@ function commerce_reports_highcharts($chart_id, $data = array(), $options = arra
   // Set title
   $highchart->title->text = $options['title'];
   
-  $xAxis = array();
+  $x_axis = array();
   if (!empty($options['xAxis']['labelField'])) {
     foreach ($data as $row) {
-      $xAxis[] = check_plain(strip_tags((string) $row[$options['xAxis']['labelField']]));
+      $x_axis[] = check_plain(strip_tags((string) $row[$options['xAxis']['labelField']]));
     }
   }
   
-  if (!empty($xAxis)) {
+  if (!empty($x_axis)) {
     $highchart->xAxis = (object) array(
-      'categories' => $xAxis,
+      'categories' => $x_axis,
     );
   }
   
@@ -171,7 +177,7 @@ function commerce_reports_highcharts($chart_id, $data = array(), $options = arra
   $highchart->series = array();
   foreach ($options['fields'] as $name => $column) {
     if (!empty($column['enabled'])) {
-      $serie = new StdClass();
+      $serie = new stdClass();
       $serie->name = $column['label'];
       $serie->type = $options['type'];
       
@@ -181,7 +187,8 @@ function commerce_reports_highcharts($chart_id, $data = array(), $options = arra
         
         if (!empty($column['enabled'])) {
           $serie->data[] = (object) array('name' => check_plain(strip_tags($row[$options['xAxis']['labelField']])), 'y' => $value);
-        } else {
+        }
+        else {
           $serie->data[] = $value;
         }
       }
@@ -218,9 +225,6 @@ function commerce_reports_highcharts($chart_id, $data = array(), $options = arra
   
   // Add Drupal.settings for this chart.
   drupal_add_js(array('commerce_reports' => array($chart_id => $information)), array('type' => 'setting'));
-
-  // Add highchart options object methods, which can't be passed through Drupal.settings.
-  //drupal_add_js("Drupal.settings.commerce_reports.{$chart_id}.tooltip.formatter = function() {return '<b>'+ this.name +'</b>: '+ this.y;}", array('type' => 'inline'));
   
   /**
    * Load library

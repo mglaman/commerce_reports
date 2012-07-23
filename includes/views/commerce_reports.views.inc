@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Integrates Views with Commerce Reports.
+ */
 
 /**
  * Implements hook_views_handlers().
