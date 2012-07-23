@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @file
+ * Functions for batch processing tax reports.
+ */
+ 
 function _commerce_reports_tax_create($report, &$context) {
   $context['message'] = t('Preparing generation of %title tax report.', array('%title', $report->title));
   
@@ -34,8 +38,8 @@ function _commerce_reports_tax_generate(&$context) {
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['current'] = 0;
     
-    $maxQuery = clone $context['results']['query'];
-    $context['sandbox']['max'] = $maxQuery
+    $max_query = clone $context['results']['query'];
+    $context['sandbox']['max'] = $max_query
       ->count()
       ->execute();
   }
@@ -94,7 +98,8 @@ function _commerce_reports_tax_generate(&$context) {
           // We still need to add the taxable price and we can only be sure
           // that we know this information after this loop finished running.
           $taxed[] = $tax;
-        } elseif ($component['name'] == 'base_price') {
+        }
+        elseif ($component['name'] == 'base_price') {
           // Aggregate the base price for this order.
           $base_price += $component['price']['amount'];
         }
@@ -172,7 +177,8 @@ function _commerce_reports_tax_finished($success, $results, $operations) {
     }
     
     drupal_set_message(t('Successfully generated tax report.'));
-  } else {
+  }
+  else {
     drupal_set_message(t('There was a problem whilst generating the tax report. The information might be incomplete or erroneous.'), 'error');
   }
 }

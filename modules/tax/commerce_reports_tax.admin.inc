@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @file
+ * Administrative forms.
+ */
+ 
 function commerce_reports_tax_form($form, &$form_state, $report, $op = 'edit') {
   if ($op == 'clone') {
     $report->title .= ' (cloned)';

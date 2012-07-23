@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @file
+ * UI Controller for Tax entities.
+ */
+ 
 class CommerceReportsTaxUIController extends EntityDefaultUIController {
 
   public function operationForm($form, &$form_state, $entity, $op) {
@@ -65,7 +69,7 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
 
   protected function overviewTableRow($conditions, $id, $entity, $additional_cols = array()) {
     $rows = parent::overviewTableRow($conditions, $id, $entity, $additional_cols);
-    $rows[] = l(t('generate'), $this->path . '/manage/' . $id .'/generate');
+    $rows[] = l(t('generate'), $this->path . '/manage/' . $id . '/generate');
     
     return $rows;
   }

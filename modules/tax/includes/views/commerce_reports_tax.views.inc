@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @file
+ * Views integration.
+ */
+ 
 /**
  * Implements hook_views_handlers().
  */

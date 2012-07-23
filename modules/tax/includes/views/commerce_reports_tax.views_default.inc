@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Default views.
+ */
 
 /**
  * Implements hook_views_default_views().

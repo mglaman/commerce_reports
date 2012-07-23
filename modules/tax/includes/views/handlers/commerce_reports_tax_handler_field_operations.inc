@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @file
+ * Contains commerce_reports_tax_handler_field_operations.
+ */
+ 
 class commerce_reports_tax_handler_field_operations extends views_handler_field {
 
   function query() {
@@ -20,8 +24,9 @@ class commerce_reports_tax_handler_field_operations extends views_handler_field 
     
     if (empty($count)) {
       return '';
-    } else {
-      return l('View orders (' . $count . ')', 'admin/commerce/reports/tax/' . $values->{$this->report_id_alias} . '/' . $values->{$this->tax_alias});
+    }
+    else {
+      return l(t('View orders (%count)', array('%count' => $count)), 'admin/commerce/reports/tax/' . $values->{$this->report_id_alias} . '/' . $values->{$this->tax_alias});
     }
   }
   

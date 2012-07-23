@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Entity controller for Tax entities.
+ */
 
 class CommerceReportsTaxEntityController extends DrupalCommerceEntityController {
 

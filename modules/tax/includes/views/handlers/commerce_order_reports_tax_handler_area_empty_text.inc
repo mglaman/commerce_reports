@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains commerce_reports_tax_handler_area_empty_text.
+ */
 
 /**
  * Area handler to display the empty text message for reports.

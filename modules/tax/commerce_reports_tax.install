@@ -1,14 +1,11 @@
 <?php
-
 /**
- * Implementation of hook_schema().
+ * @file
+ * Install, update, and uninstall functions for the commerce_reports_tax module.
  */
  
 /**
- * Implements hook_field_schema()
- *
- * TODO Add an extra table containing metadata about different reports.
- * TODO Add an extra field to commerce_reports_tax linking to the different reports.
+ * Implementation of hook_schema().
  */
 function commerce_reports_tax_schema() {
   $schema = array();

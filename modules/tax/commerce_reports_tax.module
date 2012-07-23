@@ -82,7 +82,8 @@ function commerce_reports_tax_permission() {
 function commerce_reports_tax_access($op, $type = NULL, $account = NULL) {
   if ($op = "view") {
     return user_access('access commerce tax reports', $account);
-  } else {
+  }
+  else {
     return user_access('manage commerce tax reports', $account);
   }
 }
