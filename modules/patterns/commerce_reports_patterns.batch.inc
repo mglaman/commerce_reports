@@ -102,7 +102,7 @@ function commerce_reports_patterns_frequent_itemset(&$context) {
     $b_set =& $partition_itemset[$b];
     
     $candidate = array(
-      'items' => array_unique(array_merge($a_set['items'], $b_set['items'])),
+      'items' => array_values(array_unique(array_merge($a_set['items'], $b_set['items']))),
       'tidlist' => array_intersect($a_set['tidlist'], $b_set['tidlist']),
     );
     
@@ -172,7 +172,7 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
   
   $set =& $context['results']['frequent_sets'][$context['sandbox']['length']][$context['sandbox']['partition']]['sets'][$context['sandbox']['set']];
   $items =& $set['items'];
-  $occurence = count($set['tidlist']);
+  $set_occurence = count($set['tidlist']);
   
   $count = count($items);
   $members = pow(2, $count);
@@ -185,39 +185,34 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
       'result' => array(),
     );
     
-    $tids = NULL;
-    
     for ($j = 0; $j < $count; $j++) {
       if ($b{$j} == '1') {
         $rule['given'][] = $items[$j];
-        
-        $t = db_query("SELECT order_id FROM {commerce_line_item} WHERE line_item_label = :sku", array(':sku' => $items[$j]))->fetchCol();
-        
-        if (is_null($tids)) {
-          $tids = $t;
-        }
-        else {
-          $tids = array_intersect($tids, $t);
-        }
       }
       else {
         $rule['result'][] = $items[$j];
       }
     }
     
-    if (!empty($tids) && !empty($rule['result']) && (($confidence = ($occurence / count($tids))) >= $min_confidence)) {
-      $context['results']['rules'][] = $rule + array('confidence' => $confidence);
+    if (!empty($rule['result']) && ($given_count = count($rule['given']))) {
+      $given_occurence = db_query("SELECT COUNT(*) FROM (SELECT order_id FROM {commerce_line_item} WHERE line_item_label IN (:sku) GROUP BY order_id HAVING COUNT(line_item_id) = :count) cli", array(':sku' => $rule['given'], ':count' => $given_count))->fetchField();
+    
+      if ((($confidence = ($set_occurence / $given_occurence)) >= $min_confidence)) {
+        $context['results']['rules'][$count][] = $rule + array('confidence' => $confidence);
+        
+        $context['results']['count'] ++;
+      }
     }
   }
   
-  $context['results']['count'] ++;
-  
   $context['sandbox']['set'] ++;
+  
+  $context['message'] = t('Found %count association rules', array('%count' => $count));
 }
 
 function commerce_reports_patterns_finished($success, $results, $operations) {
   if ($success) {
-    //dpm($results['rules']);
+    dpm($results['rules']);
     drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']))));
   }
   else {
