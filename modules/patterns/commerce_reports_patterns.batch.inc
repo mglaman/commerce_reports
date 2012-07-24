@@ -47,48 +47,71 @@ function commerce_reports_patterns_load($min_support, &$context) {
 function commerce_reports_patterns_mine(&$context) {
   if (empty($context['sandbox'])) {
     $context['sandbox']['set_length'] = 2;
+    
+    $context['sandbox']['current_partition'] = 0;
+    $context['sandbox']['first_itemset'] = 0;
+    $context['sandbox']['second_itemset'] = 1;
   }
   
   $length = $context['sandbox']['set_length'];
-  $prev_length = $length - 1;
-  if (empty($context['results']['frequent_sets'][$prev_length])) {
+  
+  if (empty($context['results']['frequent_sets'][$length - 1])) {
     return;
   }
+  if (empty($context['results']['frequent_sets'][$length])) {
+    $context['results']['frequent_sets'][$length] = array();
+  }
   
-  $context['results']['frequent_sets'][$length] = array();
-  $prev_partitions =& $context['results']['frequent_sets'][$prev_length];
+  $prev_partitions =& $context['results']['frequent_sets'][$length - 1];
+  $prev_partitions_count = count($prev_partitions);
   
-  foreach ($prev_partitions as &$partition) {
-    $partition_prefix = $partition['prefix'];
-    
+  for ($x = 0; $x < 50; $x ++) {
+    $partition =& $prev_partitions[$context['sandbox']['current_partition']];
+    $partition_prefix =& $partition['prefix'];
     $partition_itemset =& $partition['sets'];
     $partition_itemset_count = count($partition_itemset);
     
-    $sets = array();
+    $a = $context['sandbox']['first_itemset'];
+    $b = $context['sandbox']['second_itemset'];
     
-    for ($a = 0; $a < $partition_itemset_count; $a ++) {
-      for ($b = $a + 1; $b < $partition_itemset_count; $b ++) {
-        $a_set =& $partition_itemset[$a];
-        $b_set =& $partition_itemset[$b];
-        
-        $candidate = array(
-          'items' => array_unique(array_merge($a_set['items'], $b_set['items'])),
-          'tidlist' => array_intersect($a_set['tidlist'], $b_set['tidlist']),
-        );
-        
-        $occurences = count($candidate['tidlist']);
-        
-        if ($occurences >= $context['results']['minimum_transactions']) {
-          $new_items = array_diff($candidate['items'], $partition_prefix);
-          $prefix = array_merge($partition_prefix, array(reset($new_items)));
-
-          _commerce_reports_patterns_add_set($context['results']['frequent_sets'][$length], $prefix, $candidate);
+    if ($context['sandbox']['second_itemset'] >= $partition_itemset_count) {
+      if ($context['sandbox']['first_itemset'] >= $partition_itemset_count) {
+        if ($context['sandbox']['current_partition'] >= $prev_partitions_count) {
+          $context['sandbox']['current_partition'] = 0;
+          $context['sandbox']['set_length'] ++;
+          break;
+        } else {
+          $context['sandbox']['current_partition'] ++;
         }
+        
+        $context['sandbox']['first_itemset'] = 0;
+      } else {
+        $context['sandbox']['first_itemset'] ++;
       }
+      
+      $context['sandbox']['second_itemset'] = $context['sandbox']['first_itemset'] + 1;
+      continue;
+    } else {
+      $context['sandbox']['second_itemset'] ++;
+    }
+    
+    $a_set =& $partition_itemset[$a];
+    $b_set =& $partition_itemset[$b];
+    
+    $candidate = array(
+      'items' => array_unique(array_merge($a_set['items'], $b_set['items'])),
+      'tidlist' => array_intersect($a_set['tidlist'], $b_set['tidlist']),
+    );
+    
+    $occurences = count($candidate['tidlist']);
+    
+    if ($occurences >= $context['results']['minimum_transactions']) {
+      $new_items = array_diff($candidate['items'], $partition_prefix);
+      $prefix = array_merge($partition_prefix, array(reset($new_items)));
+
+      _commerce_reports_patterns_add_set($context['results']['frequent_sets'][$length], $prefix, $candidate);
     }
   }
-  
-  $context['sandbox']['set_length'] ++;
   
   if ($count = count($context['results']['frequent_sets'][$length])) {
     $context['finished'] = 0;
@@ -117,6 +140,7 @@ function _commerce_reports_patterns_add_set(&$partitions, $prefix, $set) {
 
 function commerce_reports_patterns_finished($success, $results, $operations) {
   if ($success) {
+    //dpm($results);
     drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']))));
   }
   else {
