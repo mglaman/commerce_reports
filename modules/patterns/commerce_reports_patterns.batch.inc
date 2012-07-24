@@ -44,7 +44,7 @@ function commerce_reports_patterns_load($min_support, &$context) {
   }
 }
 
-function commerce_reports_patterns_mine(&$context) {
+function commerce_reports_patterns_frequent_itemset(&$context) {
   if (empty($context['sandbox'])) {
     $context['sandbox']['set_length'] = 2;
     
@@ -80,18 +80,21 @@ function commerce_reports_patterns_mine(&$context) {
           $context['sandbox']['current_partition'] = 0;
           $context['sandbox']['set_length'] ++;
           break;
-        } else {
+        }
+        else {
           $context['sandbox']['current_partition'] ++;
         }
         
         $context['sandbox']['first_itemset'] = 0;
-      } else {
+      }
+      else {
         $context['sandbox']['first_itemset'] ++;
       }
       
       $context['sandbox']['second_itemset'] = $context['sandbox']['first_itemset'] + 1;
       continue;
-    } else {
+    }
+    else {
       $context['sandbox']['second_itemset'] ++;
     }
     
@@ -138,9 +141,83 @@ function _commerce_reports_patterns_add_set(&$partitions, $prefix, $set) {
   );
 }
 
+function commerce_reports_patterns_association_rules($min_confidence, &$context) {
+  if (empty($context['sandbox'])) {
+    $context['sandbox']['length'] = 2;
+    $context['sandbox']['partition'] = 0;
+    $context['sandbox']['set'] = 0;
+    
+    $context['results']['count'] = 0;
+    $context['results']['rules'] = array();
+  }
+  
+  if ($context['sandbox']['set'] > count($context['results']['frequent_sets'][$context['sandbox']['length']][$context['sandbox']['partition']]['sets']) - 1) {
+    $context['sandbox']['partition'] ++;
+    $context['sandbox']['set'] = 0;
+  }
+  
+  if ($context['sandbox']['partition'] > count($context['results']['frequent_sets'][$context['sandbox']['length']]) - 1) {
+    $context['sandbox']['length'] ++;
+    $context['sandbox']['partition'] = 0;
+  }
+  
+  if ($context['sandbox']['length'] > count($context['results']['frequent_sets'])) {
+    $context['finished'] = 1;
+    
+    return;
+  }
+  else {
+    $context['finished'] = 0;
+  }
+  
+  $set =& $context['results']['frequent_sets'][$context['sandbox']['length']][$context['sandbox']['partition']]['sets'][$context['sandbox']['set']];
+  $items =& $set['items'];
+  $occurence = count($set['tidlist']);
+  
+  $count = count($items);
+  $members = pow(2, $count);
+  
+  for ($i = 0; $i < $members; $i ++) {
+    $b = sprintf("%0".$count."b", $i);
+    
+    $rule = array(
+      'given' => array(),
+      'result' => array(),
+    );
+    
+    $tids = NULL;
+    
+    for ($j = 0; $j < $count; $j++) {
+      if ($b{$j} == '1') {
+        $rule['given'][] = $items[$j];
+        
+        $t = db_query("SELECT order_id FROM {commerce_line_item} WHERE line_item_label = :sku", array(':sku' => $items[$j]))->fetchCol();
+        
+        if (is_null($tids)) {
+          $tids = $t;
+        }
+        else {
+          $tids = array_intersect($tids, $t);
+        }
+      }
+      else {
+        $rule['result'][] = $items[$j];
+      }
+    }
+    
+    if (!empty($tids) && !empty($rule['result']) && (($confidence = ($occurence / count($tids))) >= $min_confidence)) {
+      $context['results']['rules'][] = $rule + array('confidence' => $confidence);
+    }
+  }
+  
+  $context['results']['count'] ++;
+  
+  $context['sandbox']['set'] ++;
+}
+
 function commerce_reports_patterns_finished($success, $results, $operations) {
   if ($success) {
-    //dpm($results);
+    //dpm($results['rules']);
     drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']))));
   }
   else {

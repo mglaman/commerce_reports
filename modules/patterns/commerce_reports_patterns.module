@@ -37,6 +37,12 @@ function commerce_reports_patterns_form($form, &$form_state) {
     '#description' => t('The minimum support should be a decimal between 0 and 1 that indicates what the minimum relative amount of transactions an item set requires to be frequent.'),
     '#size' => 6,
   );
+  $form['min_confidence'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Minimum confidence'),
+    '#description' => t('The minimum confidence should be a decimal between 0 and 1 that indicates the chance of occurence a rule should minimally have.'),
+    '#size' => 6,
+  );
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Generate'),
@@ -47,20 +53,26 @@ function commerce_reports_patterns_form($form, &$form_state) {
 
 function commerce_reports_patterns_form_validate($form, &$form_state) {
   $min_support = (float) $form_state['values']['min_support'];
+  $min_confidence = (float) $form_state['values']['min_confidence'];
   
   if (($min_support <= 0) || ($min_support >= 1)) {
     form_set_error('min_support', t('The minimum support should be a value between 0 and 1.'));
+  }
+  if (($min_confidence <= 0) || ($min_confidence >= 1)) {
+    form_set_error('min_confidence', t('The minimum confidence should be a value between 0 and 1.'));
   }
 }
 
 function commerce_reports_patterns_form_submit($form, &$form_state) {
   $min_support = (float) $form_state['values']['min_support'];
+  $min_confidence = (float) $form_state['values']['min_confidence'];
   
   $batch = array(
-    'title' => t('Generating frequent itemsets'),
+    'title' => t('Association rule mining'),
     'operations' => array(
       array('commerce_reports_patterns_load', array($min_support)),
-      array('commerce_reports_patterns_mine', array()),
+      array('commerce_reports_patterns_frequent_itemset', array()),
+      array('commerce_reports_patterns_association_rules', array($min_confidence)),
     ),
     'finished' => 'commerce_reports_patterns_finished',
     'file' => drupal_get_path('module', 'commerce_reports_patterns') . '/commerce_reports_patterns.batch.inc',
