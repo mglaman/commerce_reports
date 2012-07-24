@@ -3,3 +3,6 @@ description = Provides association rule mining, otherwise called frequent itemse
 package = Commerce (reporting)
 dependencies[] = commerce_order
 core = 7.x
+
+; Tests
+files[] = tests/commerce_reports_patterns.test

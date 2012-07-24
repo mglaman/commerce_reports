@@ -147,7 +147,8 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
     $context['sandbox']['partition'] = 0;
     $context['sandbox']['set'] = 0;
     
-    $context['results']['count'] = 0;
+    $context['sandbox']['count'] = 0;
+    
     $context['results']['rules'] = array();
   }
   
@@ -172,7 +173,7 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
   
   $set =& $context['results']['frequent_sets'][$context['sandbox']['length']][$context['sandbox']['partition']]['sets'][$context['sandbox']['set']];
   $items =& $set['items'];
-  $set_occurence = count($set['tidlist']);
+  $set_support_count = count($set['tidlist']);
   
   $count = count($items);
   $members = pow(2, $count);
@@ -180,39 +181,42 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
   for ($i = 0; $i < $members; $i ++) {
     $b = sprintf("%0".$count."b", $i);
     
-    $rule = array(
-      'given' => array(),
-      'result' => array(),
-    );
+    $rule = new stdClass();
+    $rule->size = $count;
+    $rule->if_clause = array();
+    $rule->then_clause = array();
     
     for ($j = 0; $j < $count; $j++) {
       if ($b{$j} == '1') {
-        $rule['given'][] = $items[$j];
+        $rule->if_clause[] = $items[$j];
       }
       else {
-        $rule['result'][] = $items[$j];
+        $rule->then_clause[] = $items[$j];
       }
     }
     
-    if (!empty($rule['result']) && ($given_count = count($rule['given']))) {
-      $given_occurence = db_query("SELECT COUNT(*) FROM (SELECT order_id FROM {commerce_line_item} WHERE line_item_label IN (:sku) GROUP BY order_id HAVING COUNT(line_item_id) = :count) cli", array(':sku' => $rule['given'], ':count' => $given_count))->fetchField();
+    if (!empty($rule->then_clause) && ($if_count = count($rule->if_clause))) {
+      $if_support_count = db_query("SELECT COUNT(*) FROM (SELECT order_id FROM {commerce_line_item} WHERE line_item_label IN (:sku) GROUP BY order_id HAVING COUNT(line_item_id) = :count) cli", array(':sku' => $rule->if_clause, ':count' => $if_count))->fetchField();
     
-      if ((($confidence = ($set_occurence / $given_occurence)) >= $min_confidence)) {
-        $context['results']['rules'][$count][] = $rule + array('confidence' => $confidence);
+      if ((($confidence = ($set_support_count / $if_support_count)) >= $min_confidence)) {
+        $rule->confidence = $confidence;
         
-        $context['results']['count'] ++;
+        drupal_write_record('commerce_reports_patterns', $rule);
+        $context['sandbox']['count'] ++;
       }
     }
+    
+    // Clear memory after set processing.
+    unset($set);
   }
   
   $context['sandbox']['set'] ++;
   
-  $context['message'] = t('Found %count association rules', array('%count' => $count));
+  $context['message'] = t('Found %count association rules', array('%count' => $context['sandbox']['count']));
 }
 
 function commerce_reports_patterns_finished($success, $results, $operations) {
   if ($success) {
-    dpm($results['rules']);
     drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']))));
   }
   else {
