@@ -23,6 +23,22 @@ Drupal.behaviors.commerce_reports = {
           case 'google_visualization':
             function drawChart() {
               var data = google.visualization.arrayToDataTable(chart.dataArray);
+              if (data.getNumberOfRows() == 0) {
+                var emptyRow = [];
+                
+                for (i = 0; i < data.getNumberOfColumns(); i ++) {
+                  if (i > 0) {
+                    data.z[i]['type'] = 'number';
+                    
+                    emptyRow.push(0);
+                  } else {
+                    emptyRow.push('');
+                  }
+                }
+                
+                data.addRow(emptyRow);
+              }
+              
               var chartElement = document.getElementById(chart.chart_id);
               
               switch (chart.type) {

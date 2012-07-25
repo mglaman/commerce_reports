@@ -33,6 +33,7 @@ function commerce_reports_views_plugins() {
         'uses options' => TRUE,
         'uses row plugin' => TRUE,
         'uses grouping' => FALSE,
+        'even empty' => TRUE,
         'type' => 'normal',
         'theme' => 'commerce_reports_visualization',
         'theme path' => drupal_get_path('module', 'commerce_reports') . '/theme',
