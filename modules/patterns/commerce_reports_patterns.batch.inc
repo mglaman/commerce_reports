@@ -2,7 +2,7 @@
 
 function commerce_reports_patterns_load($min_support, &$context) {
   if (empty($context['sandbox'])) {
-    $total_transactions = db_query('SELECT COUNT(order_id) FROM commerce_order')->fetchField();
+    $total_transactions = db_query("SELECT COUNT(order_id) FROM {commerce_order} WHERE status IN ('completed', 'pending')")->fetchField();
     $min_transactions = (int) floor($total_transactions * $min_support);
     
     $context['results'] = array(
@@ -22,6 +22,11 @@ function commerce_reports_patterns_load($min_support, &$context) {
     
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['max'] = count($context['sandbox']['products']);
+    
+    if (!$context['sandbox']['max']) {
+      drupal_set_message(t('The value of your minimum support is too high to include any of the available transactions.'), 'error');
+      return;
+    }
   }
   
   $product = $context['sandbox']['products'][$context['sandbox']['progress']];
@@ -66,10 +71,11 @@ function commerce_reports_patterns_frequent_itemset(&$context) {
   $prev_partitions_count = count($prev_partitions);
   
   for ($x = 0; $x < 50; $x ++) {
-    $partition =& $prev_partitions[$context['sandbox']['current_partition']];
-    $partition_prefix =& $partition['prefix'];
-    $partition_itemset =& $partition['sets'];
-    $partition_itemset_count = count($partition_itemset);
+    if (!empty($prev_partitions[$context['sandbox']['current_partition']])) {
+      $partition_itemset_count = count($prev_partitions[$context['sandbox']['current_partition']]['sets']);
+    } else {
+      $partition_itemset_count = 0;
+    }
     
     $a = $context['sandbox']['first_itemset'];
     $b = $context['sandbox']['second_itemset'];
@@ -98,6 +104,10 @@ function commerce_reports_patterns_frequent_itemset(&$context) {
       $context['sandbox']['second_itemset'] ++;
     }
     
+    $partition =& $prev_partitions[$context['sandbox']['current_partition']];
+    $partition_prefix =& $partition['prefix'];
+    $partition_itemset =& $partition['sets'];
+    
     $a_set =& $partition_itemset[$a];
     $b_set =& $partition_itemset[$b];
     
@@ -106,7 +116,7 @@ function commerce_reports_patterns_frequent_itemset(&$context) {
       'tidlist' => array_intersect($a_set['tidlist'], $b_set['tidlist']),
     );
     
-    $occurences = count($candidate['tidlist']);
+    $occurences = max(count($candidate['tidlist']), 1);
     
     if ($occurences >= $context['results']['minimum_transactions']) {
       $new_items = array_diff($candidate['items'], $partition_prefix);
@@ -147,9 +157,11 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
     $context['sandbox']['partition'] = 0;
     $context['sandbox']['set'] = 0;
     
-    $context['sandbox']['count'] = 0;
+    $context['results']['count'] = 0;
     
     $context['results']['rules'] = array();
+    
+    db_query('TRUNCATE {commerce_reports_patterns}');
   }
   
   if ($context['sandbox']['set'] > count($context['results']['frequent_sets'][$context['sandbox']['length']][$context['sandbox']['partition']]['sets']) - 1) {
@@ -198,11 +210,11 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
     if (!empty($rule->then_clause) && ($if_count = count($rule->if_clause))) {
       $if_support_count = db_query("SELECT COUNT(*) FROM (SELECT order_id FROM {commerce_line_item} WHERE line_item_label IN (:sku) GROUP BY order_id HAVING COUNT(line_item_id) = :count) cli", array(':sku' => $rule->if_clause, ':count' => $if_count))->fetchField();
     
-      if ((($confidence = ($set_support_count / $if_support_count)) >= $min_confidence)) {
+      if ($if_support_count && (($confidence = ($set_support_count / $if_support_count)) >= $min_confidence)) {
         $rule->confidence = $confidence;
         
         drupal_write_record('commerce_reports_patterns', $rule);
-        $context['sandbox']['count'] ++;
+        $context['results']['count'] ++;
       }
     }
     
@@ -212,12 +224,13 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
   
   $context['sandbox']['set'] ++;
   
-  $context['message'] = t('Found %count association rules', array('%count' => $context['sandbox']['count']));
+  $context['message'] = t('Found %count association rules', array('%count' => $context['results']['count']));
 }
 
 function commerce_reports_patterns_finished($success, $results, $operations) {
   if ($success) {
-    drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']))));
+    drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']) - 1)));
+    drupal_set_message(t('Successfully finished generating %count association rules.', array('%count' => $results['count'])));
   }
   else {
     drupal_set_message(t('There was a problem generating frequent itemsets.'), 'error');

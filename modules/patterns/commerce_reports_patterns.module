@@ -8,6 +8,8 @@ function commerce_reports_patterns_help($path, $arg) {
     case 'admin/commerce/reports/patterns':
       return '<p>' . t('Association rules are if/then statements that help uncover relationships between seemingly unrelated data in a relational database or other information repository. An example of an association rule would be "If a customer buys a dozen eggs, he is 80% likely to also purchase milk."') . '</p>';
       
+    case 'admin/commerce/reports/patterns/view':
+      return '<p>' . t("Here you see the rules generated during the previous batch process. Shown below are the top ten rules for every size of frequent itemset. You should interpret these rules as follows: if a customer buys the items in the antecedent, there's a certain chance that they will also buy the items in the consequent.") . '</p>';
   }
 }
 

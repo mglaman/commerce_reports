@@ -49,13 +49,19 @@ function commerce_reports_patterns_form_submit($form, &$form_state) {
   );
   
   batch_set($batch);
+  
+  batch_process('admin/commerce/reports/patterns/view');
 }
 
 function commerce_reports_patterns_view() {
-  return array(
-    _commerce_reports_patterns_view(3),
-    _commerce_reports_patterns_view(2)
-  );
+  $maxSize = db_query("SELECT MAX(size) FROM {commerce_reports_patterns}")->fetchField();
+  
+  $return = array();
+  for ($i = $maxSize; $i > 1; $i --) {
+   $return[] = _commerce_reports_patterns_view($i);
+  }
+  
+  return $return;
 }
 
 function _commerce_reports_patterns_view($size) {
