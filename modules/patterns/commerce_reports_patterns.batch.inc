@@ -229,7 +229,7 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
 
 function commerce_reports_patterns_finished($success, $results, $operations) {
   if ($success) {
-    drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']) - 1)));
+    drupal_set_message(t('Successfully finished mining frequent itemsets, the largest set contained %length items.', array('%length' => count($results['frequent_sets']))));
     drupal_set_message(t('Successfully finished generating %count association rules.', array('%count' => $results['count'])));
   }
   else {
