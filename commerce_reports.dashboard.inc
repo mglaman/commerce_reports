@@ -88,8 +88,8 @@ function commerce_reports_dashboard() {
         commerce_reports_sales_dashboard_block('customers', array(
           'title' => t('Customers'),
           'report' => array(
-          'title' => t('Customer reports'),
-          'path' => 'admin/commerce/reports/customers',
+            'title' => t('Customer reports'),
+            'path' => 'admin/commerce/reports/customers',
           ),
           'sections' => array(
           'revenue' => array(
@@ -102,8 +102,8 @@ function commerce_reports_dashboard() {
           'title' => t('Products'),
           'switchSections' => TRUE,
           'report' => array(
-          'title' => t('Product reports'),
-          'path' => 'admin/commerce/reports/products',
+            'title' => t('Product reports'),
+            'path' => 'admin/commerce/reports/products',
           ),
           'sections' => array(
           'revenue' => array(
@@ -139,7 +139,11 @@ function commerce_reports_dashboard() {
       '#theme_wrappers' => array('commerce_reports_dashboard_row'),
       'items' => array(
         commerce_reports_sales_dashboard_block('map', array(
-          'title' => t('Where are your customers?'),
+          'title' => t('Billing information'),
+          'report' => array(
+            'title' => t('Customer profiles'),
+            'path' => 'admin/commerce/customer-profiles',
+          ),
           'sections' => array(
             'map' => array(
               'module' => 'commerce_reports',

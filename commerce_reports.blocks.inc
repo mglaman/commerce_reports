@@ -76,9 +76,9 @@ function commerce_reports_customers() {
     $statistics[] = array(t('Total revenue'), commerce_currency_format($result->amount, $result->currency_code));
   }
   
-  $total_customers = db_query("SELECT COUNT(uid) FROM {commerce_customer_profile} WHERE type = 'billing'")->fetchField();
-  $new_customers_today = db_query("SELECT COUNT(DISTINCT uid) FROM {commerce_customer_profile} WHERE created >= :created AND type = 'billing'", array(':created' => strtotime('midnight', REQUEST_TIME)))->fetchField();
-  $online_customers = db_query("SELECT COUNT(DISTINCT ccp.uid) FROM {commerce_customer_profile} ccp WHERE ccp.type = 'billing' AND ccp.uid IN (SELECT s.uid FROM {sessions} s) AND ccp.uid <> 0")->fetchField();
+  $total_customers = db_query("SELECT COUNT(u.uid) FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid")->fetchField();
+  $new_customers_today = db_query("SELECT COUNT(u.uid) FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid HAVING MIN(p.created) >= :created", array(':created' => strtotime('midnight', REQUEST_TIME)))->fetchField();
+  $online_customers = db_query("SELECT COUNT(u.uid) FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid HAVING p.uid IN (SELECT s.uid FROM {sessions} s) AND p.uid <> 0")->fetchField();
     
   $statistics = array_merge($statistics,
     array(
@@ -99,13 +99,14 @@ function commerce_reports_customers() {
  * Provides a map of the location of the customers.
  */
 function commerce_reports_customer_map() {
-  $query = db_select('field_data_commerce_customer_address', 'ca');
-  $query->addField('ca', 'commerce_customer_address_country', 'country');
-  $query->groupBy('country')
-    ->addExpression('COUNT(*)', 'count');
-  $query->condition('bundle', 'billing');
-    
-  $result = $query->execute();
+  $data = array();
+  
+  $result = db_query("SELECT ca.commerce_customer_address_country AS country, COUNT(*) AS count FROM {field_data_commerce_customer_address} ca WHERE ca.bundle = 'billing'");
+  $result->setFetchMode(PDO::FETCH_ASSOC);
+  
+  foreach ($result as $record) {
+    $data[] = $record;
+  }
   
   $options = array(
     'title' => 'Customer map',
@@ -121,7 +122,7 @@ function commerce_reports_customer_map() {
     'xAxis' => array(
       'labelField' => 'country',
     ),
-    'data' => $result->fetchAll(PDO::FETCH_ASSOC),
+    'data' => $data,
     'type' => 'map',
     'height' => '400px',
   );
