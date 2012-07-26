@@ -26,7 +26,7 @@ class commerce_reports_tax_handler_field_operations extends views_handler_field 
       return '';
     }
     else {
-      return l(t('View orders (%count)', array('%count' => $count)), 'admin/commerce/reports/tax/' . $values->{$this->report_id_alias} . '/' . $values->{$this->tax_alias});
+      return t('<a href="@order-details-page">View orders (%order-count)</a>', array('@order-details-page' => url('admin/commerce/reports/tax/' . $values->{$this->report_id_alias} . '/' . $values->{$this->tax_alias}), '%order-count' => $count));
     }
   }
   
