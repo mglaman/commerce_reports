@@ -11,8 +11,6 @@ class CommerceReportsBaseTestCase extends CommerceBaseTestCase {
   protected $orders;
   
   function setUp() {
-    $this->resetAll();
-    
     $modules = parent::setUpHelper('all', array('commerce_reports'));
     parent::setUp($modules);
     
@@ -429,6 +427,11 @@ class CommerceReportsCustomerTestCase extends CommerceReportsBaseTestCase {
     );
   }
   
+  function setUp() {
+    $this->resetAll();
+    parent::setUp();
+  }
+  
   /**
    * Tests creating a single order for a single customer, containing a single product with a variable quantity.
    * Then verifies if the reporting is correct.
@@ -516,6 +519,11 @@ class CommerceReportsProductTestCase extends CommerceReportsBaseTestCase {
       'description' => 'Test the product reports.',
       'group' => 'Drupal Commerce',
     );
+  }
+  
+  function setUp() {
+    $this->resetAll();
+    parent::setUp();
   }
   
   /**
