@@ -53,7 +53,7 @@ class CommerceReportsTaxEntityController extends DrupalCommerceEntityController 
         throw new Exception();
       }
 
-      return TRUE;
+      return $result;
     }
     catch (Exception $e) {
       if (!empty($started_transaction)) {

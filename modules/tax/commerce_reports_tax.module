@@ -109,9 +109,33 @@ function commerce_reports_tax_label($entity, $entity_type) {
   return $entity->title;
 }
 
+function commerce_reports_tax_new($title = '', $start = NULL, $end = REQUEST_TIME, $order_statuses = array('completed', 'pending'), $detailled = FALSE) {
+  if (!isset($end)) {
+    $end = REQUEST_TIME;
+  }
+  
+  return entity_get_controller('commerce_reports_tax')->create(array(
+    'title' => $title,
+    'start' => $start,
+    'end' => $end,
+    'order_statuses' => $order_statuses,
+    'detailed' => $detailled,
+  ));
+}
+
 function commerce_reports_tax_save($report) {
   return entity_get_controller('commerce_reports_tax')->save($report);
 }
+
+function commerce_reports_tax_load($report_id) {
+  $reports = commerce_reports_tax_load_multiple(array($report_id), array());
+  return $reports ? reset($reports) : FALSE;
+}
+
+function commerce_reports_tax_load_multiple($report_ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('commerce_reports_tax', $report_ids, $conditions, $reset);
+}
+
 
 function commerce_reporst_tax_cache_reset($report) {
   commerce_reports_tax_cache_delete(array($report->report_id => $report));

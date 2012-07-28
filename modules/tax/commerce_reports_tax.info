@@ -14,10 +14,7 @@ files[] = includes/views/handlers/commerce_reports_tax_handler_field_operations.
 files[] = includes/commerce_reports_tax.controller.inc
 files[] = includes/commerce_reports_tax.ui.controller.inc
 
-files[] = commerce_reports_tax.install
-files[] = commerce_reports_tax.module
-files[] = commerce_reports_tax.batch.inc
-files[] = commerce_reports_tax.views.inc
-files[] = commerce_reports_tax.views.default.inc
+; Tests
+files[] = tests/commerce_reports_tax.test
 
 configure = admin/commerce/reports/tax
