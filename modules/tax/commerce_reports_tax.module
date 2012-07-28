@@ -24,6 +24,17 @@ function commerce_reports_tax_menu_alter(&$items) {
   $items['admin/commerce/reports/tax']['title'] = 'Tax';
   $items['admin/commerce/reports/tax']['type'] = MENU_LOCAL_TASK;
   $items['admin/commerce/reports/tax']['weight'] = 50;
+  
+  if (empty($items['admin/commerce/reports'])) {
+    $items['admin/commerce/reports'] = array(
+      'title' => 'Reports',
+      'description' => 'View reports for your store.',
+      'access arguments' => array('access commerce tax reports'),
+      'page callback' => 'drupal_goto',
+      'page arguments' => array('admin/commerce/reports/tax'),
+      'weight' => 50,
+    );
+  }
 }
 
 /**
