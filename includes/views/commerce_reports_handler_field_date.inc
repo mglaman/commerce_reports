@@ -12,19 +12,28 @@ class commerce_reports_handler_field_date extends views_handler_field {
     'Y-m' => array(
       'label' => 'Monthly',
       'interval' => 2764800,
-      'relative' => 'first day of this month',
+      'normalizationFunction' => '_normalizeMonthly',
       'displayFormat' => 'F Y',
     ),
     'o-W' => array(
       'label' => 'Weekly',
       'interval' => 604800,
-      'relative' => 'this week'
+      'normalizationFunction' => '_normalizeWeekly'
     ),
     'Y-m-d' => array(
       'label' => 'Daily',
       'interval' => 86400,
     ),
   );
+  
+  protected function _normalizeWeekly($timestamp) {
+    return strtotime('this week', $timestamp);
+  }
+  
+  protected function _normalizeMonthly($timestamp) {
+    // Workaround for PHP 5.2; PHP 5.3 works with 'first day of this month'
+    return strtotime(date('Y-m', strtotime('this month', $timestamp)));
+  }
 
   function option_definition() {
     $options = parent::option_definition();
@@ -116,8 +125,9 @@ class commerce_reports_handler_field_date extends views_handler_field {
   function convertTimestamp($timestamp) {
     $timestamp = strtotime('today', $timestamp);
     
-    if (!empty($this->granularities[$this->getFormat()]['relative'])) {
-      $timestamp = strtotime($this->granularities[$this->getFormat()]['relative'] , $timestamp);
+    if (!empty($this->granularities[$this->getFormat()]['normalizationFunction'])) {
+      //$timestamp = strtotime($this->granularities[$this->getFormat()]['relative'] , $timestamp);
+      $timestamp = $this->{$this->granularities[$this->getFormat()]['normalizationFunction']}($timestamp);
     }
     
     return $timestamp;
