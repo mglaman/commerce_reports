@@ -136,6 +136,13 @@ function commerce_reports_tax_load_multiple($report_ids = array(), $conditions =
   return entity_load('commerce_reports_tax', $report_ids, $conditions, $reset);
 }
 
+function commerce_reports_tax_delete($report_id) {
+  return commerce_reports_tax_delete_multiple(array($report_id));
+}
+
+function commerce_reports_tax_delete_multiple($report_ids) {
+  return entity_get_controller('commerce_reports_tax')->delete($report_ids);
+}
 
 function commerce_reporst_tax_cache_reset($report) {
   commerce_reports_tax_cache_delete(array($report->report_id => $report));

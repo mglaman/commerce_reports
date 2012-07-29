@@ -58,6 +58,16 @@ class CommerceReportsTaxCRUDTestCase extends CommerceBaseTestCase {
     foreach ($loaded_reports as $loaded_report) {
       $this->assertEqual($loaded_report->title, $saved_reports[$loaded_report->report_id], 'commerce_reports_tax_load_multiple() successfully loaded a report.');
     }
+    
+    $return = commerce_reports_tax_delete($new_report->report_id);
+    $this->assertTrue($return, 'commerce_reports_tax_delete() returned TRUE when deleting a report.');
+    $deleted_report_load = commerce_reports_tax_load_multiple(array($new_report->report_id), array(), TRUE);
+    $this->assertFalse($deleted_report_load, 'commerce_reports_tax_load_multiple() could not load the deleted report.');
+
+    $return = commerce_reports_tax_delete_multiple(array_keys($saved_reports));
+    $this->assertTrue($return, 'commerce_reports_tax_delete_multiple() returned TRUE when deleting a report.');
+    $deleted_reports_load = commerce_reports_tax_load_multiple(array_keys($saved_reports), array(), TRUE);
+    $this->assertFalse($deleted_reports_load, 'commerce_reports_tax_load_multiple() could not load the deleted reports.');
   }
   
 }
