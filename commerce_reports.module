@@ -75,16 +75,13 @@ function commerce_reports_theme($existing, $type, $theme, $path) {
       'template' => 'dashboard-row',
       'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
     ),
-    'views_view_table__commerce_reports_sales_overview' => array(
-      'base hook' => 'views_view_table',
-      'template' => 'views-view-table--commerce-reports-sales-overview',
-      'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
-    ),
   );
 }
 
 /**
  * Implements hook_block_info().
+ *
+ * Defines the custom blocks defined by commerce_reports.
  */
 function commerce_reports_block_info() {
   return array(
@@ -100,6 +97,11 @@ function commerce_reports_block_info() {
   );
 }
 
+/**
+ * Implements hook_block_view().
+ *
+ * Implementation of the custom blocks defined by commerce_reports.
+ */
 function commerce_reports_block_view($delta = '') {
   module_load_include('inc', 'commerce_reports', 'commerce_reports.blocks');
   
@@ -115,6 +117,8 @@ function commerce_reports_block_view($delta = '') {
 
 /**
  * Implements hook_form_alter().
+ *
+ * Changes the apperance of the exposed form of the sales data report.
  */
 function commerce_reports_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
   if ($form['#id'] == 'views-exposed-form-commerce-reports-sales-sales') {
@@ -146,6 +150,8 @@ function commerce_reports_views_api() {
 
 /**
  * Implements hook_date_format_types().
+ *
+ * Defines a default date type for commerce_reports.
  */
 function commerce_reports_date_formats() {
   return array(
@@ -157,6 +163,8 @@ function commerce_reports_date_formats() {
 
 /**
  * Implements hook_field_formatter_info().
+ *
+ * Defines a formatter view for the commerce_price field type that works for the commerce_reports_visualization handler.
  */
 function commerce_reports_field_formatter_info() {
   return array(
@@ -172,6 +180,8 @@ function commerce_reports_field_formatter_info() {
 
 /**
  * Implements hook_field_formatter_view().
+ *
+ * Executes the formatter view for the commerce price field type.
  */
 function commerce_reports_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
@@ -192,28 +202,3 @@ function commerce_reports_field_formatter_view($entity_type, $entity, $field, $i
   
   return $element;
 }
-
-function commerce_reports_currency_format($amount, $currency_code, $convert = TRUE) {
-  $currency = commerce_currency_load($currency_code);
-  
-  if ($convert) {
-    $amount = commerce_currency_amount_to_decimal($amount, $currency_code);
-  }
-  
-  $price = number_format(commerce_currency_round(abs($amount), $currency), 0, $currency['decimal_separator'], $currency['thousands_separator']);
-  
-  // Establish the replacement values to format this price for its currency.
-  $replacements = array(
-    '@code_before' => $currency['code_placement'] == 'before' ? $currency['code'] : '', 
-    '@symbol_before' => $currency['symbol_placement'] == 'before' ? $currency['symbol'] : '', 
-    '@price' => $price, 
-    '@symbol_after' => $currency['symbol_placement'] == 'after' ? $currency['symbol'] : '', 
-    '@code_after' => $currency['code_placement'] == 'after' ? $currency['code'] : '', 
-    '@negative' => $amount < 0 ? '-' : '', 
-    '@symbol_spacer' => $currency['symbol_spacer'], 
-    '@code_spacer' => $currency['code_spacer'],
-  );
-
-  return trim(t('@code_before@code_spacer@negative@symbol_before@price@symbol_spacer@symbol_after@code_spacer@code_after', $replacements));
-}
-

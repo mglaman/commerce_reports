@@ -4,6 +4,11 @@
  * Theme file for the visualization part of the module.
  */
 
+/**
+ * Preprocess function for commerce_reports_visualization function.
+ *
+ * Used by both regular calls to theme() and the commerce_reports_visualization Views handler.
+ */
 function template_preprocess_commerce_reports_visualization(&$vars) {
   $options = $vars['options'];
   
@@ -48,6 +53,9 @@ function template_preprocess_commerce_reports_visualization(&$vars) {
   }
 }
 
+/**
+ * Render a chart using Google Visualization API.
+ */
 function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
   /**
    * Chart options
@@ -136,6 +144,9 @@ function commerce_reports_gva($chart_id, $data = array(), $options = array()) {
   }
 }
 
+/**
+ * Render a chart using Highcharts.
+ */
 function commerce_reports_highcharts($chart_id, $data = array(), $options = array()) {
   /**
    * Chart options.

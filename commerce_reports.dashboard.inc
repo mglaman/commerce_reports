@@ -4,6 +4,9 @@
  * Dashboard for reporting module.
  */
 
+/**
+ * Renders the dashboard.
+ */
 function commerce_reports_dashboard() {
   drupal_add_js(drupal_get_path('module', 'commerce_reports') . '/js/dashboard.js', 'file');
   
@@ -158,6 +161,9 @@ function commerce_reports_dashboard() {
   return $render;
 }
 
+/**
+ * Renders a single block on the dashboard.
+ */
 function commerce_reports_sales_dashboard_block($name, $options = array()) {
   $defaults = array(
     'title' => '',

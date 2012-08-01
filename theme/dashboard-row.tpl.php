@@ -1,4 +1,15 @@
 <?php
+
+/**
+ * @file
+ * Template file returns HTML for a single row on the Commerce Reports dashboard.
+ *
+ * @param $row
+ *
+ * @return
+ *   The row div.
+ */
+ 
 $itemClass = '';
 
 switch (count($row['items']) - 2) {

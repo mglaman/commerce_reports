@@ -5,7 +5,7 @@
  */
 
 /**
- * Generates table with sales overview data.
+ * Implementation of table showing sales overview.
  */
 function commerce_reports_sales() {
   $sales = array();
@@ -37,6 +37,9 @@ function commerce_reports_sales() {
   );
 }
 
+/**
+ * Helper function that retrieves sales data from a certain starting point.
+ */
 function commerce_reports_sales_data($start = 0, $time_periods = 1) {
   $sales = array();
   
@@ -54,6 +57,9 @@ function commerce_reports_sales_data($start = 0, $time_periods = 1) {
   return $sales;
 }
 
+/**
+ * Helper function that formats the data retrieved from commerce_reports_sales_data() function.
+ */
 function commerce_reports_sales_format($data, $title) {
   $sales = array();
   
@@ -65,7 +71,7 @@ function commerce_reports_sales_format($data, $title) {
 }
 
 /**
- * Generates table with customer statistics.
+ * Implementation of table showing statistics about customers.
  */
 function commerce_reports_customers() {
   $statistics = array();
@@ -96,7 +102,7 @@ function commerce_reports_customers() {
 }
 
 /**
- * Provides a map of the location of the customers.
+ * Implementation of billing information block.
  */
 function commerce_reports_customer_map() {
   $data = array();

@@ -4,6 +4,9 @@
  * Settings form.
  */
 
+/**
+ * Settings form for commerce_reports.
+ */
 function commerce_reports_settings_form($form, &$form_state) {
   module_load_include('inc', 'commerce_reports', 'commerce_reports.visualization');
   
@@ -29,6 +32,9 @@ function commerce_reports_settings_form($form, &$form_state) {
   return $form;
 }
 
+/**
+ * Submit handler for commerce_reports settings form.
+ */
 function commerce_reports_settings_form_submit($form, &$form_state) {
   variable_set('commerce_reports_visualization', $form_state['values']['library']);
   

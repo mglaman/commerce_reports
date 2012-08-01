@@ -4,6 +4,11 @@
  * The helper functions for the visualization part of the module.
  */
 
+/**
+ * Returns the name of the library that should be used to render a chart.
+ *
+ * Optionally one can pass a chart type to get the best library available for that type.
+ */
 function commerce_reports_library($type = FALSE) {
   $libraries = commerce_reports_visualization();
   $library = variable_get('commerce_reports_visualization', 'gva');
@@ -17,6 +22,9 @@ function commerce_reports_library($type = FALSE) {
   }
 }
 
+/**
+ * Returns an associative array with all known charting libraries.
+ */
 function commerce_reports_visualization() {
   static $info;
   

@@ -1,4 +1,16 @@
-<?php if (!empty($block['#children'])) {
+<?php
+
+/**
+ * @file
+ * Template file returns HTML for a single block on the Commerce Reports dashboard.
+ *
+ * @param $block
+ *
+ * @return
+ *   The block div.
+ */
+ 
+if (!empty($block['#children'])) {
   $attributes = array(
     'class' => array('commerce-reports-dashboard-block', 'commerce-reports-dashboard-' . $block['#name'] . '-block'),
   );
