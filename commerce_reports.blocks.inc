@@ -82,9 +82,9 @@ function commerce_reports_customers() {
     $statistics[] = array(t('Total revenue'), commerce_currency_format($result->amount, $result->currency_code));
   }
   
-  $total_customers = db_query("SELECT COUNT(u.uid) FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid")->fetchField();
-  $new_customers_today = db_query("SELECT COUNT(u.uid) FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid HAVING MIN(p.created) >= :created", array(':created' => strtotime('midnight', REQUEST_TIME)))->fetchField();
-  $online_customers = db_query("SELECT COUNT(u.uid) FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid HAVING p.uid IN (SELECT s.uid FROM {sessions} s) AND p.uid <> 0")->fetchField();
+  $total_customers = db_query("SELECT COUNT(uid) FROM (SELECT u.uid AS uid FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid) s")->fetchField();
+  $new_customers_today = db_query("SELECT COUNT(uid) FROM (SELECT u.uid AS uid FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid HAVING MIN(p.created) >= :created) s", array(':created' => strtotime('midnight', REQUEST_TIME)))->fetchField();
+  $online_customers = db_query("SELECT COUNT(uid) FROM (SELECT u.uid AS uid FROM {users} u INNER JOIN {commerce_customer_profile} p ON u.uid = p.uid WHERE p.type = 'billing' GROUP BY p.uid HAVING p.uid <> 0) s WHERE uid IN (SELECT sess.uid FROM {sessions} sess)")->fetchField();
     
   $statistics = array_merge($statistics,
     array(
