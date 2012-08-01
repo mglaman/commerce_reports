@@ -69,3 +69,18 @@ function commerce_reports_views_data_alter(&$data) {
     ),
   );
 }
+
+/**
+ * Implements hook_views_query_alter().
+ *
+ * Provides basic support for multiple currencies.
+ */
+function commerce_reports_views_query_alter(&$view, &$query) {
+  if ($view->tag == 'commerce_reports') {
+    foreach ($query->fields as &$field) {
+      if ($field['field'] == 'commerce_total_currency_code') {
+        unset($field['function']);
+      }
+    }
+  }
+}

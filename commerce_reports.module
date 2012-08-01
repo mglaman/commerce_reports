@@ -184,6 +184,7 @@ function commerce_reports_field_formatter_info() {
  * Executes the formatter view for the commerce price field type.
  */
 function commerce_reports_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $default_currency = commerce_default_currency();
   $element = array();
   
   foreach ($items as $delta => $item) {
@@ -193,8 +194,15 @@ function commerce_reports_field_formatter_view($entity_type, $entity, $field, $i
     
     switch ($display['type']) {
       case 'commerce_reports_visualization':
+        if ($item['currency_code'] != $default_currency) {
+          $amount = commerce_currency_convert($item['amount'], $item['currency_code'], $default_currency);
+        }
+        else {
+          $amount = $item['amount'];
+        }
+        
         $element[$delta] = array(
-          '#markup' => commerce_currency_amount_to_decimal($item['amount'], $item['currency_code']),
+          '#markup' => commerce_currency_amount_to_decimal($amount, $default_currency),
         );
         break;
     }
