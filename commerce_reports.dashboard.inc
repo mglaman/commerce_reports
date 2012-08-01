@@ -121,16 +121,16 @@ function commerce_reports_dashboard() {
         commerce_reports_sales_dashboard_block('statistics', array(
           'title' => t('Statistics'),
           'sections' => array(
-          'customers' => array(
-            'module' => 'commerce_reports',
-            'block' => 'commerce_reports_customers',
-            'width' => '100',
-          ),
-          'sales' => array(
-            'module' => 'commerce_reports',
-            'block' => 'commerce_reports_sales',
-            'width' => '100',
-          ),
+            'customers' => array(
+              'module' => 'commerce_reports',
+              'block' => 'commerce_reports_customers',
+              'width' => '100',
+            ),
+            'sales' => array(
+              'module' => 'commerce_reports',
+              'block' => 'commerce_reports_sales',
+              'width' => '100',
+            ),
           ),
         )),
       ),
@@ -159,6 +159,13 @@ function commerce_reports_dashboard() {
 }
 
 function commerce_reports_sales_dashboard_block($name, $options = array()) {
+  $defaults = array(
+    'title' => '',
+    'sections' => array(),
+  );
+  
+  $options += $defaults;
+  
   $render = array(
     '#theme_wrappers' => array('commerce_reports_dashboard_block'),
     '#title' => $options['title'],
@@ -168,7 +175,9 @@ function commerce_reports_sales_dashboard_block($name, $options = array()) {
   );
   
   $section_links = array();
-  $first = reset(array_keys($options['sections']));
+  
+  $keys = array_keys($options['sections']);
+  $first = reset($keys);
   
   foreach ($options['sections'] as $name => $information) {
     $block = block_load($information['module'], $information['block']);

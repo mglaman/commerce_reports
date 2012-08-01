@@ -65,7 +65,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $form['granularity'] = array(
       '#type' => 'select',
       '#title' => t('Granularity'),
-      '#options' => $this->options(),
+      '#options' => $this->granularityOptions(),
       '#default_value' => $this->options['default_granularity']
     );
     
@@ -93,7 +93,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
       return TRUE;
     }
     
-    if (!empty($input['granularity']) && in_array($input['granularity'], array_keys($this->options()))) {
+    if (!empty($input['granularity']) && in_array($input['granularity'], array_keys($this->granularityOptions()))) {
       $this->granularity = $input['granularity'];
     }
     else {
@@ -145,7 +145,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $form['default_granularity'] = array(
       '#type' => 'select',
       '#title' => t('Default granularity'),
-      '#options' => $this->options(),
+      '#options' => $this->granularityOptions(),
       '#default_value' => $this->options['default_granularity']
     );
     
@@ -160,7 +160,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     );
   }
   
-  function options() {
+  function granularityOptions() {
     static $cache;
     
     if (empty($cache)) {
