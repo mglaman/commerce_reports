@@ -3,6 +3,9 @@
  * @file
  * Dashboard for reporting module.
  */
+ 
+define('COMMERCE_REPORTS_DASHBOARD_BLOCK', 0);
+define('COMMERCE_REPORTS_DASHBOARD_ROW', 1);
 
 /**
  * Renders the dashboard.
@@ -10,161 +13,59 @@
 function commerce_reports_dashboard() {
   drupal_add_js(drupal_get_path('module', 'commerce_reports') . '/js/dashboard.js', 'file');
   
-  $render = array(
-    array(
-      '#theme_wrappers' => array('commerce_reports_dashboard_row'),
-      'items' => array(
-        commerce_reports_sales_dashboard_block('overview_today', array(
-          'title' => t('Today\'s overview'),
-          'report' => array(
-            'title' => t('Sales reports'),
-            'path' => 'admin/commerce/reports/sales',
-          ),
-          'sections' => array(
-            'today' => array(
-              'module' => 'views',
-              'block' => 'ff7824695a12b49a79aee7d394cbd917',
-            ),
-          ),
-        )),
-        commerce_reports_sales_dashboard_block('overview_today', array(
-          'title' => t('Yesterday\'s overview'),
-          'report' => array(
-            'title' => t('Sales reports'),
-            'path' => 'admin/commerce/reports/sales',
-          ),
-          'sections' => array(
-            'today' => array(
-              'module' => 'views',
-              'block' => '1a260a710ed0ccc9e8175e7301e597fe',
-            ),
-          ),
-        )),
-        commerce_reports_sales_dashboard_block('overview_today', array(
-          'title' => t('Monthly overview'),
-          'report' => array(
-            'title' => t('Sales reports'),
-            'path' => 'admin/commerce/reports/sales',
-          ),
-          'sections' => array(
-            'today' => array(
-              'module' => 'views',
-              'block' => '724c01e6b3c93b66c793ff63f7402697',
-            ),
-          ),
-        )),
-      ),
-    ),
-    array(
-      '#theme_wrappers' => array('commerce_reports_dashboard_row'),
-      'items' => array(
-        commerce_reports_sales_dashboard_block('sales', array(
-          'title' => t('Sales'),
-          'switchSections' => TRUE,
-          'report' => array(
-            'title' => t('Sales reports'),
-            'path' => 'admin/commerce/reports/sales',
-          ),
-          'sections' => array(
-            'year' => array(
-              'title' => 'Year',
-              'module' => 'views',
-              'block' => 'cc437fbe6b867b448dc946fd925800a3',
-            ),
-            'month' => array(
-              'title' => 'Month',
-              'module' => 'views',
-              'block' => '1127e4706efe2c1eb8537a65a644e572',
-            ),
-            'week' => array(
-              'title' => 'Week',
-              'module' => 'views',
-              'block' => 'd70fc459675538d56c73a9f90574211a',
-            ),
-          ),
-        )),
-      ),
-    ),
-    array(
-      '#theme_wrappers' => array('commerce_reports_dashboard_row'),
-      'items' => array(
-        commerce_reports_sales_dashboard_block('customers', array(
-          'title' => t('Customers'),
-          'report' => array(
-            'title' => t('Customer reports'),
-            'path' => 'admin/commerce/reports/customers',
-          ),
-          'sections' => array(
-          'revenue' => array(
-            'module' => 'views',
-            'block' => 'f3f98e42ba2d4d3103b95e9199cf48fe',
-          ),
-          ),
-        )),
-        commerce_reports_sales_dashboard_block('products', array(
-          'title' => t('Products'),
-          'switchSections' => TRUE,
-          'report' => array(
-            'title' => t('Product reports'),
-            'path' => 'admin/commerce/reports/products',
-          ),
-          'sections' => array(
-          'revenue' => array(
-            'title' => 'Revenue',
-            'module' => 'views',
-            'block' => 'commerce_reports_products-chart_revenue',
-          ),
-          'quantity' => array(
-            'title' => 'Quantity',
-            'module' => 'views',
-            'block' => '31eccd6666389cf554f290e91ef9848a',
-          ),
-          ),
-        )),
-        commerce_reports_sales_dashboard_block('statistics', array(
-          'title' => t('Statistics'),
-          'sections' => array(
-            'customers' => array(
-              'module' => 'commerce_reports',
-              'block' => 'commerce_reports_customers',
-              'width' => '100',
-            ),
-            'sales' => array(
-              'module' => 'commerce_reports',
-              'block' => 'commerce_reports_sales',
-              'width' => '100',
-            ),
-          ),
-        )),
-      ),
-    ),
-    array(
-      '#theme_wrappers' => array('commerce_reports_dashboard_row'),
-      'items' => array(
-        commerce_reports_sales_dashboard_block('map', array(
-          'title' => t('Billing information'),
-          'report' => array(
-            'title' => t('Customer profiles'),
-            'path' => 'admin/commerce/customer-profiles',
-          ),
-          'sections' => array(
-            'map' => array(
-              'module' => 'commerce_reports',
-              'block' => 'commerce_reports_customer_map',
-            ),
-          ),
-        )),
-      ),
-    ),
-  );
+  $info = module_invoke_all('commerce_reports_dashboard');
+  drupal_alter('commerce_reports_dashboard', $info);
+  
+  $weights = array();
+  foreach ($info as $block) {
+    $weights[] = isset($block['weight']) ? $block['weight'] : 1000;
+  }
+  
+  array_multisort($weights, $info);
+  
+  $render = array();
+  
+  $items = array();
+  foreach ($info as $name => $block) {
+    $type = isset($block['type']) ? $block['type'] : COMMERCE_REPORTS_DASHBOARD_BLOCK;
+    $flush = FALSE;
+    
+    switch ($type) {
+      case COMMERCE_REPORTS_DASHBOARD_BLOCK:
+        $items[] = commerce_reports_dashboard_block($name, $block);
+        
+        if (count($items) == 3) {
+          $render[] = commerce_reports_dashboard_row($items);
+          $items = array();
+        }
+        break;
+        
+      case COMMERCE_REPORTS_DASHBOARD_ROW:
+        $render[] = commerce_reports_dashboard_row(array(commerce_reports_dashboard_block($name, $block)));
+        break;
+        
+    }
+  }
+  
+  if (!empty($items)) {
+    $render[] = commerce_reports_dashboard_row($items);
+    $items = array();
+  }
   
   return $render;
+}
+
+function commerce_reports_dashboard_row($items = array()) {
+  return array(
+    '#theme_wrappers' => array('commerce_reports_dashboard_row'),
+    'items' => $items,
+  );
 }
 
 /**
  * Renders a single block on the dashboard.
  */
-function commerce_reports_sales_dashboard_block($name, $options = array()) {
+function commerce_reports_dashboard_block($name, $options = array()) {
   $defaults = array(
     'title' => '',
     'sections' => array(),
@@ -190,7 +91,7 @@ function commerce_reports_sales_dashboard_block($name, $options = array()) {
     $block_render = module_invoke($block->module, 'block_view', $block->delta);
     
     $render['sections'][$name] = $block_render;
-    $render['sections'][$name]['#width'] = !empty($information['width']) ? $information['width'] : NULL;
+    $render['sections'][$name]['#width'] = empty($options['switchSections']) ? 100 : NULL;
     
     if (!empty($options['switchSections'])) {
       $link = array(

@@ -202,3 +202,144 @@ function commerce_reports_field_formatter_view($entity_type, $entity, $field, $i
   
   return $element;
 }
+
+/**
+ * Implements hook_commerce_reports_dashboard().
+ */
+function commerce_reports_commerce_reports_dashboard() {
+  return array(
+    'overview_today' => array(
+      'title' => t('Today\'s overview'),
+      'report' => array(
+        'title' => t('Sales reports'),
+        'path' => 'admin/commerce/reports/sales',
+      ),
+      'sections' => array(
+        'today' => array(
+          'module' => 'views',
+          'block' => 'ff7824695a12b49a79aee7d394cbd917',
+        ),
+      ),
+      'weight' => 0,
+    ),
+    'overview_yesterday' => array(
+      'title' => t('Yesterday\'s overview'),
+      'report' => array(
+        'title' => t('Sales reports'),
+        'path' => 'admin/commerce/reports/sales',
+      ),
+      'sections' => array(
+        'today' => array(
+          'module' => 'views',
+          'block' => '1a260a710ed0ccc9e8175e7301e597fe',
+        ),
+      ),
+      'weight' => 40,
+    ),
+    'overview_monthly' => array(
+      'title' => t('Monthly overview'),
+      'report' => array(
+        'title' => t('Sales reports'),
+        'path' => 'admin/commerce/reports/sales',
+      ),
+      'sections' => array(
+        'today' => array(
+          'module' => 'views',
+          'block' => '724c01e6b3c93b66c793ff63f7402697',
+        ),
+      ),
+      'weight' => 80,
+    ),
+    'sales' => array(
+      'title' => t('Sales'),
+      'type' => COMMERCE_REPORTS_DASHBOARD_ROW,
+      'switchSections' => TRUE,
+      'report' => array(
+        'title' => t('Sales reports'),
+        'path' => 'admin/commerce/reports/sales',
+      ),
+      'sections' => array(
+        'year' => array(
+          'title' => 'Year',
+          'module' => 'views',
+          'block' => 'cc437fbe6b867b448dc946fd925800a3',
+        ),
+        'month' => array(
+          'title' => 'Month',
+          'module' => 'views',
+          'block' => '1127e4706efe2c1eb8537a65a644e572',
+        ),
+        'week' => array(
+          'title' => 'Week',
+          'module' => 'views',
+          'block' => 'd70fc459675538d56c73a9f90574211a',
+        ),
+      ),
+      'weight' => 100,
+    ),
+    'customers' => array(
+      'title' => t('Customers'),
+      'report' => array(
+        'title' => t('Customer reports'),
+        'path' => 'admin/commerce/reports/customers',
+      ),
+      'sections' => array(
+        'revenue' => array(
+          'module' => 'views',
+          'block' => 'f3f98e42ba2d4d3103b95e9199cf48fe',
+        ),
+      ),
+      'weight' => 200,
+    ),
+    'products' => array(
+      'title' => t('Products'),
+      'switchSections' => TRUE,
+      'report' => array(
+        'title' => t('Product reports'),
+        'path' => 'admin/commerce/reports/products',
+      ),
+      'sections' => array(
+        'revenue' => array(
+          'title' => 'Revenue',
+          'module' => 'views',
+          'block' => 'commerce_reports_products-chart_revenue',
+        ),
+        'quantity' => array(
+          'title' => 'Quantity',
+          'module' => 'views',
+          'block' => '31eccd6666389cf554f290e91ef9848a',
+        ),
+      ),
+      'weight' => 240,
+    ),
+    'statistics' => array(
+      'title' => t('Statistics'),
+      'sections' => array(
+        'customers' => array(
+          'module' => 'commerce_reports',
+          'block' => 'commerce_reports_customers',
+        ),
+        'sales' => array(
+          'module' => 'commerce_reports',
+          'block' => 'commerce_reports_sales',
+        ),
+      ),
+      'weight' => 280,
+    ),
+    'billing_information' => array(
+      'title' => t('Billing information'),
+      'type' => COMMERCE_REPORTS_DASHBOARD_ROW,
+      'report' => array(
+        'title' => t('Customer profiles'),
+        'path' => 'admin/commerce/customer-profiles',
+      ),
+      'sections' => array(
+        'map' => array(
+          'module' => 'commerce_reports',
+          'block' => 'commerce_reports_customer_map',
+        ),
+      ),
+      'weight' => 300,
+    ),
+  );
+}
