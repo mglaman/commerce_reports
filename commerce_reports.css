@@ -5,10 +5,10 @@
 }
 
 div.commerce-reports-dashboard-block {
-  font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+  /*font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
   font-style: normal;
   line-height: 1.5em;
-  border: 1px solid #666666;
+  border: 1px solid #666666;*/
   display: block;
   margin: 5px 0;
   vertical-align: top;
@@ -31,17 +31,21 @@ div.commerce-reports-dashboard-block .visible {
 }
 
 div.commerce-reports-dashboard-block .header {
-  display: block;
-  background: #222222;
+  background: #E1E2DC;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #BEBFB9;
+  padding: 3px 10px;
+  /*background: #222222;
   height: 20px;
   color: #cccccc;
-  padding: 5px;
+  padding: 5px;*/
+  display: block;
   overflow: hidden;
   position: relative;
-}
-
-div.commerce-reports-dashboard-block .header a {
-  color: white;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
 }
 
 div.commerce-reports-dashboard-block .header h1, div.commerce-reports-dashboard-block .header span, div.commerce-reports-dashboard-block .header div.operations {
@@ -52,31 +56,26 @@ div.commerce-reports-dashboard-block .header h1, div.commerce-reports-dashboard-
 }
 
 div.commerce-reports-dashboard-block .header h1 {
-  color: white;
-  font-size: 1em;
+  color: black;
+  font-size: 14px;
   float: left;
+  text-transform: uppercase;
+  font-weight: normal;
 }
 
 div.commerce-reports-dashboard-block .header span {
-  margin-top: 1px;
-  margin-bottom: 0px;
   margin-left: 5px;
-  font-size: 0.7em;
-  vertical-align: bottom;
+  font-size: 10px;
+  vertical-align: top;
 }
 
 div.commerce-reports-dashboard-block .header div.operations {
-  vertical-align: top;
-  height: 100%;
-  position: absolute;
-  top: 5px;
-  right: 2px;
+  float: right;
 }
 
 div.commerce-reports-dashboard-block .header div.operations ul {
   display: inline-block;
   list-style: none;
-  vertical-align: bottom;
   margin: 0;
 }
 
@@ -85,7 +84,7 @@ div.commerce-reports-dashboard-block .header div.operations ul li {
 }
 
 div.commerce-reports-dashboard-block .header div.operations ul li a {
-  font-size: 0.8em;
+  font-size: 10px;
   color: #ffffff;
   text-shadow: #333 0 1px 0;
   padding: 2px 10px;
@@ -94,13 +93,25 @@ div.commerce-reports-dashboard-block .header div.operations ul li a {
   border-radius: 10px;
 }
 
-div.commerce-reports-dashboard-block .header div.operations ul li a.activated {
+div.commerce-reports-dashboard-block .header div.operations ul li a {
   background: #acacac;
+}
+
+div.commerce-reports-dashboard-block .header div.operations ul li a.activated {
+  background: #555555;
 }
 
 div.commerce-reports-dashboard-block .header div.operations ul li a:hover {
   text-decoration: none;
   background: #555555;
+}
+
+div.commerce-reports-dashboard-block table {
+  border-top: none;
+}
+
+div.commerce-reports-dashboard-block table:first-child th {
+  border-top: none;
 }
 
 /* Specific styling for individual blocks */

@@ -97,7 +97,6 @@ function commerce_reports_customers() {
   return array(
     '#theme' => 'table',
     '#rows' => $statistics,
-    '#header' => array(array('data' => t('Statistics'), 'width' => '50%'), NULL),
   );
 }
 
