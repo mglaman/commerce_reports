@@ -47,15 +47,10 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
     }
     // Assemble the right table header.
     $header = array(t('Title'), t('Start date'), t('End date'), t('Order statuses'));
-    if (!empty($this->entityInfo['exportable'])) {
-      $header[] = t('Status');
-    }
     // Add operations with the right colspan.
     $field_ui = !empty($this->entityInfo['bundle of']) && module_exists('field_ui');
-    $exportable = !empty($this->entityInfo['exportable']);
     $colspan = 4;
     $colspan = $field_ui ? $colspan + 2 : $colspan;
-    $colspan = $exportable ? $colspan + 1 : $colspan;
     $header[] = array('data' => t('Operations'), 'colspan' => $colspan);
 
     $render = array(
