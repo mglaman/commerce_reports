@@ -61,12 +61,30 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
     );
     return $render;
   }
-
+  
   protected function overviewTableRow($conditions, $id, $entity, $additional_cols = array()) {
-    $rows = parent::overviewTableRow($conditions, $id, $entity, $additional_cols);
-    $rows[] = l(t('generate'), $this->path . '/manage/' . $id . '/generate');
-    
-    return $rows;
+    $entity_uri = entity_uri($this->entityType, $entity);
+
+    $row[] = array('data' => array(
+      '#theme' => 'entity_ui_overview_item',
+      '#label' => entity_label($this->entityType, $entity),
+      '#name' => FALSE,
+      '#url' => $entity_uri ? $entity_uri : FALSE,
+      '#entity_type' => $this->entityType),
+    );
+
+    // Add in any passed additional cols.
+    foreach ($additional_cols as $col) {
+      $row[] = $col;
+    }
+
+    $colspan = 3;
+
+    $row[] = l(t('edit'), $this->path . '/manage/' . $id);
+    $row[] = l(t('delete'), $this->path . '/manage/' . $id . '/delete');
+    $row[] = l(t('generate'), $this->path . '/manage/' . $id . '/generate');
+
+    return $row;
   }
   
 }
