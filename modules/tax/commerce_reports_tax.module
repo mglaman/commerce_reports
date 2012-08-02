@@ -140,7 +140,7 @@ function commerce_reports_tax_delete_multiple($report_ids) {
   return entity_get_controller('commerce_reports_tax')->delete($report_ids);
 }
 
-function commerce_reporst_tax_report_clear($report) {
+function commerce_reports_tax_report_clear($report) {
   commerce_reports_tax_cache_delete(array($report->report_id => $report));
   
   // Update last changed timestamp.

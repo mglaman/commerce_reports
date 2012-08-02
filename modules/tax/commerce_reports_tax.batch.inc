@@ -8,7 +8,7 @@ function _commerce_reports_tax_create($report, &$context) {
   $context['message'] = t('Preparing generation of %title tax report.', array('%title', $report->title));
   
   // Delete all existing data from the report.
-  commerce_reporst_tax_report_clear($report);
+  commerce_reports_tax_report_clear($report);
   
   // Create query object that will be used in the next step. It should contain all the parameters
   // like order status and time period that the report should reflect.
