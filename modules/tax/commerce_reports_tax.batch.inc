@@ -10,20 +10,10 @@ function _commerce_reports_tax_create($report, &$context) {
   // Delete all existing data from the report.
   commerce_reports_tax_report_clear($report);
   
-  // Create query object that will be used in the next step. It should contain all the parameters
-  // like order status and time period that the report should reflect.
-  $query = new EntityFieldQuery();
-  $query
-    ->entityCondition('entity_type', 'commerce_order')
-    ->propertyCondition('status', $report->order_statuses)
-    ->propertyCondition('created', $report->start, '>=')
-    ->propertyCondition('created', $report->end + 86400, '<=')
-    ->entityOrderBy('entity_id', 'ASC');
   
   $context['results'] = array(
     'report' => &$report,
     'rates' => array(),
-    'query' => $query,
     'orders' => array()
   );
 }
@@ -34,18 +24,25 @@ function _commerce_reports_tax_create($report, &$context) {
 function _commerce_reports_tax_generate(&$context) {
   $report =& $context['results']['report'];
   
+  $query = new EntityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'commerce_order')
+    ->propertyCondition('status', $report->order_statuses)
+    ->propertyCondition('created', $report->start, '>=')
+    ->propertyCondition('created', $report->end + 86400, '<=')
+    ->entityOrderBy('entity_id', 'ASC');
+  
   if (empty($context['sandbox'])) {
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['current'] = 0;
     
-    $max_query = clone $context['results']['query'];
+    $max_query = clone $query;
     $context['sandbox']['max'] = $max_query
       ->count()
       ->execute();
   }
   
   $rates =& $context['results']['rates'];
-  $query = clone $context['results']['query'];
 
   // As the order of the query is ascending, we just add an extra condition that filters all the previous orders out.
   // We also limit the query to a certain amount of orders for this iteration.
