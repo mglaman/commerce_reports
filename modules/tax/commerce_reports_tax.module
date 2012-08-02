@@ -119,7 +119,7 @@ function commerce_reports_tax_new($title = '', $start = NULL, $end = REQUEST_TIM
     'start' => $start,
     'end' => $end,
     'order_statuses' => $order_statuses,
-    'detailed' => $detailled,
+    'detailled' => $detailled,
   ));
 }
 
