@@ -5,10 +5,6 @@
 }
 
 div.commerce-reports-dashboard-block {
-  /*font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
-  font-style: normal;
-  line-height: 1.5em;
-  border: 1px solid #666666;*/
   display: block;
   margin: 5px 0;
   vertical-align: top;
@@ -36,10 +32,6 @@ div.commerce-reports-dashboard-block .header {
   border-style: solid;
   border-color: #BEBFB9;
   padding: 3px 10px;
-  /*background: #222222;
-  height: 20px;
-  color: #cccccc;
-  padding: 5px;*/
   display: block;
   overflow: hidden;
   position: relative;
