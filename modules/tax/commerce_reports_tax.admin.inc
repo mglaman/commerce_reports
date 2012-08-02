@@ -85,6 +85,11 @@ function commerce_reports_tax_form($form, &$form_state, $report, $op = 'edit') {
       break;
       
     default:
+      $form['actions']['generate'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save and generate'),
+        '#submit' => array('commerce_reports_tax_form_submit_save', 'commerce_reports_tax_form_submit_generate'),
+      );
       $form['actions']['save'] = array(
         '#type' => 'submit',
         '#value' => t('Save'),
