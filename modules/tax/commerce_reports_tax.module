@@ -58,9 +58,9 @@ function commerce_reports_tax_entity_info() {
       'controller class' => 'CommerceReportsTaxEntityController',
       'base table' => 'commerce_reports_tax',
       'uri callback' => 'commerce_reports_tax_uri',
-      'label callback' => 'commerce_reports_tax_label',
       'entity keys' => array(
         'id' => 'report_id',
+        'label' => 'title',
       ),
       'access callback' => 'commerce_reports_tax_access',
       'module' => 'commerce_reports_tax',
@@ -103,10 +103,6 @@ function commerce_reports_tax_uri($report) {
   return array(
     'path' => 'admin/commerce/reports/tax/' . $report->report_id,
   );
-}
-
-function commerce_reports_tax_label($entity, $entity_type) {
-  return $entity->title;
 }
 
 function commerce_reports_tax_new($title = '', $start = NULL, $end = REQUEST_TIME, $order_statuses = array('completed', 'pending'), $detailled = FALSE) {
