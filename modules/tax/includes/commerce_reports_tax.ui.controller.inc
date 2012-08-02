@@ -36,8 +36,8 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
     $rows = array();
     foreach ($entities as $entity) {
       $additional_cols = array(
-        format_date($entity->start, 'commerce_reports'),
-        format_date($entity->end, 'commerce_reports'),
+        format_date($entity->start, 'custom', 'l j F o'),
+        format_date($entity->end, 'custom', 'l j F o'),
         theme('item_list', array(
           'items' => $entity->order_statuses,
         )),
@@ -47,15 +47,10 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
     }
     // Assemble the right table header.
     $header = array(t('Title'), t('Start date'), t('End date'), t('Order statuses'));
-    if (!empty($this->entityInfo['exportable'])) {
-      $header[] = t('Status');
-    }
     // Add operations with the right colspan.
     $field_ui = !empty($this->entityInfo['bundle of']) && module_exists('field_ui');
-    $exportable = !empty($this->entityInfo['exportable']);
     $colspan = 4;
     $colspan = $field_ui ? $colspan + 2 : $colspan;
-    $colspan = $exportable ? $colspan + 1 : $colspan;
     $header[] = array('data' => t('Operations'), 'colspan' => $colspan);
 
     $render = array(
