@@ -36,8 +36,8 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
     $rows = array();
     foreach ($entities as $entity) {
       $additional_cols = array(
-        format_date($entity->start, 'commerce_reports'),
-        format_date($entity->end, 'commerce_reports'),
+        format_date($entity->start, 'custom', 'l j F o'),
+        format_date($entity->end, 'custom', 'l j F o'),
         theme('item_list', array(
           'items' => $entity->order_statuses,
         )),
