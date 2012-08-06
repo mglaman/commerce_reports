@@ -160,13 +160,11 @@ class CommerceReportsTaxGenerationTests extends CommerceBaseTestCase {
 
     // Check in database if the tax is applied.
     $order = commerce_order_load_multiple(array($order->order_id), array(), TRUE);
-    debug($order);
     $order_wrapper = entity_metadata_wrapper('commerce_order', reset($order));
     $order_data = $order_wrapper->commerce_order_total->value();
     $tax_components = commerce_price_component_load($order_data, $tax_rate['price_component']);
     $tax_component = reset($tax_components);
     $this->assertFalse(empty($tax_component), t('Tax is applied in the order'));
-    debug($tax_component);
     
     $this->drupalLogin($this->store_admin);
     
