@@ -165,7 +165,7 @@ function commerce_reports_tax_delete_multiple($report_ids) {
  * Clears all generated information about a single commerce_reports_tax entity.
  */
 function commerce_reports_tax_report_clear($report) {
-  commerce_reports_tax_cache_delete(array($report->report_id => $report));
+  commerce_reports_tax_report_clear_multiple(array($report->report_id => $report));
   
   // Update last changed timestamp.
   commerce_reports_tax_save($report);

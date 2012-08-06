@@ -76,7 +76,7 @@ class CommerceReportsTaxEntityController extends DrupalCommerceEntityController 
     }
     
     try {
-      commerce_reports_tax_cache_delete($entities);
+      commerce_reports_tax_report_clear_multiple($entities);
       
       $result = parent::delete($ids, $transaction);
       if (empty($result)) {

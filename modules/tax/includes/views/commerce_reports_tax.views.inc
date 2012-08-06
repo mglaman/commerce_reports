@@ -35,12 +35,12 @@ function commerce_reports_tax_views_data() {
     'commerce_reports_tax_rate_aggregate' => array (
       'left_field' => 'report_id',
       'field' => 'report_id',
-      'extra' => '{commerce_reports_tax_rate}.name = {commerce_reports_tax_rate_aggregate}.tax',
+      'extra' => 'commerce_reports_tax_rate.name = commerce_reports_tax_rate_aggregate.tax',
     ),
     'commerce_reports_tax_rate_orders' => array (
       'left_field' => 'report_id',
       'field' => 'report_id',
-      'extra' => '{commerce_reports_tax_rate}.name = {commerce_reports_tax_rate_orders}.tax',
+      'extra' => 'commerce_reports_tax_rate.name = commerce_reports_tax_rate_orders.tax',
     ),
   );
   
