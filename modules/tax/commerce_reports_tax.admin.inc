@@ -124,4 +124,5 @@ function commerce_reports_tax_form_submit_generate($form, &$form_state) {
   $report = entity_ui_form_submit_build_entity($form, $form_state);
   
   commerce_reports_tax_generate($report);
+  $form_state['redirect'] = 'admin/commerce/reports/tax/' . $report->report_id;
 }

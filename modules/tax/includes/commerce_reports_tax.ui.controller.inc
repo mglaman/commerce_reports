@@ -69,7 +69,7 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
       '#theme' => 'entity_ui_overview_item',
       '#label' => entity_label($this->entityType, $entity),
       '#name' => FALSE,
-      '#url' => $entity_uri ? $entity_uri : FALSE,
+      '#url' => $entity_uri,
       '#entity_type' => $this->entityType),
     );
 
@@ -78,8 +78,9 @@ class CommerceReportsTaxUIController extends EntityDefaultUIController {
       $row[] = $col;
     }
 
-    $colspan = 3;
+    $colspan = 4;
 
+    $row[] = l(t('view'), $entity_uri['path']);
     $row[] = l(t('edit'), $this->path . '/manage/' . $id);
     $row[] = l(t('delete'), $this->path . '/manage/' . $id . '/delete');
     $row[] = l(t('generate'), $this->path . '/manage/' . $id . '/generate');
