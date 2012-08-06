@@ -71,3 +71,110 @@ class CommerceReportsTaxCRUDTestCase extends CommerceBaseTestCase {
   }
   
 }
+
+class CommerceReportsTaxGenerationTests extends CommerceBaseTestCase {
+
+  protected $tax_rates;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Tax report generation',
+      'description' => 'Test the tax report CRUD functions.',
+      'group' => 'Drupal Commerce',
+    );
+  }
+  
+  /**
+   * Helper function to get different combinations of permission sets.
+   *
+   * @param $set
+   *  Can be a single string (from the following) or can be an array containing
+   *  multiple values that should be merged:
+   *    'site admin': Admin permissions for Drupal core modules
+   *    'store admin': All commerce "administer X" permissions
+   */
+  protected function permissionBuilder($sets) {
+    if (is_string($sets)) {
+      $sets = array($sets);
+    }
+    $store_admin = array(
+      'access commerce tax reports',
+      'manage commerce tax reports',
+    );
+    
+    $final_permissions = parent::permissionBuilder($sets);
+    
+    foreach ($sets as $set) {
+      switch ($set) {
+        case 'store admin':
+          $final_permissions = array_unique(array_merge($final_permissions, $store_admin));
+          break;
+      }
+    }
+    
+    return $final_permissions;
+  }
+  
+  protected function createReport() {
+    $options = array(
+      'title' => $this->randomName(),
+      'order_statuses[]' => array(
+        'cart'
+      ),
+    );
+    
+    $this->drupalPost('admin/commerce/reports/tax/add', $options, t('Create and generate'));
+    
+    return $options['title'];
+  }
+  
+  function setUp() {
+    $this->resetAll();
+    
+    $modules = parent::setUpHelper('all', array('commerce_reports_tax'));
+    parent::setUp($modules);
+    
+    $this->store_admin = $this->createUserWithPermissionHelper(array('site admin', 'store admin'));
+    $this->normal_user = $this->drupalCreateUser(array('access checkout', 'view own commerce_order entities'));
+    
+    $this->tax_type = $this->createDummyTaxType();
+  }
+  
+  /**
+   * The following test is unfinished thanks to an apparant bug in SimpleTest.
+   */
+  function testSingleTaxType() {
+    // Create a tax rate of Salex Type.
+    $tax_rate = $this->createDummyTaxRate(array('type' => 'sales_tax'));
+
+    // Create a dummy order in cart status.
+    $order = $this->createDummyOrder($this->normal_user->uid);
+
+    // Login with normal user.
+    $this->drupalLogin($this->normal_user);
+
+    // Get the checkout url and navigate to it.
+    $links = commerce_line_item_summary_links();
+    $this->checkout_url = $links['checkout']['href'];
+    $this->drupalGet($this->checkout_url);
+
+    // Check in database if the tax is applied.
+    $order = commerce_order_load_multiple(array($order->order_id), array(), TRUE);
+    debug($order);
+    $order_wrapper = entity_metadata_wrapper('commerce_order', reset($order));
+    $order_data = $order_wrapper->commerce_order_total->value();
+    $tax_components = commerce_price_component_load($order_data, $tax_rate['price_component']);
+    $tax_component = reset($tax_components);
+    $this->assertFalse(empty($tax_component), t('Tax is applied in the order'));
+    debug($tax_component);
+    
+    $this->drupalLogin($this->store_admin);
+    
+    $report_title = $this->createReport();
+    
+    $this->drupalGet('admin/commerce/reports/tax');
+    
+    $this->clickLink($report_title);
+  }
+  
+}
