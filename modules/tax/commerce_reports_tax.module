@@ -99,12 +99,18 @@ function commerce_reports_tax_access($op, $type = NULL, $account = NULL) {
   }
 }
 
+/**
+ * URI callback for commerce_reports_tax entity.
+ */
 function commerce_reports_tax_uri($report) {
   return array(
     'path' => 'admin/commerce/reports/tax/' . $report->report_id,
   );
 }
 
+/**
+ * Create a new commerce_reports_tax entity.
+ */
 function commerce_reports_tax_new($title = '', $start = NULL, $end = REQUEST_TIME, $order_statuses = array('completed', 'pending'), $detailled = FALSE) {
   if (!isset($end)) {
     $end = REQUEST_TIME;
@@ -119,27 +125,45 @@ function commerce_reports_tax_new($title = '', $start = NULL, $end = REQUEST_TIM
   ));
 }
 
+/**
+ * Update a commerce_reports_tax entity.
+ */
 function commerce_reports_tax_save($report) {
   return entity_get_controller('commerce_reports_tax')->save($report);
 }
 
+/**
+ * Loads a single commerce_reports_tax entity.
+ */
 function commerce_reports_tax_load($report_id) {
   $reports = commerce_reports_tax_load_multiple(array($report_id), array());
   return $reports ? reset($reports) : FALSE;
 }
 
+/**
+ * Loads multiple commerce_reports_tax entity.
+ */
 function commerce_reports_tax_load_multiple($report_ids = array(), $conditions = array(), $reset = FALSE) {
   return entity_load('commerce_reports_tax', $report_ids, $conditions, $reset);
 }
 
+/**
+ * Delete a single commerce_reports_tax entity.
+ */
 function commerce_reports_tax_delete($report_id) {
   return commerce_reports_tax_delete_multiple(array($report_id));
 }
 
+/**
+ * Delete multiple commerce_reports_tax entity.
+ */
 function commerce_reports_tax_delete_multiple($report_ids) {
   return entity_get_controller('commerce_reports_tax')->delete($report_ids);
 }
 
+/**
+ * Clears all generated information about a single commerce_reports_tax entity.
+ */
 function commerce_reports_tax_report_clear($report) {
   commerce_reports_tax_cache_delete(array($report->report_id => $report));
   
@@ -147,6 +171,26 @@ function commerce_reports_tax_report_clear($report) {
   commerce_reports_tax_save($report);
 }
 
+/**
+ * Clears all generated information about multiple commerce_reports_tax entity.
+ */
+function commerce_reports_tax_report_clear_multiple($ids) {
+  db_delete('commerce_reports_tax_rate_aggregate')
+    ->condition('report_id', array_keys($ids), 'IN')
+    ->execute();
+    
+  db_delete('commerce_reports_tax_rate_orders')
+    ->condition('report_id', array_keys($ids), 'IN')
+    ->execute();
+    
+  db_delete('commerce_reports_tax_rate')
+    ->condition('report_id', array_keys($ids), 'IN')
+    ->execute();
+}
+
+/**
+ * Generate information about a commerce_reports_tax entity.
+ */
 function commerce_reports_tax_generate($report) {
   $batch = array(
     'title' => t('Generating tax report'),
@@ -159,18 +203,4 @@ function commerce_reports_tax_generate($report) {
   );
   
   batch_set($batch);
-}
-
-function commerce_reports_tax_cache_delete($ids) {
-  db_delete('commerce_reports_tax_rate_aggregate')
-    ->condition('report_id', array_keys($ids), 'IN')
-    ->execute();
-    
-  db_delete('commerce_reports_tax_rate_orders')
-    ->condition('report_id', array_keys($ids), 'IN')
-    ->execute();
-    
-  db_delete('commerce_reports_tax_rate')
-    ->condition('report_id', array_keys($ids), 'IN')
-    ->execute();
 }

@@ -4,6 +4,9 @@
  * Administrative forms.
  */
  
+/**
+ * Form for editing commerce_reports_tax entities.
+ */
 function commerce_reports_tax_form($form, &$form_state, $report, $op = 'edit') {
   if ($op == 'clone') {
     $report->title .= ' (cloned)';
@@ -104,6 +107,9 @@ function commerce_reports_tax_form($form, &$form_state, $report, $op = 'edit') {
   return $form;
 }
 
+/**
+ * Submit handler that stores information from entity edit form.
+ */
 function commerce_reports_tax_form_submit_save($form, &$form_state) {
   $report = entity_ui_form_submit_build_entity($form, $form_state);
   
@@ -111,6 +117,9 @@ function commerce_reports_tax_form_submit_save($form, &$form_state) {
   $form_state['redirect'] = 'admin/commerce/reports/tax';
 }
 
+/**
+ * Submit handler that generate a tax report.
+ */
 function commerce_reports_tax_form_submit_generate($form, &$form_state) {
   $report = entity_ui_form_submit_build_entity($form, $form_state);
   

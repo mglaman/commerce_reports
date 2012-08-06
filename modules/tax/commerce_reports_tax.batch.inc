@@ -3,7 +3,10 @@
  * @file
  * Functions for batch processing tax reports.
  */
- 
+
+/**
+ * Initializes the Batch process.
+ */
 function _commerce_reports_tax_create($report, &$context) {
   $context['message'] = t('Preparing generation of %title tax report.', array('%title', $report->title));
   
@@ -138,6 +141,9 @@ function _commerce_reports_tax_generate(&$context) {
   }
 }
 
+/**
+ * Finishes the batch process and stores any remaining information.
+ */
 function _commerce_reports_tax_finished($success, $results, $operations) {
   if ($success) {
     $report =& $results['report'];
