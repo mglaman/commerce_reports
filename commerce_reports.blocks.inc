@@ -106,7 +106,7 @@ function commerce_reports_customers() {
 function commerce_reports_customer_map() {
   $data = array();
   
-  $result = db_query("SELECT ca.commerce_customer_address_country AS country, COUNT(*) AS count FROM {field_data_commerce_customer_address} ca WHERE ca.bundle = 'billing'");
+  $result = db_query("SELECT ca.commerce_customer_address_country AS country, COUNT(*) AS count FROM {field_data_commerce_customer_address} ca WHERE ca.bundle = 'billing' GROUP BY ca.commerce_customer_address_country");
   $result->setFetchMode(PDO::FETCH_ASSOC);
   
   foreach ($result as $record) {
