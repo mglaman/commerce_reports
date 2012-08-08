@@ -1,4 +1,4 @@
-name = Pattern mining
+name = Pattern mining (experimental)
 description = Provides association rule mining, otherwise called frequent itemset mining, support for your Commerce store.
 package = Commerce (reporting)
 dependencies[] = commerce_order
