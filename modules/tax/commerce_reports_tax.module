@@ -6,15 +6,37 @@
 function commerce_reports_tax_help($path, $arg) {
   switch ($path) {
     case 'admin/commerce/reports/tax':
-      return '<p>' . t('Here you can create, manage and generate tax reports. These reports are a snapshot of the state of your store when it was last generated, they do not necessarily represent the current state of your store.') . '</p>';
-      
-    case 'admin/commerce/reports/tax/%':
-      return '<p>' . t('Here you can see the details of your tax report. If you wish you can <a href="@generation-url">re-generate</a> it or <a href="@edit-url">edit</a> its parameters.', array('@generation-url' => url('admin/commerce/reports/tax/manage/' . $arg[4] . '/generate'), '@edit-url' => url('admin/commerce/reports/tax/manage/' . $arg[4]))) . '</p>';
-      
-    case 'admin/commerce/reports/tax/%/%':
-      return '<p>' . t('These are the individual orders that have contributed to your tax report. You can see what type of tax and the exact amount that was charged.') . '</p>';
+      return '<p>' . t('Here you can see reports about the tax gathered by your store.') . '</p>';
       
   }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_reports_tax_menu() {
+  $items = array();
+  
+  $items['admin/commerce/config/tax-reports'] = array(
+    'title' => 'Tax reports settings',
+    'description' => 'Configure tax reports settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('commerce_reports_tax_form'),
+    'access arguments' => array('configure commerce tax reports'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'commerce_reports_tax.admin.inc',
+  );
+  
+  $items['admin/commerce/reports/tax'] = array(
+    'title' => 'Taxes',
+    'description' => 'View reporting about your taxes.',
+    'page callback' => 'commerce_reports_tax_table',
+    'access arguments' => array('access commerce tax reports'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'commerce_reports_tax.admin.inc',
+  );
+
+  return $items;
 }
 
 /**
@@ -47,31 +69,6 @@ function commerce_reports_tax_views_api() {
   );
 }
 
-/**
- * Implements hook_entity_info().
- */
-function commerce_reports_tax_entity_info() {
-  return array(
-    'commerce_reports_tax' => array(
-      'label' => t('tax report'),
-      'plural label' => t('Tax reports'),
-      'controller class' => 'CommerceReportsTaxEntityController',
-      'base table' => 'commerce_reports_tax',
-      'uri callback' => 'commerce_reports_tax_uri',
-      'entity keys' => array(
-        'id' => 'report_id',
-        'label' => 'title',
-      ),
-      'access callback' => 'commerce_reports_tax_access',
-      'module' => 'commerce_reports_tax',
-      'admin ui' => array(
-        'path' => 'admin/commerce/reports/tax',
-        'file' => 'commerce_reports_tax.admin.inc',
-        'controller class' => 'CommerceReportsTaxUIController',
-      ),
-    ),
-  );
-}
 
 /**
  * Implements hook_permission().
@@ -81,121 +78,52 @@ function commerce_reports_tax_permission() {
     'access commerce tax reports' => array(
       'title' => t('Access commerce tax reports'),
     ),
-    'manage commerce tax reports' => array(
-      'title' => t('Manage commerce tax reports'),
+    'configure commerce tax reports' => array(
+      'title' => t('Configure commerce tax reports'),
     ),
   );
 }
 
 /**
- * Callback for Entity API access.
+ * Returns the order statuses that should be taken into account.
  */
-function commerce_reports_tax_access($op, $type = NULL, $account = NULL) {
-  if ($op = "view") {
-    return user_access('access commerce tax reports', $account);
-  }
-  else {
-    return user_access('manage commerce tax reports', $account);
-  }
+function commerce_reports_tax_order_statuses() {
+  return array('pending', 'completed');
 }
 
 /**
- * URI callback for commerce_reports_tax entity.
+ * Implements hook_entity_insert().
  */
-function commerce_reports_tax_uri($report) {
-  return array(
-    'path' => 'admin/commerce/reports/tax/' . $report->report_id,
-  );
-}
-
-/**
- * Create a new commerce_reports_tax entity.
- */
-function commerce_reports_tax_new($title = '', $start = NULL, $end = REQUEST_TIME, $order_statuses = array('completed', 'pending'), $detailled = FALSE) {
-  if (!isset($end)) {
-    $end = REQUEST_TIME;
-  }
-  
-  return entity_get_controller('commerce_reports_tax')->create(array(
-    'title' => $title,
-    'start' => $start,
-    'end' => $end,
-    'order_statuses' => $order_statuses,
-    'detailled' => $detailled,
-  ));
-}
-
-/**
- * Update a commerce_reports_tax entity.
- */
-function commerce_reports_tax_save($report) {
-  return entity_get_controller('commerce_reports_tax')->save($report);
-}
-
-/**
- * Loads a single commerce_reports_tax entity.
- */
-function commerce_reports_tax_load($report_id) {
-  $reports = commerce_reports_tax_load_multiple(array($report_id), array());
-  return $reports ? reset($reports) : FALSE;
-}
-
-/**
- * Loads multiple commerce_reports_tax entity.
- */
-function commerce_reports_tax_load_multiple($report_ids = array(), $conditions = array(), $reset = FALSE) {
-  return entity_load('commerce_reports_tax', $report_ids, $conditions, $reset);
-}
-
-/**
- * Delete a single commerce_reports_tax entity.
- */
-function commerce_reports_tax_delete($report_id) {
-  return commerce_reports_tax_delete_multiple(array($report_id));
-}
-
-/**
- * Delete multiple commerce_reports_tax entity.
- */
-function commerce_reports_tax_delete_multiple($report_ids) {
-  return entity_get_controller('commerce_reports_tax')->delete($report_ids);
-}
-
-/**
- * Clears all generated information about a single commerce_reports_tax entity.
- */
-function commerce_reports_tax_report_clear($report) {
-  commerce_reports_tax_report_clear_multiple(array($report->report_id => $report));
-  
-  // Update last changed timestamp.
-  commerce_reports_tax_save($report);
-}
-
-/**
- * Clears all generated information about multiple commerce_reports_tax entity.
- */
-function commerce_reports_tax_report_clear_multiple($ids) {
-  db_delete('commerce_reports_tax_rate_aggregate')
-    ->condition('report_id', array_keys($ids), 'IN')
-    ->execute();
+function commerce_reports_tax_entity_insert($entity, $type) {
+  if ($type == 'commerce_order') {
+    dpm($entity);
     
-  db_delete('commerce_reports_tax_rate_orders')
-    ->condition('report_id', array_keys($ids), 'IN')
-    ->execute();
+    commerce_reports_tax_order_process($entity);
     
-  db_delete('commerce_reports_tax_rate')
-    ->condition('report_id', array_keys($ids), 'IN')
-    ->execute();
+    dpm('inserted');
+  }
 }
 
 /**
- * Generate information about a commerce_reports_tax entity.
+ * Implements hook_entity_update().
  */
-function commerce_reports_tax_generate($report) {
+function commerce_reports_tax_entity_update($entity, $type) {
+  if ($type == 'commerce_order') {
+    dpm($entity);
+    
+    commerce_reports_tax_order_process($entity, FALSE);
+    
+    dpm('updated');
+  }
+}
+
+/**
+ * Generate previous tax information.
+ */
+function commerce_reports_tax_generate() {
   $batch = array(
     'title' => t('Generating tax report'),
     'operations' => array(
-      array('_commerce_reports_tax_create', array($report)),
       array('_commerce_reports_tax_generate', array()),
     ),
     'finished' => '_commerce_reports_tax_finished',
@@ -203,4 +131,53 @@ function commerce_reports_tax_generate($report) {
   );
   
   batch_set($batch);
+}
+
+function commerce_reports_tax_order_process($order, $insert = TRUE) {
+  $wrapper = entity_metadata_wrapper('commerce_order', $order);
+  $order_data = $wrapper->commerce_order_total->data->value();
+  
+  $applied_taxes = array();
+  
+  $base_price = 0;
+
+  // Loop through all the components of this order, to retrieve all applies tax rates and 
+  // to determine the base price of the order.
+  foreach ($order_data['components'] as $component) {
+    if (!empty($component['price']['data']['tax_rate'])) {
+      // If this component contains a tax rate, process and store.
+      $rate = $component['price']['data']['tax_rate'];
+
+      // For each applied tax rate to this order, create a new object to hold the information.
+      // If the report is detailled, we will also use this object to save to the database.
+      $tax = new stdClass;
+      
+      // Report_id is a dummy field at this moment. In the future we want to be able to distinguish different reports.
+      $tax->tax_rate = $rate['name'];
+      $tax->order_id = $wrapper->order_id->value();
+      $tax->currency_code = $wrapper->commerce_order_total->currency_code->value();
+      $tax->taxable =& $base_price;
+      $tax->taxed = (int) $component['price']['amount'];
+
+      // Store the record to an array.
+      $applied_taxes[] = $tax;
+    }
+    elseif ($component['name'] == 'base_price') {
+      dpm($component);
+      // Aggregate the base price for this order.
+      $base_price += $component['price']['amount'];
+    }
+  }
+  
+  if ($insert) {
+    $primary_keys = array();
+  } else {
+    $primary_keys = array('tax_rate', 'order_id', 'currency_code');
+  }
+  
+  foreach ($applied_taxes as $tax) {
+    $result = drupal_write_record('commerce_reports_tax', $tax, $primary_keys);
+    dpm($tax);
+    dpm($result);
+  }
 }
