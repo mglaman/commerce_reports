@@ -96,11 +96,6 @@ function commerce_reports_tax_order_statuses() {
  */
 function commerce_reports_tax_entity_insert($entity, $type) {
   if ($type == 'commerce_order') {
-    dpm($entity);
-    
-    commerce_reports_tax_order_process($entity);
-    
-    dpm('inserted');
   }
 }
 
@@ -109,11 +104,31 @@ function commerce_reports_tax_entity_insert($entity, $type) {
  */
 function commerce_reports_tax_entity_update($entity, $type) {
   if ($type == 'commerce_order') {
-    dpm($entity);
+    $original = $entity->original;
     
-    commerce_reports_tax_order_process($entity, FALSE);
+    $order_status = $entity->status;
+    $original_order_status = $original->status;
     
-    dpm('updated');
+    $include = in_array($order_status, commerce_reports_tax_order_statuses());
+    $included = in_array($original_order_status, commerce_reports_tax_order_statuses());
+    
+    // The order changed to a order status we're interested in,
+    // we should extract its tax information.
+    if (!$included && $include) {
+      commerce_reports_tax_order_save($entity);
+    }
+    
+    // There order changed to a status that should not be included in the report,
+    // we should remove its information.
+    elseif ($included && !$include) {
+      commerce_reports_tax_order_delete($order->order_id);
+    }
+    
+    // The order was updated an its total changed, we should figure out what has changed
+    // and change our information accordingly.
+    elseif ($included && $include && $original->commerce_order_total != $entity->commerce_order_total) {
+      commerce_reports_tax_order_save($entity, TRUE);
+    }
   }
 }
 
@@ -133,7 +148,15 @@ function commerce_reports_tax_generate() {
   batch_set($batch);
 }
 
-function commerce_reports_tax_order_process($order, $insert = TRUE) {
+function commerce_reports_tax_order_delete_multiple($order_ids = array()) {
+  db_query("DELETE FROM {commerce_reports_tax} WHERE order_id IN (:order_ids)", array(':order_id' => $order_ids));
+}
+
+function commerce_reports_tax_order_delete($order_id) {
+  return commerce_reports_tax_order_delete_multiple(array($order_id));
+}
+
+function commerce_reports_tax_order_save($order, $update = FALSE) {
   $wrapper = entity_metadata_wrapper('commerce_order', $order);
   $order_data = $wrapper->commerce_order_total->data->value();
   
@@ -160,24 +183,39 @@ function commerce_reports_tax_order_process($order, $insert = TRUE) {
       $tax->taxed = (int) $component['price']['amount'];
 
       // Store the record to an array.
-      $applied_taxes[] = $tax;
+      $applied_taxes[$tax->tax_rate . $tax->order_id . $tax->currency_code] = $tax;
     }
     elseif ($component['name'] == 'base_price') {
-      dpm($component);
       // Aggregate the base price for this order.
       $base_price += $component['price']['amount'];
     }
   }
   
-  if ($insert) {
-    $primary_keys = array();
-  } else {
-    $primary_keys = array('tax_rate', 'order_id', 'currency_code');
+  // If we know the tax information is already stored, we need to check the database and see what's already in there.
+  if ($update) {
+    $result = db_query("SELECT tax_rate, order_id, currency_code, taxable, taxed FROM {commerce_reports_tax} WHERE order_id = :order_id", array(':order_id' => $order->order_id));
+    
+    while ($row = $result->fetchAssoc()) {
+      $id = $row['tax_rate'] . $row['order_id'] . $row['currency_code'];
+      
+      // If there exists an applied tax that corresponds with the one in the database; update it if necessary.
+      if (!empty($applied_taxes[$id])) {
+        if ($applied_taxes[$id] != $row) {
+          drupal_write_record('commerce_reports_tax', $applied_taxes[$id], array('tax_rate', 'order_id', 'currency_code'));
+          
+          unset($applied_taxes[$id]);
+        }
+      }
+      
+      // If it doesn't, then delete if from the database;
+      else {
+        db_query("DELETE FROM {commerce_reports_tax} WHERE tax_rate = :tax_rate AND order_id = :order_id AND currency_code = :currency_code", array(':tax_rate' => $row['tax_rate'], ':order_id' => $row['order_id'], ':currency_code' => $row['currency_code']));
+      }
+    }
   }
   
+  // Insert any of the remaining applied taxes.
   foreach ($applied_taxes as $tax) {
-    $result = drupal_write_record('commerce_reports_tax', $tax, $primary_keys);
-    dpm($tax);
-    dpm($result);
+    $result = drupal_write_record('commerce_reports_tax', $tax);
   }
 }

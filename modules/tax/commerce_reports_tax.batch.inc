@@ -27,7 +27,7 @@ function _commerce_reports_tax_generate(&$context) {
 
     // Iterate the orders and break each order down into its components.
     foreach ($orders as $order) {
-      commerce_reports_tax_order_process($order);
+      commerce_reports_tax_order_save($order);
       
       $context['results']['orders'][] = $order->order_id;
       $context['sandbox']['progress']++;
