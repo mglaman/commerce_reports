@@ -60,17 +60,6 @@ function commerce_reports_tax_menu_alter(&$items) {
 }
 
 /**
- * Implements hook_views_api().
- */
-function commerce_reports_tax_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module', 'commerce_reports_tax') . '/includes/views',
-  );
-}
-
-
-/**
  * Implements hook_permission().
  */
 function commerce_reports_tax_permission() {
@@ -85,10 +74,60 @@ function commerce_reports_tax_permission() {
 }
 
 /**
- * Returns the order statuses that should be taken into account.
+ * Implements hook_commerce_reports_dashboard().
  */
-function commerce_reports_tax_order_statuses() {
-  return array('pending', 'completed');
+function commerce_reports_tax_commerce_reports_dashboard() {
+  return array(
+    'commerce_reports_tax' => array(
+      'title' => t('Taxes'),
+      'type' => COMMERCE_REPORTS_DASHBOARD_BROAD_BLOCK,
+      'report' => array(
+        'title' => t('Tax reports'),
+        'path' => 'admin/commerce/reports/tax',
+      ),
+      'sections' => array(
+        'default' => array(
+          'module' => 'commerce_reports_tax',
+          'block' => 'commerce_reports_tax',
+        ),
+      ),
+      'weight' => 5,
+    ),
+  );
+}
+
+/**
+ * Implements hook_commerce_reports_dashboard_alter().
+ */
+function commerce_reports_tax_commerce_reports_dashboard_alter(&$info) {
+  $info['statistics']['weight'] = 10;
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ * Defines the custom blocks defined by commerce_reports_tax.
+ */
+function commerce_reports_tax_block_info() {
+  return array(
+    'commerce_reports_tax' => array(
+      'info' => t('Commerce Tax Reports'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Implementation of the dashboard block used in commerce_reports.
+ */
+function commerce_reports_tax_block_view($delta = '') {
+  module_load_include('inc', 'commerce_reports_tax', 'commerce_reports_tax.admin');
+  
+  switch ($delta) {
+    case 'commerce_reports_tax':
+      return commerce_reports_tax_table();
+  }
 }
 
 /**
@@ -133,7 +172,14 @@ function commerce_reports_tax_entity_update($entity, $type) {
 }
 
 /**
- * Generate previous tax information.
+ * Returns the order statuses that should be taken into account.
+ */
+function commerce_reports_tax_order_statuses() {
+  return array('pending', 'completed');
+}
+
+/**
+ * Generate historic tax information.
  */
 function commerce_reports_tax_generate() {
   $batch = array(
@@ -148,14 +194,26 @@ function commerce_reports_tax_generate() {
   batch_set($batch);
 }
 
+/**
+ * Deletes the tax information of multiple orders.
+ */
 function commerce_reports_tax_order_delete_multiple($order_ids = array()) {
   db_query("DELETE FROM {commerce_reports_tax} WHERE order_id IN (:order_ids)", array(':order_id' => $order_ids));
 }
 
+/**
+ * Deletes the tax information of an order.
+ */
 function commerce_reports_tax_order_delete($order_id) {
   return commerce_reports_tax_order_delete_multiple(array($order_id));
 }
 
+/**
+ * Stores the tax information of an order.
+ *
+ * If the order has already been processed in the past it will compare the information
+ * in the database with the generated information and update accordingly.
+ */
 function commerce_reports_tax_order_save($order, $update = FALSE) {
   $wrapper = entity_metadata_wrapper('commerce_order', $order);
   $order_data = $wrapper->commerce_order_total->data->value();

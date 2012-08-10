@@ -4,8 +4,19 @@
  * Dashboard for reporting module.
  */
  
-define('COMMERCE_REPORTS_DASHBOARD_BLOCK', 0);
-define('COMMERCE_REPORTS_DASHBOARD_ROW', 1);
+define('COMMERCE_REPORTS_DASHBOARD_BLOCK', 1);
+define('COMMERCE_REPORTS_DASHBOARD_BROAD_BLOCK', 2);
+define('COMMERCE_REPORTS_DASHBOARD_ROW', 3);
+
+function commerce_reports_dashboard_block_width($items = array()) {
+  $width = 0;
+  
+  foreach ($items as $item) {
+    $width += isset($item['#width']) ? $item['#width'] : COMMERCE_REPORTS_DASHBOARD_BLOCK;
+  }
+  
+  return $width;
+}
 
 /**
  * Renders the dashboard.
@@ -28,23 +39,13 @@ function commerce_reports_dashboard() {
   $items = array();
   foreach ($info as $name => $block) {
     $type = isset($block['type']) ? $block['type'] : COMMERCE_REPORTS_DASHBOARD_BLOCK;
-    $flush = FALSE;
     
-    switch ($type) {
-      case COMMERCE_REPORTS_DASHBOARD_BLOCK:
-        $items[] = commerce_reports_dashboard_block($name, $block);
-        
-        if (count($items) == 3) {
-          $render[] = commerce_reports_dashboard_row($items);
-          $items = array();
-        }
-        break;
-        
-      case COMMERCE_REPORTS_DASHBOARD_ROW:
-        $render[] = commerce_reports_dashboard_row(array(commerce_reports_dashboard_block($name, $block)));
-        break;
-        
+    if (commerce_reports_dashboard_block_width($items) + $type > 3) {
+      $render[] = commerce_reports_dashboard_row($items);
+      $items = array();
     }
+    
+    $items[] = commerce_reports_dashboard_block($name, $block);
   }
   
   if (!empty($items)) {
@@ -78,7 +79,7 @@ function commerce_reports_dashboard_block($name, $options = array()) {
     '#title' => $options['title'],
     '#name' => $name,
     '#report' => !empty($options['report']) ? l($options['report']['title'], $options['report']['path']) : NULL,
-    '#width' => !empty($options['width']) ? $options['width'] : NULL,
+    '#width' => !empty($options['type']) ? $options['type'] : COMMERCE_REPORTS_DASHBOARD_BLOCK,
   );
   
   $section_links = array();

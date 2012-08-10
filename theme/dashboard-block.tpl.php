@@ -14,10 +14,6 @@ if (!empty($block['#children'])) {
   $attributes = array(
     'class' => array('commerce-reports-dashboard-block', 'commerce-reports-dashboard-' . $block['#name'] . '-block'),
   );
-  
-  if (!empty($block['#width'])) {
-    $attributes['style'] = 'width: ' . $block['#width'] . '%';
-  }
 ?>
 <div<?php print drupal_attributes($attributes); ?>>
   <div class='header'>
