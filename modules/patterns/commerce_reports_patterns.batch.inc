@@ -34,7 +34,7 @@ function commerce_reports_patterns_load($min_support, &$context) {
   if ($product) {
     $context['results']['frequent_sets'][1][0]['sets'][] = array(
       'items' => array($product->sku),
-      'tidlist' => db_query("SELECT order_id FROM {commerce_line_item} WHERE line_item_label = :sku", array(':sku' => $product->sku))->fetchCol()
+      'tidlist' => db_query("SELECT DISTINCT order_id FROM {commerce_line_item} WHERE line_item_label = :sku", array(':sku' => $product->sku))->fetchCol()
     );
   }
 
@@ -116,7 +116,7 @@ function commerce_reports_patterns_frequent_itemset(&$context) {
       'tidlist' => array_intersect($a_set['tidlist'], $b_set['tidlist']),
     );
     
-    $occurences = max(count($candidate['tidlist']), 1);
+    $occurences = max(count($candidate['tidlist']), 0);
     
     if ($occurences >= $context['results']['minimum_transactions']) {
       $new_items = array_diff($candidate['items'], $partition_prefix);
@@ -191,7 +191,7 @@ function commerce_reports_patterns_association_rules($min_confidence, &$context)
   $members = pow(2, $count);
   
   for ($i = 0; $i < $members; $i ++) {
-    $b = sprintf("%0".$count."b", $i);
+    $b = sprintf('%0' . $count . 'b', $i);
     
     $rule = new stdClass();
     $rule->size = $count;

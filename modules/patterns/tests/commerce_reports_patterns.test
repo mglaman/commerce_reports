@@ -44,7 +44,7 @@ class CommerceReportsPatternsTestCase extends CommerceBaseTestCase {
     return $order;
   }
   
-  public function testWikipedia() {
+  public function testExample() {
     $milk = $this->createDummyProduct('milk');
     $bread = $this->createDummyProduct('bread');
     $butter = $this->createDummyProduct('butter');
@@ -62,8 +62,8 @@ class CommerceReportsPatternsTestCase extends CommerceBaseTestCase {
     $this->drupalPost(
       'admin/commerce/reports/patterns', 
       array(
-        'min_support' => '0.1',
-        'min_confidence' => '0.1',
+        'min_support' => '10',
+        'min_confidence' => '10',
       ),
       t('Generate')
     );
