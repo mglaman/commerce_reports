@@ -161,6 +161,7 @@ function commerce_reports_highcharts($chart_id, $data = array(), $options = arra
   );
   
   // Set title
+  $highchart->title = new stdClass();
   $highchart->title->text = $options['title'];
   
   $x_axis = array();
@@ -207,7 +208,8 @@ function commerce_reports_highcharts($chart_id, $data = array(), $options = arra
       $highchart->series[] = $serie;
     }
   }
-  
+ 
+  $highchart->plotOptions = new stdClass(); 
   $highchart->plotOptions->pie = (object) array(
     'allowPointSelect' => TRUE,
     'cursor' => 'pointer',
@@ -222,6 +224,7 @@ function commerce_reports_highcharts($chart_id, $data = array(), $options = arra
     ),
   );
 
+  $highchart->credits = new stdClass();
   $highchart->credits->enabled = FALSE;
   
   /**
