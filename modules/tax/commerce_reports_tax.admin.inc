@@ -32,6 +32,12 @@ function commerce_reports_tax_table() {
     $rows[] = array($result['title'], commerce_currency_format($result['taxable'], $result['currency_code']), commerce_currency_format($result['taxed'], $result['currency_code']));
   }
   
+  if (!$rows) {
+    $rows[] = array(
+      'data' => array(array('data' => t("There's currently no tax data available. You might want to <a href='@generate-url'>generate</a> past data.", array('@generate-url' => url('admin/commerce/config/tax-reports'))), 'colspan' => 3)),
+    );
+  }
+  
   return array(
     '#theme' => 'table',
     '#header' => array(t('Tax rate'), t('Taxable'), t('Taxed')),

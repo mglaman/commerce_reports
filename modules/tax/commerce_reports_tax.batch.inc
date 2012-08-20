@@ -12,22 +12,27 @@ function _commerce_reports_tax_generate(&$context) {
     $context['results'] = array(
       'orders' => array()
     );
-    
-    db_query("TRUNCATE {commerce_reports_tax}");
   
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['current'] = 0;
     $context['sandbox']['max'] = db_query("SELECT COUNT(order_id) FROM {commerce_order} WHERE type = 'commerce_order' AND status IN (:order_statuses)ORDER BY order_id ASC", array(':order_statuses' => commerce_reports_tax_order_statuses()))->fetchColumn();
   }
     
-  $order_ids = db_query("SELECT order_id FROM {commerce_order} WHERE type = 'commerce_order' AND status IN (:order_statuses) AND order_id > :current_order_id ORDER BY order_id ASC LIMIT 10", array(':order_statuses' => commerce_reports_tax_order_statuses(), ':current_order_id' => $context['sandbox']['current']))->fetchCol();
+  $pending_orders = db_query("SELECT co.order_id AS order_id, COUNT(crt.tax_rate) AS should_update FROM {commerce_order} co LEFT JOIN {commerce_reports_tax} crt ON co.order_id = crt.order_id WHERE co.type = 'commerce_order' AND co.status IN (:order_statuses) AND co.order_id > :current_order_id GROUP BY crt.order_id ORDER BY co.order_id ASC LIMIT 10", array(':order_statuses' => commerce_reports_tax_order_statuses(), ':current_order_id' => $context['sandbox']['current']))->fetchAllAssoc('order_id', PDO::FETCH_ASSOC);
     
-  if ($order_ids) {
-    $orders = entity_load('commerce_order', $order_ids);
+  if ($pending_orders) {
+    $orders = entity_load('commerce_order', array_keys($pending_orders));
 
     // Iterate the orders and break each order down into its components.
     foreach ($orders as $order) {
-      commerce_reports_tax_order_save($order);
+      if ($pending_orders[$order->order_id]['should_update']) {
+        $update = TRUE;
+      }
+      else {
+        $update = FALSE;
+      }
+      
+      commerce_reports_tax_order_save($order, $update);
       
       $context['results']['orders'][] = $order->order_id;
       $context['sandbox']['progress']++;
