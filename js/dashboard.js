@@ -10,10 +10,10 @@ jQuery(document).ready(function() {
     var nextActive = block.find('.commerce-reports-dashboard-section[data-section=\'' + selectedSection + '\']');
     
     if ((currentlyActive && nextActive) && (currentlyActive[0] !=nextActive[0])) {
-      var chartContainer = nextActive.find('.commerce_reports-chart');
+      var chartContainer = nextActive.find('.visualization-chart');
       
       if (chartContainer) {
-        var chart = Drupal.commerce_reports.charts[chartContainer.attr("id")];
+        var chart = Drupal.visualization.charts[chartContainer.attr("id")];
         
         if (chart !== undefined) {
           if (chart.resize !== undefined) {

@@ -21,29 +21,6 @@ function commerce_reports_views_handlers() {
 }
 
 /**
- * Implements hook_views_plugins().
- */
-function commerce_reports_views_plugins() {
-  return array(
-    'style' => array(
-      'commerce_reports' => array(
-        'title' => t('Commerce Reports'),
-        'help' => t('Display the results as a chart.'),
-        'handler' => 'commerce_reports_plugin_style_visualization',
-        'uses options' => TRUE,
-        'uses row plugin' => TRUE,
-        'uses grouping' => FALSE,
-        'even empty' => TRUE,
-        'type' => 'normal',
-        'theme' => 'commerce_reports_visualization',
-        'theme path' => drupal_get_path('module', 'commerce_reports') . '/theme',
-        'theme file' => 'commerce_reports_visualization.theme.inc',
-      ),
-    ),
-  );
-}
-
-/**
  * Implements hook_views_data_alter().
  */
 function commerce_reports_views_data_alter(&$data) {

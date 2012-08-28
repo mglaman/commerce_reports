@@ -22,7 +22,7 @@ function commerce_reports_visualization_display($view, $name, $title, $type = 'b
   
   // Setup the custom style plugin
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'commerce_reports';
+  $handler->display->display_options['style_plugin'] = 'visualization';
   
   // Set some general settings concerning fields
   $handler->display->display_options['defaults']['fields'] = FALSE;

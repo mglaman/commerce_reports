@@ -41,16 +41,6 @@ function commerce_reports_menu() {
     'weight' => 0,
   );
   
-  $items['admin/commerce/config/reports'] = array(
-    'title' => 'Reports settings',
-    'description' => 'Configure reports settings.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('commerce_reports_settings_form'),
-    'access arguments' => array('access commerce reports'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'commerce_reports.admin.inc',
-  );
-
   return $items;
 }
 
@@ -59,12 +49,6 @@ function commerce_reports_menu() {
  */
 function commerce_reports_theme($existing, $type, $theme, $path) {
   return array(
-    'commerce_reports_visualization' => array(
-      'variables' => array('options' => array('title' => NULL, 'xAxis' => array(), 'fields' => array(), 'type' => 'line', 'data' => array())),
-      'template' => 'commerce-reports-visualization',
-      'path' => drupal_get_path('module', 'commerce_reports') . '/theme',
-      'file' => 'commerce_reports_visualization.theme.inc',
-    ),
     'commerce_reports_dashboard_block' => array(
       'render element' => 'block',
       'template' => 'dashboard-block',

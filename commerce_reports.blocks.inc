@@ -133,7 +133,7 @@ function commerce_reports_customer_map() {
   );
   
   return array(
-    '#theme' => 'commerce_reports_visualization',
+    '#theme' => 'visualization',
     '#options' => $options,
   );
 }
