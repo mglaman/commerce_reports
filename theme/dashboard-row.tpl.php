@@ -9,26 +9,25 @@
  * @return
  *   The row div.
  */
- 
-$itemClass = '';
-
-switch (count($row['items']) - 2) {
-  case 3:
-    $itemClass = 'fourcol';
-    break;
-    
-  case 1:
-    $itemClass = 'twelvecol';
-    break;
-    
-  default: 
-    print count($row['items']);
-}
 ?>
 <div class="row">
 <?php
   foreach ($row['items'] as $index => $item) {
-    if (substr($index, 0, 1) != '#') { 
+    if (substr($index, 0, 1) != '#') {
+      switch ($item['#width']) {
+        case 3:
+          $itemClass = 'twelvecol';
+          break;
+          
+        case 2:
+          $itemClass = 'eightcol';
+          break;
+          
+        default:
+          $itemClass = 'fourcol';
+          break;
+      }
+      
       if ($index == count($row['items']) - 3) {
         $itemClass .= ' last';
       }

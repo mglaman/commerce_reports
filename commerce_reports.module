@@ -228,7 +228,7 @@ function commerce_reports_commerce_reports_dashboard() {
           'block' => 'ff7824695a12b49a79aee7d394cbd917',
         ),
       ),
-      'weight' => 0,
+      'weight' => 20,
     ),
     'overview_yesterday' => array(
       'title' => t('Yesterday\'s overview'),
@@ -242,7 +242,7 @@ function commerce_reports_commerce_reports_dashboard() {
           'block' => '1a260a710ed0ccc9e8175e7301e597fe',
         ),
       ),
-      'weight' => 40,
+      'weight' => 60,
     ),
     'overview_monthly' => array(
       'title' => t('Monthly overview'),
