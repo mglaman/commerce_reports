@@ -201,7 +201,7 @@ function commerce_reports_field_formatter_view($entity_type, $entity, $field, $i
 function commerce_reports_commerce_reports_dashboard() {
   return array(
     'overview_today' => array(
-      'title' => t('Today\'s overview'),
+      'title' => t('Today'),
       'report' => array(
         'title' => t('Sales reports'),
         'path' => 'admin/commerce/reports/sales',
@@ -215,7 +215,7 @@ function commerce_reports_commerce_reports_dashboard() {
       'weight' => 20,
     ),
     'overview_yesterday' => array(
-      'title' => t('Yesterday\'s overview'),
+      'title' => t('Yesterday'),
       'report' => array(
         'title' => t('Sales reports'),
         'path' => 'admin/commerce/reports/sales',
@@ -229,7 +229,7 @@ function commerce_reports_commerce_reports_dashboard() {
       'weight' => 60,
     ),
     'overview_monthly' => array(
-      'title' => t('Monthly overview'),
+      'title' => t('Last 30 days'),
       'report' => array(
         'title' => t('Sales reports'),
         'path' => 'admin/commerce/reports/sales',
