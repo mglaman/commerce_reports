@@ -31,7 +31,7 @@ function commerce_reports_menu() {
     'access arguments' => array('access commerce reports'), // Inherited by children.
     'page callback' => 'commerce_reports_dashboard',
     'file' => 'commerce_reports.dashboard.inc',
-    'weight' => 50,
+    'weight' => -20,
   );
   $items['admin/commerce/reports/dashboard'] = array(
     'title' => 'Dashboard',
