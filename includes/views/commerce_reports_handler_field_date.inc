@@ -69,7 +69,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
       '#default_value' => $this->options['default_granularity']
     );
     
-    $timestamp = REQUEST_TIME - 60*60*24*30;
+    $timestamp = REQUEST_TIME - $this->options['default_period'];
     
     $form['startDate'] = array(
       '#type' => 'date',
@@ -139,14 +139,14 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $form['exposed'] = array(
       '#type' => 'checkbox',
       '#title' => t('Expose this filter to visitors, to allow them to change it'),
-      '#default_value' => $this->options['exposed']
+      '#default_value' => $this->options['exposed'],
     );
     
     $form['default_granularity'] = array(
       '#type' => 'select',
       '#title' => t('Default granularity'),
       '#options' => $this->granularityOptions(),
-      '#default_value' => $this->options['default_granularity']
+      '#default_value' => $this->options['default_granularity'],
     );
     
     $form['default_period'] = array(
@@ -157,6 +157,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
         '2592000' => t('One month'),
         '31556926' => t('One year'),
       ),
+      '#default_value' => $this->options['default_period'],
     );
   }
   
