@@ -1230,7 +1230,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['empty']['area']['label'] = 'Empty text';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = 'No orders.';
-  $handler->display->display_options['empty']['area']['format'] = 'commerce_order_message';
+  $handler->display->display_options['empty']['area']['format'] = 'plain_text';
   /* Field: COUNT(Commerce Order: Order ID) */
   $handler->display->display_options['fields']['order_id']['id'] = 'order_id';
   $handler->display->display_options['fields']['order_id']['table'] = 'commerce_order';
