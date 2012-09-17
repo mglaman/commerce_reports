@@ -126,7 +126,6 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $timestamp = strtotime('today', $timestamp);
     
     if (!empty($this->granularities[$this->getFormat()]['normalizationFunction'])) {
-      //$timestamp = strtotime($this->granularities[$this->getFormat()]['relative'] , $timestamp);
       $timestamp = $this->{$this->granularities[$this->getFormat()]['normalizationFunction']}($timestamp);
     }
     
@@ -219,7 +218,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $field_name = views_date_sql_format($this->getFormat(), $this->table_alias . '.' . $this->real_field);
     $this->query->add_groupby($field_name);
     
-    $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate} AND {$this->endDate}");
+    $end_date = $this->endDate + $this->getInterval();
+    $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate} AND {$end_date}");
 
     $this->add_additional_fields();
   }
@@ -275,6 +275,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
         $lastDate = end($retrieved)->{$this->field_alias};
       }
     }
+    
+    $totalRetrieved = count($retrieved);
     
     // Check if end date is included.
     if (empty($lastDate) || ($lastDate < $this->endDate)) {      
