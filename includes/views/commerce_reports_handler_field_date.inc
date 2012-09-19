@@ -192,7 +192,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
   function pre_query() {
     // If no endDate is set, set it to today.
     if (empty($this->endDate)) {
-      $this->endDate = $this->convertTimestamp(time()) + $this->getInterval();
+      $this->endDate = $this->convertTimestamp(time());
     }
     
     // If no startDate is set, set it to the end date minus the default period.
