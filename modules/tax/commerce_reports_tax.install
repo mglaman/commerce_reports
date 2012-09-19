@@ -49,3 +49,25 @@ function commerce_reports_tax_schema() {
 
   return $schema;
 }
+
+/**
+ * Changes to the database structure.
+ */
+function commerce_reports_tax_update_7300(&$sandbox) {
+	// Delete all tables that existed in the alpha4 release.
+  $previous_tables = array(
+  	'commerce_reports_tax',
+  	'commerce_reports_tax_rate_orders',
+  	'commerce_reports_tax_rate_aggregate',
+  	'commerce_reports_tax_rate',
+  );
+  
+  foreach ($previous_tables as $table) {
+  	if (db_table_exists($table)) {
+  		db_drop_table($table);
+  	}
+  }
+  
+  // Install the new database schema.
+  drupal_install_schema('commerce_reports_tax');
+}

@@ -51,6 +51,8 @@ function _commerce_reports_tax_generate(&$context) {
  */
 function _commerce_reports_tax_finished($success, $results, $operations) {
   if ($success) {
+  	variable_set('commerce_reports_tax_batch_finished', REQUEST_TIME);
+  	
     drupal_set_message(t('Successfully generated tax report.'));
   }
   else {
