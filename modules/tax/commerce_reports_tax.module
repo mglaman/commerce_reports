@@ -100,7 +100,9 @@ function commerce_reports_tax_commerce_reports_dashboard() {
  * Implements hook_commerce_reports_dashboard_alter().
  */
 function commerce_reports_tax_commerce_reports_dashboard_alter(&$info) {
-  $info['statistics']['weight'] = 10;
+  $info['customer_statistics']['weight'] = 10;
+  $info['sales_statistics']['weight'] = 300;
+  $info['billing_information']['type'] = COMMERCE_REPORTS_DASHBOARD_ROW;
 }
 
 /**

@@ -304,23 +304,19 @@ function commerce_reports_commerce_reports_dashboard() {
       ),
       'weight' => 240,
     ),
-    'statistics' => array(
-      'title' => t('Statistics'),
+    'customer_statistics' => array(
+      'title' => t('Customer statistics'),
       'sections' => array(
         'customers' => array(
           'module' => 'commerce_reports',
           'block' => 'commerce_reports_customers',
-        ),
-        'sales' => array(
-          'module' => 'commerce_reports',
-          'block' => 'commerce_reports_sales',
         ),
       ),
       'weight' => 280,
     ),
     'billing_information' => array(
       'title' => t('Billing information'),
-      'type' => COMMERCE_REPORTS_DASHBOARD_ROW,
+      'type' => COMMERCE_REPORTS_DASHBOARD_BROAD_BLOCK,
       'report' => array(
         'title' => t('Customer profiles'),
         'path' => 'admin/commerce/customer-profiles',
@@ -332,6 +328,16 @@ function commerce_reports_commerce_reports_dashboard() {
         ),
       ),
       'weight' => 300,
+    ),
+    'sales_statistics' => array(
+      'title' => t('Sales statistics'),
+      'sections' => array(
+        'sales' => array(
+          'module' => 'commerce_reports',
+          'block' => 'commerce_reports_sales',
+        ),
+      ),
+      'weight' => 310,
     ),
   );
 }
