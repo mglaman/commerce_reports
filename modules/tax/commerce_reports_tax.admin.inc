@@ -41,13 +41,7 @@ function commerce_reports_tax_table() {
 		drupal_set_message();
 	}
 	
-  $results = db_query("SELECT ctr.display_title AS title, crt.currency_code, SUM(crt.taxable) AS taxable, SUM(crt.taxed) AS taxed FROM {commerce_reports_tax} crt LEFT JOIN {commerce_tax_rate} ctr ON crt.tax_rate = ctr.name LEFT JOIN {commerce_order} co ON crt.order_id = co.order_id WHERE co.created > 0 GROUP BY crt.tax_rate, crt.currency_code");
-  
-  $rows = array();
-  
-  while ($result = $results->fetchAssoc()) {
-    $rows[] = array($result['title'], commerce_currency_format($result['taxable'], $result['currency_code']), commerce_currency_format($result['taxed'], $result['currency_code']));
-  }
+  $rows = commerce_reports_tax();
   
   if (!variable_get('commerce_reports_tax_batch_finished', FALSE)) {
   	$rows[] = array(

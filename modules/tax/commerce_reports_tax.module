@@ -28,7 +28,7 @@ function commerce_reports_tax_menu() {
   );
   
   $items['admin/commerce/config/tax-reports/generate'] = array(
-  	'title' => 'Generate tax report',
+    'title' => 'Generate tax report',
     'page callback' => 'commerce_reports_tax_generate_callback',
     'access arguments' => array('configure commerce tax reports'),
     'type' => MENU_CALLBACK,
@@ -216,6 +216,22 @@ function commerce_reports_tax_order_delete_multiple($order_ids = array()) {
  */
 function commerce_reports_tax_order_delete($order_id) {
   return commerce_reports_tax_order_delete_multiple(array($order_id));
+}
+
+
+/**
+ * Returns all reported taxes.
+ */
+function commerce_reports_tax() {
+  $results = db_query("SELECT crt.tax_rate AS name, ctr.display_title AS title, crt.currency_code, SUM(crt.taxable) AS taxable, SUM(crt.taxed) AS taxed FROM {commerce_reports_tax} crt LEFT JOIN {commerce_tax_rate} ctr ON crt.tax_rate = ctr.name LEFT JOIN {commerce_order} co ON crt.order_id = co.order_id WHERE co.created > 0 GROUP BY crt.tax_rate, crt.currency_code");
+  
+  $rows = array();
+  
+  while ($result = $results->fetchAssoc()) {
+    $rows[$result['name']] = array($result['title'], commerce_currency_format($result['taxable'], $result['currency_code']), commerce_currency_format($result['taxed'], $result['currency_code']));
+  }
+  
+  return $rows;
 }
 
 /**
