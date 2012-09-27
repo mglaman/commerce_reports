@@ -13,7 +13,7 @@ class CommerceReportsTaxGenerationTests extends CommerceBaseTestCase {
   public static function getInfo() {
     return array(
       'name' => 'Tax reports',
-      'description' => '',
+      'description' => 'Tests if the tax reporting module correctly catches tax information.',
       'group' => 'Drupal Commerce',
     );
   }
