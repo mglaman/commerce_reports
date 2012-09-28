@@ -163,14 +163,18 @@ class CommerceReportsUITestCase extends CommerceReportsBaseTestCase {
     $this->drupalGet('admin');
     $links = $this->_getLinks(t('Reports'));
     $this->assertEqual(count($links), 1, t("The correct amount of menu entries to 'Reports' was found on the administration page."));
-    $attributes = reset($links)->attributes();
-    $this->assertEqual($attributes['href'], '/?q=admin/reports', t('The menu entry points to the correct page.'));
+    if ($links) {
+      $attributes = reset($links)->attributes();
+      $this->assertEqual($attributes['href'], '/?q=admin/reports', t('The menu entry points to the correct page.'));
+    }
     
     $this->drupalGet('admin/commerce');
     $links = $this->_getLinks(t('Reports'));
     $this->assertEqual(count($links), 1, t("The correct amount of menu entries to 'Reports' was found on the store administration page."));
-    $attributes = reset($links)->attributes();
-    $this->assertEqual($attributes['href'], '/?q=admin/commerce/reports', t('The menu entry points to the correct page.'));
+    if ($links) {
+      $attributes = reset($links)->attributes();
+      $this->assertEqual($attributes['href'], '/?q=admin/commerce/reports', t('The menu entry points to the correct page.'));
+    }
     
     $this->drupalGet('admin/commerce/reports');
     $this->assertResponse(200, t('Reports admin can access reports.'));
@@ -199,13 +203,22 @@ class CommerceReportsSalesOverviewTestCase extends CommerceReportsBaseTestCase {
         }
       }
       
-      $sales = $line->order_id;
-      if ($sales == 0) {
+      if (empty($line->field_data_commerce_order_total_commerce_order_total_amount)) {
+        $amount = 0;
+      }
+      else {
+        $amount = $line->field_data_commerce_order_total_commerce_order_total_amount;
+      }
+      
+      if (empty($line->order_id)) {
         $sales = NULL;
+      }
+      else {
+        $sales = $line->order_id;
       }
       
       $this->assertEqual($information['count'], $sales, t('The expected amount of orders is equal to the derived amount of orders.'));
-      $this->assertEqual($information['amount'], $line->field_data_commerce_order_total_commerce_order_total_amount, t('The expected total amount is equal to the derived total amount.'));
+      $this->assertEqual($information['amount'], $amount, t('The expected total amount is equal to the derived total amount.'));
     }
   }
   
@@ -317,6 +330,12 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
     );
   }
   
+  public function testNoOrders() {
+    $this->_getDates();
+    
+    $this->_test();
+  }
+  
   public function testSingleOrder() {
     $this->createOrders(1, FALSE, $this->_getDates());
     
@@ -331,7 +350,7 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
   }
   
   protected function _getDates() {
-    $report = views_get_view_result('commerce_reports_sales', 'default');
+    $report = views_get_view_result('commerce_reports_sales', 'page');
     $possibleDates = array();
     
     foreach ($report as $line) {
@@ -360,13 +379,13 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
       }
     }
     
-    $report = views_get_view_result('commerce_reports_sales', 'default');
+    $report = views_get_view_result('commerce_reports_sales', 'page');
     
     foreach ($report as $line) {
       $created = $line->commerce_order_created_granularity;
       
       if (empty($sales[$created])) {
-        $this->assertTrue(empty($line->order_id) && empty($line->field_data_commerce_order_total_commerce_order_total_amount) && empty($line->field_data_commerce_order_total_commerce_order_total_amount_1), t('There was no unintented activity.'));
+        $this->assertTrue(empty($line->order_id) && empty($line->commerce_order_total) && empty($line->commerce_order_total_1), t('There was no unintented activity.'));
       }
       else {
         $orders = $sales[$created]['orders'];
@@ -494,16 +513,15 @@ class CommerceReportsCustomerTestCase extends CommerceReportsBaseTestCase {
     foreach ($report as $line) {
       $uid = $line->uid;
       
-      $orders = $line->commerce_line_item_field_data_commerce_line_items_order_id;
-      $products = $line->commerce_line_item_field_data_commerce_line_items_quantity;
-      $revenue = $line->commerce_line_item_field_data_commerce_line_items__field_dat;
-      $average = $line->commerce_line_item_field_data_commerce_line_items__field_dat_2;
+      $orders = $line->commerce_order_users_order_id;
+      $revenue = $line->commerce_order_users__field_data_commerce_order_total_commer;
+      $average = $line->commerce_order_users__field_data_commerce_order_total_commer_2;
       
       $this->assertFalse(empty($customers[$uid]), t('The customer %uid that is reported upon exists.', array('%uid' => $uid)));
       
       if (!empty($customers[$uid])) {
         $this->assertEqual($customers[$uid]['orders'], $orders, t('The reported amount of orders %reported matches the generated amount of orders %generated.', array('%reported' => $orders, '%generated' => $customers[$uid]['orders'])));
-        $this->assertEqual($customers[$uid]['products'], $products, t('The reported amount of line items %reported matches the generated amount of line items %generated.', array('%reported' => $products, '%generated' => $customers[$uid]['products'])));
+        // $this->assertEqual($customers[$uid]['products'], $products, t('The reported amount of line items %reported matches the generated amount of line items %generated.', array('%reported' => $products, '%generated' => $customers[$uid]['products'])));
         $this->assertEqual($customers[$uid]['revenue'], $revenue, t('The reported revenue %reported matches the generated revenue %generated.', array('%reported' => $revenue, '%generated' => $customers[$uid]['revenue'])));
       }
     }

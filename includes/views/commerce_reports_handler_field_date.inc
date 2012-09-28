@@ -279,8 +279,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $totalRetrieved = count($retrieved);
     
     // Check if end date is included.
-    if (empty($lastDate) || ($lastDate < $this->endDate)) {      
-      $value = (object) array($this->field_alias => $this->endDate);
+    if (empty($lastDate) || ($lastDate != $this->endDate)) {      
+      $value = (object) array($this->field_alias => $this->endDate, 'hello' => 'world');
       
       if ($descending) {
         $totalRetrieved = array_unshift($retrieved, $value);
@@ -291,8 +291,8 @@ class commerce_reports_handler_field_date extends views_handler_field {
     }
     
     // Check if start date is included.
-    if (empty($firstDate) || ($firstDate > $this->startDate)) {
-      $value = (object) array($this->field_alias => $this->startDate);
+    if (empty($firstDate) || ($firstDate != $this->startDate)) {
+      $value = (object) array($this->field_alias => $this->startDate, 'hello' => 'world');
       
       if ($descending) {
         $totalRetrieved = array_push($retrieved, $value);
@@ -303,36 +303,37 @@ class commerce_reports_handler_field_date extends views_handler_field {
     }
     
     // Note that we loop backwards through the array of results.
-    for ($i = $totalRetrieved - 1; $i >= 0; $i --) {
+    for ($i = 0; $i < $totalRetrieved; $i ++) {
       $item = $retrieved[$i];
       $values[] = $item;
       
       // We always interpolate between two dates. If we have arrived at the start of the array,
       // interpolation isn't necessary anymore.
-      if ($i != 0) {
-        $nextItem = $retrieved[$i - 1];
+      if ($i != $totalRetrieved - 1) {
+        $nextItem = $retrieved[$i + 1];
         
         if ($descending) {
-          $current = $item->{$this->field_alias};
-          $next = $nextItem->{$this->field_alias};
-        }
-        else {
           $next = $item->{$this->field_alias};
           $current = $nextItem->{$this->field_alias};
+        }
+        else {
+          $current = $item->{$this->field_alias};
+          $next = $nextItem->{$this->field_alias};
         }
 
         $interpolated = array();
         for ($timestamp = $current + $interval; $timestamp < $next; $timestamp += $interval) {
+          $timestamp = $this->convertTimestamp($timestamp);
           $value = (object) array($this->field_alias => $timestamp);
           
           $interpolated[] = $value;
         }
         
         if ($descending) {
-          $values = array_merge($values, ($interpolated));
+          $values = array_merge($values, array_reverse($interpolated));
         }
         else {
-          $values = array_merge($values, array_reverse($interpolated));
+          $values = array_merge($values, ($interpolated));
         }
       }
     }
