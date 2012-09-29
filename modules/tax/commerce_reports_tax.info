@@ -3,16 +3,7 @@ description = Implements tax reports and provides an interface for viewing and m
 package = Commerce (reporting)
 dependencies[] = commerce_price
 dependencies[] = commerce_tax
-dependencies[] = entity
 core = 7.x
-
-; Views handlers
-files[] = includes/views/handlers/commerce_order_reports_tax_handler_area_empty_text.inc
-files[] = includes/views/handlers/commerce_reports_tax_handler_field_operations.inc
-
-; Entity API
-files[] = includes/commerce_reports_tax.controller.inc
-files[] = includes/commerce_reports_tax.ui.controller.inc
 
 ; Tests
 files[] = tests/commerce_reports_tax.test
