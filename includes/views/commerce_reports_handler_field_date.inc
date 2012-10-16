@@ -27,12 +27,12 @@ class commerce_reports_handler_field_date extends views_handler_field {
   );
   
   protected function _normalizeWeekly($timestamp) {
-    return strtotime('this week', $timestamp);
+    return strtotime('this week UTC', $timestamp);
   }
   
   protected function _normalizeMonthly($timestamp) {
     // Workaround for PHP 5.2; PHP 5.3 works with 'first day of this month'
-    return strtotime(date('Y-m', strtotime('this month', $timestamp)));
+    return strtotime(date('Y-m', strtotime('this month UTC', $timestamp)) . ' UTC');
   }
 
   function option_definition() {
@@ -123,7 +123,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
   }
   
   function convertTimestamp($timestamp) {
-    $timestamp = strtotime('today', $timestamp);
+    $timestamp = strtotime('today UTC', $timestamp);
     
     if (!empty($this->granularities[$this->getFormat()]['normalizationFunction'])) {
       $timestamp = $this->{$this->granularities[$this->getFormat()]['normalizationFunction']}($timestamp);
@@ -197,7 +197,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     
     // If no startDate is set, set it to the end date minus the default period.
     if (empty($this->startDate)) {
-      $this->startDate = $this->endDate - $this->options['default_period'];
+      $this->startDate = $this->convertTimestamp($this->endDate - $this->options['default_period']);
     }
   }
 
@@ -232,7 +232,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
       $format = $this->granularities[$format]['displayFormat'];
     }
     
-    $value = format_date($timestamp, 'custom', $format);
+    $value = format_date($timestamp, 'custom', $format, 'UTC');
     
     return $this->sanitize_value($value);
   }
@@ -280,7 +280,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     
     // Check if end date is included.
     if (empty($lastDate) || ($lastDate != $this->endDate)) {      
-      $value = (object) array($this->field_alias => $this->endDate, 'hello' => 'world');
+      $value = (object) array($this->field_alias => $this->endDate);
       
       if ($descending) {
         $totalRetrieved = array_unshift($retrieved, $value);
@@ -292,7 +292,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     
     // Check if start date is included.
     if (empty($firstDate) || ($firstDate != $this->startDate)) {
-      $value = (object) array($this->field_alias => $this->startDate, 'hello' => 'world');
+      $value = (object) array($this->field_alias => $this->startDate);
       
       if ($descending) {
         $totalRetrieved = array_push($retrieved, $value);
