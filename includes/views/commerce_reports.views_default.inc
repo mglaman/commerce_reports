@@ -7,43 +7,43 @@
 /**
  * Views for commerce orders for report displays.
  */
- 
+
 function commerce_reports_visualization_display($view, $name, $title, $type = 'block', $base_display = 'default') {
   // Retrieve our base display
   $default = $view->display[$base_display];
-  
+
   // Add the display
   $handler = $view->new_display($type, $title, $name);
-  
+
   // Disable the pager (show all items)
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  
+
   // Setup the custom style plugin
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'visualization';
-  
+
   // Set some general settings concerning fields
   $handler->display->display_options['defaults']['fields'] = FALSE;
   $handler->display->display_options['fields'] = $default->display_options['fields'];
   $handler->display->display_options['style_options']['info'] = $default->display_options['style_options']['info'];
-  
+
   foreach ($handler->display->display_options['style_options']['info'] as &$field) {
     $field['separator'] = '';
   }
-  
+
   foreach ($handler->display->display_options['fields'] as $name => &$field) {
     // All fields that are passed to the charting module should have at least a value.
     $field['hide_alter_empty'] = 1;
     $field['empty'] = '0';
-    
+
     // Get rid of those nasty currency fields. We need raw data!
     if ((!empty($field['type'])) && strstr($field['type'], 'commerce_price')) {
       $field['type'] = 'commerce_reports_visualization';
     }
   }
-  
+
   return $handler;
 }
 
@@ -51,7 +51,7 @@ function commerce_reports_data_export($view) {
   if (empty($view->display['page']) || empty($view->display['page']->display_options['path'])) {
     return;
   }
-  
+
   $handler = $view->new_display('views_data_export', 'Export to CSV', 'views_data_export');
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
@@ -321,7 +321,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
-  
+
   /**
    * Integration with commerce_reports_visualization.
    */
@@ -329,7 +329,7 @@ function commerce_reports_views_default_views() {
    * Top products by revenue.
    */
   $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
-  
+
   // Chart settings
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['style_options']['type'] = 'column';
@@ -346,17 +346,17 @@ function commerce_reports_views_default_views() {
     'labelField' => 'sku',
     'invert' => 0,
   );
-  
+
   // Only render 5 products
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['pager']['options']['items_per_page'] = '5';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  
+
   /**
    * Top products by quantity.
    */
   $handler = commerce_reports_visualization_display($view, 'chart_quantity', 'Chart (by quantity sold)', 'block', 'chart_revenue');
-  
+
   // Chart settings
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['style_options']['type'] = 'column';
@@ -373,12 +373,12 @@ function commerce_reports_views_default_views() {
     'labelField' => 'sku',
     'invert' => 0,
   );
-  
+
   // Only render 5 products
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['pager']['options']['items_per_page'] = '5';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  
+
   /**
    * Integration with views data export.
    */
@@ -387,7 +387,7 @@ function commerce_reports_views_default_views() {
   }
 
   $views[$view->name] = $view;
-  
+
   /**
    * Commerce reports: Customers
    */
@@ -565,7 +565,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
-  
+
   /**
    * Integration with commerce_reports_visualization.
    */
@@ -573,7 +573,7 @@ function commerce_reports_views_default_views() {
    * Top users by revenue.
    */
   $handler = commerce_reports_visualization_display($view, 'chart_revenue', 'Chart (by revenue)');
-  
+
   // Chart settings
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['style_options']['type'] = 'pie';
@@ -583,17 +583,17 @@ function commerce_reports_views_default_views() {
       'sort' => 'DESC',
     ),
   );
-  
+
   $handler->display->display_options['style_options']['xAxis'] = array(
     'labelField' => 'name',
     'invert' => 0,
   );
-  
+
   // Only render 10 customers
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  
+
   /**
    * Top users by amount of orders.
    */
@@ -608,19 +608,19 @@ function commerce_reports_views_default_views() {
       'sort' => 'DESC',
     ),
   );
-  
+
   $handler->display->display_options['style_options']['xAxis'] = array(
     'labelField' => 'name',
     'invert' => 0,
   );
-  
+
   /**
    * Integration with views data export.
    */
   if (module_exists('views_data_export')) {
     commerce_reports_data_export($view);
   }
-   
+
   $views[$view->name] = $view;
 
   /**
@@ -758,7 +758,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['filters']['status']['value'] = array(
     'success' => 'success',
   );
-  
+
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'admin/commerce/reports/payment-methods';
@@ -768,7 +768,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['menu']['weight'] = '20';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
-  
+
   /**
    * Integration with views data export.
    */
@@ -960,7 +960,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['tab_options']['description'] = 'View daily and monthly sales totals.';
   $handler->display->display_options['tab_options']['weight'] = '-10';
   $handler->display->display_options['tab_options']['name'] = 'management';
-  
+
   /**
    * Integration with commerce_reports_visualization.
    */
@@ -968,12 +968,12 @@ function commerce_reports_views_default_views() {
    * 12 month chart.
    */
   $handler = commerce_reports_visualization_display($view, 'chart_year', 'Chart (one year)');
-  
+
   // Chart settings
   $handler->display->display_options['defaults']['style_options'] = FALSE;
-  
+
   $handler->display->display_options['style_options']['type'] = 'line';
-  
+
   $handler->display->display_options['style_options']['fields'] = array(
     'sales_data' => array(
       'enabled' => FALSE,
@@ -995,22 +995,22 @@ function commerce_reports_views_default_views() {
     'labelField' => 'sales_data',
     'invert' => 0,
   );
-  
+
   // Date field: set period to one year and group monthly
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  
+
   $handler->display->display_options['fields']['sales_data']['default_period'] = '31556926';
   $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m';
-  
+
   /**
    * 1 month chart.
    */
   $handler = commerce_reports_visualization_display($view, 'chart_month', 'Chart (one month)', 'block', 'chart_year');
-  
+
   $handler->display->display_options['defaults']['style_options'] = FALSE;
-  
+
   $handler->display->display_options['style_options']['type'] = 'line';
-  
+
   $handler->display->display_options['style_options']['fields'] = array(
     'sales_data' => array(
       'enabled' => FALSE,
@@ -1032,21 +1032,21 @@ function commerce_reports_views_default_views() {
     'labelField' => 'sales_data',
     'invert' => 0,
   );
-  
+
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  
+
   $handler->display->display_options['fields']['sales_data']['default_period'] = '2592000';
   $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
-  
+
   /**
    * 1 week chart.
    */
   $handler = commerce_reports_visualization_display($view, 'chart_week', 'Chart (one week)', 'block', 'chart_year');
-  
+
   $handler->display->display_options['defaults']['style_options'] = FALSE;
-  
+
   $handler->display->display_options['style_options']['type'] = 'line';
-  
+
   $handler->display->display_options['style_options']['fields'] = array(
     'sales_data' => array(
       'enabled' => FALSE,
@@ -1068,21 +1068,21 @@ function commerce_reports_views_default_views() {
     'labelField' => 'sales_data',
     'invert' => 0,
   );
-  
+
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  
+
   $handler->display->display_options['fields']['sales_data']['default_period'] = '604800';
   $handler->display->display_options['fields']['sales_data']['default_granularity'] = 'Y-m-d';
-  
+
   /**
    * Integration with views data export.
    */
   if (module_exists('views_data_export')) {
     commerce_reports_data_export($view);
   }
-  
+
   $views[$view->name] = $view;
-  
+
   /**
    * Commerce reports: Sales overview
    */
@@ -1215,13 +1215,20 @@ function commerce_reports_views_default_views() {
     'pending' => 'pending',
     'completed' => 'completed',
   );
-  /* Filter criterion: Commerce Order: Created date */
-  $handler->display->display_options['filters']['created']['id'] = 'created';
-  $handler->display->display_options['filters']['created']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['created']['field'] = 'created';
-  $handler->display->display_options['filters']['created']['operator'] = '>';
-  $handler->display->display_options['filters']['created']['value']['value'] = 'today';
-  $handler->display->display_options['filters']['created']['value']['type'] = 'offset';
+  /* Filter criterion: Date: Date (commerce_order) */
+  $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['operator'] = '>';
+  $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
+  $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Date (commerce_order)';
+  $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+  $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['granularity'] = 'second';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = 'today';
+  $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+    'commerce_order.created' => 'commerce_order.created',
+  );
   $handler->display->display_options['block_description'] = 'Sales Reports: Overview (Today)';
 
   /* Display: Yesterday */
@@ -1239,15 +1246,21 @@ function commerce_reports_views_default_views() {
     'pending' => 'pending',
     'completed' => 'completed',
   );
-  /* Filter criterion: Commerce Order: Created date */
-  $handler->display->display_options['filters']['created']['id'] = 'created';
-  $handler->display->display_options['filters']['created']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['created']['field'] = 'created';
-  $handler->display->display_options['filters']['created']['operator'] = 'between';
-  $handler->display->display_options['filters']['created']['value']['min'] = 'yesterday';
-  $handler->display->display_options['filters']['created']['value']['max'] = 'today';
-  $handler->display->display_options['filters']['created']['value']['value'] = 'midnight';
-  $handler->display->display_options['filters']['created']['value']['type'] = 'offset';
+  /* Filter criterion: Date: Date (commerce_order) */
+  $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
+  $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
+  $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Date (commerce_order)';
+  $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+  $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+  $handler->display->display_options['filters']['date_filter']['granularity'] = 'second';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = 'yesterday';
+  $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'today';
+  $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+    'commerce_order.created' => 'commerce_order.created',
+  );
   $handler->display->display_options['block_description'] = 'Sales Reports: Overview (Yesterday)';
 
   /* Display: Month */
