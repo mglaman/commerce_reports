@@ -123,7 +123,9 @@ class commerce_reports_handler_field_date extends views_handler_field {
   }
 
   function convertTimestamp($timestamp) {
-    $timestamp = strtotime('today UTC', $timestamp);
+    if (!is_numeric($timestamp)) {
+      $timestamp = strtotime('today UTC');
+    }
 
     if (!empty($this->granularities[$this->getFormat()]['normalizationFunction'])) {
       $timestamp = $this->{$this->granularities[$this->getFormat()]['normalizationFunction']}($timestamp);
