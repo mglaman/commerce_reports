@@ -152,7 +152,7 @@ function commerce_reports_tax_entity_insert($entity, $type) {
  * Implements hook_entity_update().
  */
 function commerce_reports_tax_entity_update($entity, $type) {
-  if ($type == 'commerce_order') {
+  if ($type == 'commerce_order' && isset($entity->original)) {
     $original = $entity->original;
 
     $order_status = $entity->status;
