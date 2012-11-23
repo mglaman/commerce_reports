@@ -221,7 +221,7 @@ class commerce_reports_handler_field_date extends views_handler_field {
     $this->query->add_groupby($field_name);
 
     $end_date = $this->endDate + $this->getInterval();
-    $this->query->add_where_expression(0, "{$this->real_field} BETWEEN {$this->startDate} AND {$end_date}");
+    $this->query->add_where_expression(0, "{$this->table_alias}.{$this->real_field} BETWEEN {$this->startDate} AND {$end_date}");
 
     $this->add_additional_fields();
   }
