@@ -7,13 +7,13 @@ function commerce_reports_help($path, $arg) {
   switch ($path) {
     case 'admin/commerce/reports/products':
       return '<p>' . t('The table lists each product listed in the store, its amount sold and the revenue it produced.') . '</p>';
-      
+
     case 'admin/commerce/reports/customers':
       return '<p>' . t('The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order. Clicking on a customer\'s name will take you to their account page.') . '</p>';
-      
+
     case 'admin/commerce/reports/sales':
       return '<p>' . t('Here you can find a customizable and filterable sales report. You can break down sales monthly, weekly or daily, specify a time period and which order statusses should be included. Each line indicates the total amount of orders, the total revenue and the average revenue per order for a certain day, week or month.') . '</p>';
-      
+
     case 'admin/commerce/reports/payment-methods':
       return '<p>' . t('Here you can find basic information about the usage of the various payment methods. Each line represents some gateway and statistics associated with that gateway.') . '</p>';
   }
@@ -24,7 +24,7 @@ function commerce_reports_help($path, $arg) {
  */
 function commerce_reports_menu() {
   $items = array();
-  
+
   $items['admin/commerce/reports'] = array(
     'title' => 'Reports',
     'description' => 'View reports for your store.',
@@ -40,7 +40,7 @@ function commerce_reports_menu() {
     'file' => 'commerce_reports.dashboard.inc',
     'weight' => 0,
   );
-  
+
   return $items;
 }
 
@@ -88,7 +88,7 @@ function commerce_reports_block_info() {
  */
 function commerce_reports_block_view($delta = '') {
   module_load_include('inc', 'commerce_reports', 'commerce_reports.blocks');
-  
+
   switch ($delta) {
     case 'commerce_reports_sales':
       return commerce_reports_sales();
@@ -107,7 +107,7 @@ function commerce_reports_block_view($delta = '') {
 function commerce_reports_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
   if ($form['#id'] == 'views-exposed-form-commerce-reports-sales-page') {
   	drupal_add_css(drupal_get_path('module', 'commerce_reports') . '/commerce_reports.css');
-  	
+
     $form['granularity']['#description'] = t('Large daily reports may take a long time to display.');
     $form['state']['#description'] = t('Only orders with selected statuses will be included in the report.');
   }
@@ -172,12 +172,12 @@ function commerce_reports_field_formatter_info() {
 function commerce_reports_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $default_currency = commerce_default_currency();
   $element = array();
-  
+
   foreach ($items as $delta => $item) {
     if (is_null($item['amount'])) {
       continue;
     }
-    
+
     switch ($display['type']) {
       case 'commerce_reports_visualization':
         if ($item['currency_code'] != $default_currency) {
@@ -186,14 +186,14 @@ function commerce_reports_field_formatter_view($entity_type, $entity, $field, $i
         else {
           $amount = $item['amount'];
         }
-        
+
         $element[$delta] = array(
           '#markup' => commerce_currency_amount_to_decimal($amount, $default_currency),
         );
         break;
     }
   }
-  
+
   return $element;
 }
 

@@ -10,26 +10,26 @@
  *   The row div.
  */
 ?>
-<div class="row">
+<div class="commerce-reports-dashboard-row">
 <?php
   foreach ($row['items'] as $index => $item) {
     if (substr($index, 0, 1) != '#') {
       switch ($item['#width']) {
         case 3:
-          $itemClass = 'twelvecol';
+          $itemClass = 'commerce-reports-dashboard-twelvecol';
           break;
-          
+
         case 2:
-          $itemClass = 'eightcol';
+          $itemClass = 'commerce-reports-dashboard-eightcol';
           break;
-          
+
         default:
-          $itemClass = 'fourcol';
+          $itemClass = 'commerce-reports-dashboard-fourcol';
           break;
       }
-      
+
       if ($index == count($row['items']) - 3) {
-        $itemClass .= ' last';
+        $itemClass .= ' commerce-reports-dashboard-last';
       }
     ?>
       <div class="<?php print $itemClass; ?>">

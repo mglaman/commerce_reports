@@ -9,7 +9,7 @@
  * @return
  *   The block div.
  */
- 
+
 if (!empty($block['#children'])) {
   $attributes = array(
     'class' => array('commerce-reports-dashboard-block', 'commerce-reports-dashboard-' . $block['#name'] . '-block'),
@@ -29,7 +29,7 @@ if (!empty($block['#children'])) {
   </div>
   <?php
     $sectionWidth =  (1. / (count($block['#visible']))) * 100;
-  
+
     $i = 0;
     foreach ($block['sections'] as $name => $render) {
       if (($name != '#children') && ($name != '#printed')) {
@@ -38,11 +38,11 @@ if (!empty($block['#children'])) {
           'data-section' => $name,
           'style' => '',
         );
-        
+
         if (in_array($name, array_values($block['#visible']), TRUE)) {
           $attributes['class'][] = 'visible';
         }
-        
+
         if (!empty($render['#width'])) {
           $attributes['style'] .= 'width: ' . $render['#width'] . '%';
         } else {
@@ -53,7 +53,7 @@ if (!empty($block['#children'])) {
   <?php
         $i ++;
       }
-    } 
+    }
   ?>
 </div>
 <?php } ?>
