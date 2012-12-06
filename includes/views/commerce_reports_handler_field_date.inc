@@ -126,6 +126,9 @@ class commerce_reports_handler_field_date extends views_handler_field {
     if (!is_numeric($timestamp)) {
       $timestamp = strtotime('today UTC');
     }
+    else {
+      $timestamp = strtotime('today UTC', $timestamp);
+    }
 
     if (!empty($this->granularities[$this->getFormat()]['normalizationFunction'])) {
       $timestamp = $this->{$this->granularities[$this->getFormat()]['normalizationFunction']}($timestamp);
@@ -243,8 +246,13 @@ class commerce_reports_handler_field_date extends views_handler_field {
    * Interpolates the missing dates linearly.
    */
   function post_execute(&$values) {
-    foreach ($values as &$record) {
-      $record->{$this->field_alias} = $this->convertTimestamp($record->{$this->field_alias});
+    $retrieved = array();
+
+    foreach ($values as $record) {
+      $timestamp = $this->convertTimestamp($record->{$this->field_alias});
+      $record->{$this->field_alias} = $timestamp;
+
+      $retrieved[$timestamp] = $record;
     }
 
     // Determine order direction.
@@ -261,83 +269,17 @@ class commerce_reports_handler_field_date extends views_handler_field {
     }
 
     $interval = $this->getInterval();
+    $defaults = array();
 
-    $retrieved = $values;
-    $values = array();
-
-    // First see if the returned data contains the requested date interval.
-    // If not, add these boundaries and let the interpolation logic do the rest.
-    if (count($retrieved)) {
-      if ($descending) {
-        $firstDate = end($retrieved)->{$this->field_alias};
-        $lastDate = reset($retrieved)->{$this->field_alias};
-      }
-      else {
-        $firstDate = reset($retrieved)->{$this->field_alias};
-        $lastDate = end($retrieved)->{$this->field_alias};
-      }
+    for ($current = $this->startDate; $current <= $this->endDate; $current += $interval) {
+      $timestamp = $this->convertTimestamp($current);
+      $defaults[$timestamp] = (object) array($this->field_alias => $timestamp);
     }
 
-    $totalRetrieved = count($retrieved);
+    $retrieved += $defaults;
 
-    // Check if end date is included.
-    if (empty($lastDate) || ($lastDate != $this->endDate)) {
-      $value = (object) array($this->field_alias => $this->endDate);
+    ksort($retrieved);
 
-      if ($descending) {
-        $totalRetrieved = array_unshift($retrieved, $value);
-      }
-      else {
-        $totalRetrieved = array_push($retrieved, $value);
-      }
-    }
-
-    // Check if start date is included.
-    if (empty($firstDate) || ($firstDate != $this->startDate)) {
-      $value = (object) array($this->field_alias => $this->startDate);
-
-      if ($descending) {
-        $totalRetrieved = array_push($retrieved, $value);
-      }
-      else {
-        $totalRetrieved = array_unshift($retrieved, $value);
-      }
-    }
-
-    // Note that we loop backwards through the array of results.
-    for ($i = 0; $i < $totalRetrieved; $i ++) {
-      $item = $retrieved[$i];
-      $values[] = $item;
-
-      // We always interpolate between two dates. If we have arrived at the start of the array,
-      // interpolation isn't necessary anymore.
-      if ($i != $totalRetrieved - 1) {
-        $nextItem = $retrieved[$i + 1];
-
-        if ($descending) {
-          $next = $item->{$this->field_alias};
-          $current = $nextItem->{$this->field_alias};
-        }
-        else {
-          $current = $item->{$this->field_alias};
-          $next = $nextItem->{$this->field_alias};
-        }
-
-        $interpolated = array();
-        for ($timestamp = $current + $interval; $timestamp < $next; $timestamp += $interval) {
-          $timestamp = $this->convertTimestamp($timestamp);
-          $value = (object) array($this->field_alias => $timestamp);
-
-          $interpolated[] = $value;
-        }
-
-        if ($descending) {
-          $values = array_merge($values, array_reverse($interpolated));
-        }
-        else {
-          $values = array_merge($values, ($interpolated));
-        }
-      }
-    }
+    $values = array_values($retrieved);
   }
 }
