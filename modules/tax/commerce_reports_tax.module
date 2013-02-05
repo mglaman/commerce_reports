@@ -12,6 +12,17 @@ function commerce_reports_tax_help($path, $arg) {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function commerce_reports_tax_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'commerce_reports_tax') . '/includes/views',
+  );
+}
+
+
+/**
  * Implements hook_menu().
  */
 function commerce_reports_tax_menu() {
@@ -38,7 +49,8 @@ function commerce_reports_tax_menu() {
   $items['admin/commerce/reports/tax'] = array(
     'title' => 'Taxes',
     'description' => 'View reporting about your taxes.',
-    'page callback' => 'commerce_reports_tax_table',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('commerce_reports_tax_table_form'),
     'access arguments' => array('access commerce tax reports'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'commerce_reports_tax.admin.inc',
@@ -222,8 +234,8 @@ function commerce_reports_tax_order_delete($order_id) {
 /**
  * Returns all reported taxes.
  */
-function commerce_reports_tax() {
-  $results = db_query("SELECT crt.tax_rate AS name, ctr.display_title AS title, crt.currency_code, SUM(crt.taxable) AS taxable, SUM(crt.taxed) AS taxed FROM {commerce_reports_tax} crt LEFT JOIN {commerce_tax_rate} ctr ON crt.tax_rate = ctr.name LEFT JOIN {commerce_order} co ON crt.order_id = co.order_id WHERE co.created > 0 GROUP BY crt.tax_rate, crt.currency_code");
+function commerce_reports_tax($start, $end) {
+  $results = db_query("SELECT crt.tax_rate AS name, ctr.display_title AS title, crt.currency_code, SUM(crt.taxable) AS taxable, SUM(crt.taxed) AS taxed FROM {commerce_reports_tax} crt LEFT JOIN {commerce_tax_rate} ctr ON crt.tax_rate = ctr.name LEFT JOIN {commerce_order} co ON crt.order_id = co.order_id WHERE co.created BETWEEN :start AND :end GROUP BY crt.tax_rate, crt.currency_code", array(':start' => $start, ':end' => $end));
 
   $rows = array();
 

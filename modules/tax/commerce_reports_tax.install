@@ -3,7 +3,7 @@
  * @file
  * Install, update, and uninstall functions for the commerce_reports_tax module.
  */
- 
+
 /**
  * Implementation of hook_schema().
  */
@@ -61,13 +61,13 @@ function commerce_reports_tax_update_7300(&$sandbox) {
   	'commerce_reports_tax_rate_aggregate',
   	'commerce_reports_tax_rate',
   );
-  
+
   foreach ($previous_tables as $table) {
   	if (db_table_exists($table)) {
   		db_drop_table($table);
   	}
   }
-  
+
   // Install the new database schema.
   drupal_install_schema('commerce_reports_tax');
 }
