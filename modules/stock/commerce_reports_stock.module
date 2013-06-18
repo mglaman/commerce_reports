@@ -1,28 +1,11 @@
 <?php
 
 /**
- * Implements hook_menu().
+ * This module provides advanced stock reporting for Drupal Commerce.
+ *
+ * @file This file contains helpers for our views handlers.
  */
-function commerce_reports_stock_menu() {
-  $items = array();
 
-  // $items['admin/commerce/reports/stock'] = array(
-  //   'title' => 'Stock report',
-  //   'description' => 'View detailed information about stock levels and lifetimes.',
-  //   'page callback' => 'commerce_reports_stock_report',
-  //   'access arguments' => array('access commerce reports'),
-  //   'type' => MENU_LOCAL_TASK,
-  // );
-
-  $items['api/stock/sales'] = array(
-    'title' => 'Stock API: Sales',
-    'page callback' => 'commerce_reports_stock_api_sales',
-    'access arguments' => array('access commerce reports'),
-    'type' => MENU_CALLBACK,
-  );
-
-  return $items;
-}
 
 
 /**
@@ -37,65 +20,13 @@ function commerce_reports_stock_views_api() {
 
 
 /**
- *
- */
-function commerce_reports_stock_api_sales() {
-  $interval = isset($_GET['interval']) ? $_GET['interval'] : 'D';
-  $start = isset($_GET['start']) ? $_GET['start'] : 0;
-
-  $output = array(
-    'status' => 'success',
-    'data' => _commerce_reports_stock_api_sales($interval, $start),
-  );
-
-  return drupal_json_output($output);
-}
-
-
-/**
- * Group sales by year, month, day or week
- */
-function _commerce_reports_stock_api_sales($interval = 'D', $start = 0) {
-  $formats = array(
-    'D' => '%Y-%m-%d',
-    'W' => '%Y-%u',
-    'M' => '%Y-%m',
-    'Y' => '%Y',
-    );
-  $format = $formats[$interval];
-
-  $query = sprintf("
-       SELECT DATE_FORMAT(FROM_UNIXTIME(o.created), '%s') AS date,
-              line_item_label AS sku,
-              SUM(quantity) AS sales
-         FROM commerce_line_item li
-    LEFT JOIN commerce_order o
-           ON li.order_id = o.order_id
-        WHERE o.status = 'completed'
-          AND li.type = 'product'
-          AND o.created >= :created
-     GROUP BY li.line_item_label, date", $format);
-
-  $res = db_query($query, array(
-      ':created' => $start,
-      ));
-
-  $data = array();
-  foreach ($res as $row) {
-    $data[$row->sku][$row->date] = (int) $row->sales;
-  }
-
-  return $data;
-}
-
-
-/**
  * Calculate all the stock reports data (weekly sales, monthly sales, lifetime)
  */
 function _commerce_reports_stock_calculate_dataset() {
-  $products = _commerce_reports_stock_get_stockenabled_products();
+  $products = commerce_product_load_multiple(array(), array('status' => 1));
 
-  $start = strtotime('6 months ago');
+  $start = variable_get('commerce_reports_stock_historyperiod', '3 months ago');
+  $start = strtotime($start);
   $weekly_sales = _commerce_reports_stock_api_sales('W', $start);
   $monthly_sales = _commerce_reports_stock_api_sales('M', $start);
 
@@ -104,10 +35,19 @@ function _commerce_reports_stock_calculate_dataset() {
   $instock = array();
   foreach ($products as $product) {
     $sku = $product->sku;
-    $stock = (int) $product->commerce_stock[LANGUAGE_NONE][0]['value'];
-    $weekly_burn = _commerce_reports_stock_calculate_average_sales($weekly_sales[$sku]);
-    $monthly_burn = _commerce_reports_stock_calculate_average_sales($monthly_sales[$sku]);
-    $lifetime = _commerce_reports_stock_calculate_lifetime($stock, $weekly_burn / 7);
+
+    $stock = isset($product->commerce_stock[LANGUAGE_NONE][0]['value'])
+      ? (int) $product->commerce_stock[LANGUAGE_NONE][0]['value']
+      : FALSE;
+
+    $weekly_burn = isset($weekly_sales[$sku])
+      ? _commerce_reports_stock_calculate_average_sales($weekly_sales[$sku])
+      : 0;
+    $monthly_burn = isset($monthly_sales[$sku])
+      ? _commerce_reports_stock_calculate_average_sales($monthly_sales[$sku])
+      : 0;
+
+    $lifetime = _commerce_reports_stock_calculate_lifetime($stock, $weekly_burn);
     $lifetimes[] = $lifetime;
     $instock[] = (bool) $stock;
 
@@ -127,37 +67,13 @@ function _commerce_reports_stock_calculate_dataset() {
 
 
 /**
- * Admin configuration form.
- */
-function commerce_reports_stock_report() {
-  $rows = _commerce_reports_stock_calculate_dataset();
-
-  $headers = array(
-    t('SKU'),
-    t('Inventory'),
-    t('Average weekly sales'),
-    t('Average monthly sales'),
-    t('Expected lifetime (days)'),
-  );
-
-  $output['products'] = array(
-    '#theme' => 'table',
-    '#rows' => $rows,
-    '#header' => $headers,
-  );
-
-  return $output;
-}
-
-
-/**
  * Calculate the stock lifetime.
  */
-function _commerce_reports_stock_calculate_lifetime($stock, $daily_burn) {
-  if ($daily_burn === 0) {
-    return 1000; // Arbitrary high number
+function _commerce_reports_stock_calculate_lifetime($stock, $weekly_burn) {
+  if ($weekly_burn === 0) {
+    return 1000;
   }
-  return (int) ($stock / $daily_burn);
+  return (int) ($stock / ($weekly_burn / 7));
 }
 
 
@@ -198,89 +114,37 @@ function _commerce_reports_stock_get_stockenabled_products() {
 
 
 /**
- * Admin configuration form.
+ * Group sales by year, month, day or week
  */
-function commerce_reports_stock_reconciliation($form, $form_state) {
-  $form = array();
-
-  // Get our per SKU sales data
-  $ts = mktime(0, 0, 0, date('m'), 1, date('Y'));
-  $res = db_query("
-    SELECT li.line_item_label as sku,
-           SUM(quantity) as quantity,
-           DATE_FORMAT(FROM_UNIXTIME(o.created), '%Y-%m') as yearmm
-      FROM commerce_line_item li
- LEFT JOIN commerce_order o
-        ON o.order_id = li.order_id
-     WHERE li.type = 'product'
-       AND o.status in ('completed', 'pending', 'processing', 'review')
-  GROUP BY li.line_item_label, yearmm", array(':created' => $ts));
-  dvm($ts);
-
-/*
-  -- total sales this month by line item
-    SELECT li.line_item_label as sku,
-           SUM(quantity) as quantity
-      FROM commerce_line_item li
- LEFT JOIN commerce_order o
-        ON o.order_id = li.order_id
-     WHERE li.type = 'product'
-       AND o.status in ('completed', 'pending', 'processing', 'review')
-       AND o.created >= 1364734800
-  GROUP BY li.line_item_label;
-
-  -- total sales
-    SELECT SUM(quantity)
-      FROM commerce_line_item li
- LEFT JOIN commerce_order o
-        ON o.order_id = li.order_id
-     WHERE li.type = 'product'
-       AND o.status in ('completed', 'pending', 'processing', 'review')
-       AND o.created >= 1364734800;
-
-*/
-
-  // Build a mapped array [sku]x[yearmm]
-  $blob = array();
-  foreach ($res as $row) {
-    $blob[$row->sku] = $row->quantity;
-  }
-
-  // Timestamp for the start of the month
-  $headers = array(
-    t('SKU'),
-    t('Current month starting inventory'),
-    t('Current month sales'),
-    t('Current stock')
+function _commerce_reports_stock_api_sales($interval = 'D', $start = 0) {
+  $formats = array(
+    'D' => '%Y-%m-%d',
+    'W' => '%Y-%u',
+    'M' => '%Y-%m',
+    'Y' => '%Y',
     );
+  $format = $formats[$interval];
 
-  // Get our stock enabled products
-  $products = _commerce_reports_stock_get_stockenabled_products();
+  $query = sprintf("
+       SELECT DATE_FORMAT(FROM_UNIXTIME(o.created), '%s') AS date,
+              line_item_label AS sku,
+              SUM(quantity) AS sales
+         FROM commerce_line_item li
+    LEFT JOIN commerce_order o
+           ON li.order_id = o.order_id
+        WHERE o.status = 'completed'
+          AND li.type = 'product'
+          AND o.created >= :created
+     GROUP BY li.line_item_label, date", $format);
 
-  // Build a HTML table
-  $rows = array();
-  foreach ($products as $product) {
-    $stocknow = (int) $product->commerce_stock[LANGUAGE_NONE][0]['value'];
-    $sales = isset($blob[$product->sku]) ? (int) $blob[$product->sku] : 0;
+  $res = db_query($query, array(
+      ':created' => $start,
+      ));
 
-    $thisrow = array();
-    $thisrow[] = $product->sku;
-    $thisrow[] = $stocknow + $sales;
-    $thisrow[] = $sales;
-    $thisrow[] = $stocknow;
-
-    $rows[] = $thisrow;
+  $data = array();
+  foreach ($res as $row) {
+    $data[$row->sku][$row->date] = (int) $row->sales;
   }
 
-  $form = array();
-
-  $form['stock_levels'] = array(
-    '#theme' => 'table',
-    '#rows' => $rows,
-    '#header' => $headers,
-  );
-
-  return system_settings_form($form);
+  return $data;
 }
-
-
