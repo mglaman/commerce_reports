@@ -92,7 +92,7 @@ function commerce_reports_dashboard_block($name, $options = array()) {
     $block = block_load($information['module'], $information['block']);
     $block_render = module_invoke($block->module, 'block_view', $block->delta);
 
-    $render['sections'][$name] = $block_render;
+    $render['sections'][$name] = ($block->module == 'views') ? $block_render['content'] : $block_render;
     $render['sections'][$name]['#width'] = empty($options['switchSections']) ? 100 : NULL;
 
     if (!empty($options['switchSections'])) {
