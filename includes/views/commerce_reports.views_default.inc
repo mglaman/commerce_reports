@@ -639,6 +639,7 @@ function commerce_reports_views_default_views() {
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Payment methods';
+  $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['group_by'] = TRUE;
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'access commerce reports';
@@ -677,80 +678,28 @@ function commerce_reports_views_default_views() {
       'empty_column' => 0,
     ),
   );
-  $handler->display->display_options['style_options']['override'] = 1;
-  $handler->display->display_options['style_options']['sticky'] = 0;
-  $handler->display->display_options['style_options']['empty_table'] = 0;
+  /* Relationship: Commerce Payment Transaction: Order ID */
+  $handler->display->display_options['relationships']['order_id']['id'] = 'order_id';
+  $handler->display->display_options['relationships']['order_id']['table'] = 'commerce_payment_transaction';
+  $handler->display->display_options['relationships']['order_id']['field'] = 'order_id';
+  $handler->display->display_options['relationships']['order_id']['required'] = TRUE;
   /* Field: Commerce Payment Transaction: Payment method */
   $handler->display->display_options['fields']['payment_method']['id'] = 'payment_method';
   $handler->display->display_options['fields']['payment_method']['table'] = 'commerce_payment_transaction';
   $handler->display->display_options['fields']['payment_method']['field'] = 'payment_method';
-  $handler->display->display_options['fields']['payment_method']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['payment_method']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['payment_method']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['payment_method']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['payment_method']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['payment_method']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['payment_method']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['payment_method']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['payment_method']['hide_alter_empty'] = 1;
   /* Field: COUNT(Commerce Payment Transaction: Transaction ID) */
   $handler->display->display_options['fields']['transaction_id']['id'] = 'transaction_id';
   $handler->display->display_options['fields']['transaction_id']['table'] = 'commerce_payment_transaction';
   $handler->display->display_options['fields']['transaction_id']['field'] = 'transaction_id';
   $handler->display->display_options['fields']['transaction_id']['group_type'] = 'count';
   $handler->display->display_options['fields']['transaction_id']['label'] = 'Transactions';
-  $handler->display->display_options['fields']['transaction_id']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['transaction_id']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['transaction_id']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['transaction_id']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['transaction_id']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['transaction_id']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['transaction_id']['format_plural'] = 0;
   /* Field: SUM(Commerce Payment Transaction: Amount) */
   $handler->display->display_options['fields']['amount']['id'] = 'amount';
   $handler->display->display_options['fields']['amount']['table'] = 'commerce_payment_transaction';
   $handler->display->display_options['fields']['amount']['field'] = 'amount';
   $handler->display->display_options['fields']['amount']['group_type'] = 'sum';
   $handler->display->display_options['fields']['amount']['label'] = 'Revenue';
-  $handler->display->display_options['fields']['amount']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['amount']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['amount']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['amount']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['amount']['element_label_colon'] = 0;
-  $handler->display->display_options['fields']['amount']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['amount']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['amount']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['amount']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['amount']['element_label_colon'] = FALSE;
   /* Filter criterion: Commerce Payment Transaction: Status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'commerce_payment_transaction';
