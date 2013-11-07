@@ -13,6 +13,7 @@ dependencies[] = commerce_product
 dependencies[] = block
 dependencies[] = date
 dependencies[] = date_views
+dependencies[] = date_popup
 core = 7.x
 
 ; Views includes
