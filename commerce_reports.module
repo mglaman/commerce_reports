@@ -63,6 +63,38 @@ function commerce_reports_theme($existing, $type, $theme, $path) {
 }
 
 /**
+ * Implements hook_charts_info_alter().
+ *
+ */
+
+function commerce_reports_charts_info_alter(&$info) {
+  // Say the Google charts library supports geo charts.
+  $info['google']['types'][] = 'geomap';
+}
+
+/**
+ * Implements hook_charts_type_info().
+ */
+function commerce_reports_charts_type_info() {
+  $chart_types['geomap'] = array(
+    'label' => t('Geomap'),
+    // If this chart supports both an X and Y axis, set this to
+    // CHARTS_DUAL_AXIS. If only a single axis is supported (e.g. pie), then
+    // set this to CHARTS_SINGLE_AXIS.
+    'axis' => CHARTS_DUAL_AXIS,
+    // Many charting libraries always refer to the main axis as the "y-axis",
+    // even if the chart's main axis is horizontal. An example of this is a
+    // bar chart, where the values are along the horizontal axis.
+    'axis_inverted' => TRUE, // Meaning x/y axis are flipped.
+  );
+  return $chart_types;
+}
+
+function commerce_reports_charts_google_visualization_types_alter(&$types) {
+  $types['geomap'] = 'GeoMap';
+}
+
+/**
  * Implements hook_block_info().
  *
  * Defines the custom blocks defined by commerce_reports.
@@ -74,9 +106,6 @@ function commerce_reports_block_info() {
     ),
     'commerce_reports_customers' => array(
       'info' => t('Commerce Reports: Customer statistics'),
-    ),
-    'commerce_reports_customer_map' => array(
-      'info' => t('Commerce Reports: Customer map'),
     ),
   );
 }
@@ -94,8 +123,6 @@ function commerce_reports_block_view($delta = '') {
       return commerce_reports_sales();
     case 'commerce_reports_customers':
       return commerce_reports_customers();
-    case 'commerce_reports_customer_map':
-      return commerce_reports_customer_map();
   }
 }
 
@@ -318,15 +345,22 @@ function commerce_reports_commerce_reports_dashboard() {
     ),
     'billing_information' => array(
       'title' => t('Billing information'),
+      'switchSections' => TRUE,
       'type' => COMMERCE_REPORTS_DASHBOARD_BROAD_BLOCK,
       'report' => array(
         'title' => t('Customer profiles'),
         'path' => 'admin/commerce/customer-profiles',
       ),
       'sections' => array(
-        'map' => array(
-          'module' => 'commerce_reports',
-          'block' => 'commerce_reports_customer_map',
+        'billing_profiles' => array(
+          'title' => 'Billing',
+          'module' => 'views',
+          'block' => 'c143b512518b3a7c6b30be35b192abbf',
+        ),
+        'shipping_profiles' => array(
+          'title' => 'Shipping',
+          'module' => 'views',
+          'block' => '5efb68bd488bc78cae2aac5b8ddc29a6',
         ),
       ),
       'weight' => 300,

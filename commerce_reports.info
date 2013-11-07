@@ -1,7 +1,8 @@
 name = Reports
 description = Provides reporting for sales, products, customers and payment gateways.
 package = Commerce (reporting)
-dependencies[] = visualization
+dependencies[] = charts
+dependencies[] = charts_google
 dependencies[] = commerce
 dependencies[] = commerce_customer
 dependencies[] = commerce_line_item
