@@ -1070,6 +1070,8 @@ function commerce_reports_views_default_views() {
     1 => 0,
   );
   $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = '-11 months';
+  $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
   $handler->display->display_options['filters']['date_filter']['year_range'] = '-4:+0';
   $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
     'commerce_order.created' => 'commerce_order.created',
