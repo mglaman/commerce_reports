@@ -62,6 +62,36 @@ function commerce_reports_theme($existing, $type, $theme, $path) {
   );
 }
 
+function commerce_reports_preprocess_page(&$vars) {
+  $view = views_get_page_view();
+  if (!empty($view) && strpos($view->name, 'commerce_reports_sales') !== FALSE) {
+    //dpm($vars['tabs']);
+
+    //Duplicate Monthly Report link into secondary tasks.
+    //@todo not sure if this is best way..but it does work.
+    foreach($vars['tabs']['#primary'] as $tab_key => $tab_value) {
+      if($tab_value['#link']['path'] == 'admin/commerce/reports/sales') {
+        $vars['tabs']['#secondary'][] = $tab_value;
+      }
+    }
+
+    foreach($vars['tabs']['#secondary'] as $sales_report_key => $sales_report_value) {
+
+      switch($sales_report_value['#link']['path']) {
+        case 'admin/commerce/reports/sales/daily':
+          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Daily Report';
+        break;
+        case 'admin/commerce/reports/sales/weekly':
+          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Weekly Report';
+        break;
+        case 'admin/commerce/reports/sales':
+          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Monthly Report';
+        break;
+      }
+    }
+  }
+}
+
 /**
  * Implements hook_charts_info_alter().
  *
