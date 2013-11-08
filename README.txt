@@ -1,0 +1,29 @@
+This module provides a reporting system for Drupal Commerce.
+
+Some features that you will find in this module:
+
+* Table-based reports for sales with filtering by order status and date ranges. The report can break sales down monthly, weekly and daily.
+* Table-based reports for customers, products and payment methods.
+* An advanced reports dashboard showing a summarized view for all the above reports, visualization done by Charts module, using Google Charts.
+* The ability to export to CSV files when Views Data Export is enabled.
+
+Commerce Reports Tax
+-----------------------------
+The tax reporting module uses the Batch API to generate reports. It is able to handle multiple reports with a variety of parameters, which are handled through the Entity API.
+
+Commerce Reports Geckoboard
+-----------------------------
+This sub-module provides integration with Geckoboard allowing for reporting information about your revenue, sales and orders.
+
+Commerce Reports Stock
+-----------------------------
+The stock calculates stock reports.
+
+Notes
+---------------------------
+Commerce Reports is based off of an order's CREATED date. Some modules, such as Commerce Google Analytics trigger on an order's checkout completion. To provide a better reporting environment it is recommended to enable the "Set the order created date to the checkout completion date" rule. This will change an order's created date to the check out time and synchronize Commerce Reports with Commerce Google Analytics.
+
+This rule was committed to Commerce dev November 4, 2013 by Ryan Szrama https://drupal.org/node/2044231. For further reading about this issue reference: http://glamanate.com/2013/10/28/drupal-commerce-and-reporting.
+
+
+
