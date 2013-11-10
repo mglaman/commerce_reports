@@ -170,6 +170,8 @@ function commerce_reports_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['css_class'] = FALSE;
+  $handler->display->display_options['css_class'] = 'commerce-reports';
   $handler->display->display_options['defaults']['header'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
@@ -208,7 +210,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
   $handler->display->display_options['filters']['date_filter']['exposed'] = TRUE;
   $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
-  $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Order dates';
   $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
   $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
   $handler->display->display_options['filters']['date_filter']['expose']['remember_roles'] = array(
@@ -465,8 +466,8 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['order_id']['table'] = 'commerce_order';
   $handler->display->display_options['fields']['order_id']['field'] = 'order_id';
   $handler->display->display_options['fields']['order_id']['relationship'] = 'uid_commerce_orders';
-  $handler->display->display_options['fields']['order_id']['label'] = 'Orders';
   $handler->display->display_options['fields']['order_id']['group_type'] = 'count';
+  $handler->display->display_options['fields']['order_id']['label'] = 'Orders';
   /* Field: SUM(Commerce Order: Order total) */
   $handler->display->display_options['fields']['commerce_order_total_1']['id'] = 'commerce_order_total_1';
   $handler->display->display_options['fields']['commerce_order_total_1']['table'] = 'field_data_commerce_order_total';
@@ -476,7 +477,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['commerce_order_total_1']['label'] = 'Total';
   $handler->display->display_options['fields']['commerce_order_total_1']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['commerce_order_total_1']['click_sort_column'] = 'amount';
-  $handler->display->display_options['fields']['commerce_order_total_1']['type'] = 'commerce_price_formatted_amount';
   $handler->display->display_options['fields']['commerce_order_total_1']['settings'] = array(
     'calculation' => FALSE,
   );
@@ -496,7 +496,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['commerce_order_total']['element_wrapper_type'] = '0';
   $handler->display->display_options['fields']['commerce_order_total']['element_default_classes'] = FALSE;
   $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
-  $handler->display->display_options['fields']['commerce_order_total']['type'] = 'commerce_price_formatted_amount';
   $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
     'calculation' => FALSE,
   );
@@ -524,6 +523,9 @@ function commerce_reports_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['css_class'] = FALSE;
+  $handler->display->display_options['css_class'] = 'commerce-reports';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: User: Active */
   $handler->display->display_options['filters']['status']['id'] = 'status';
@@ -551,8 +553,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['filters']['uid']['expose']['label'] = 'Search customers';
   $handler->display->display_options['filters']['uid']['expose']['operator'] = 'uid_op';
   $handler->display->display_options['filters']['uid']['expose']['identifier'] = 'uid';
-  $handler->display->display_options['filters']['uid']['expose']['multiple'] = FALSE;
-  $handler->display->display_options['filters']['uid']['expose']['reduce'] = 0;
   $handler->display->display_options['path'] = 'admin/commerce/reports/customers';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Customers';
@@ -586,7 +586,6 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['style_options']['xaxis_labels_rotation'] = '0';
   $handler->display->display_options['style_options']['yaxis_labels_rotation'] = '0';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
-  $handler->display->display_options['style_options']['type'] = 'pie';
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: User: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
@@ -616,6 +615,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['commerce_order_total_1']['group_columns'] = array(
     'currency_code' => 'currency_code',
   );
+
   /* Display: Chart (by orders) */
   $handler = $view->new_display('block', 'Chart (by orders)', 'chart_orders');
   $handler->display->display_options['defaults']['pager'] = FALSE;
@@ -791,6 +791,7 @@ function commerce_reports_views_default_views() {
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Sales report';
+  $handler->display->display_options['css_class'] = 'commerce-reports';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['group_by'] = TRUE;
   $handler->display->display_options['access']['type'] = 'perm';

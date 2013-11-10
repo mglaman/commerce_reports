@@ -163,10 +163,18 @@ function commerce_reports_block_view($delta = '') {
  */
 function commerce_reports_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
   if ($form['#id'] == 'views-exposed-form-commerce-reports-sales-page') {
-  	drupal_add_css(drupal_get_path('module', 'commerce_reports') . '/commerce_reports.css');
 
     $form['granularity']['#description'] = t('Large daily reports may take a long time to display.');
     $form['state']['#description'] = t('Only orders with selected statuses will be included in the report.');
+  }
+}
+
+/**
+ * Implement hook_views_pre_render().
+ */
+function commerce_reports_views_pre_render(&$view) {
+  if (strpos($view->name, 'commerce_reports_') !== FALSE) {
+    drupal_add_css(drupal_get_path('module', 'commerce_reports') . '/theme/css/commerce-reports.css');
   }
 }
 

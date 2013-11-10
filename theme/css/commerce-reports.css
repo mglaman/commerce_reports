@@ -1,0 +1,13 @@
+.commerce-reports {
+
+}
+.commerce-reports .views-exposed-form .date-padding input {
+  background-image: url(../images/calendar.png);
+  background-position: 95% center;
+  background-repeat: no-repeat;
+}
+
+.commerce-reports .views-exposed-form #edit-date-filter-min-wrapper,
+.commerce-reports .views-exposed-form #edit-date-filter-max-wrapper {
+  float: left;
+}
