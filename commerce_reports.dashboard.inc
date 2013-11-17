@@ -22,8 +22,8 @@ function commerce_reports_dashboard_block_width($items = array()) {
  * Renders the dashboard.
  */
 function commerce_reports_dashboard() {
-  drupal_add_js(drupal_get_path('module', 'commerce_reports') . '/js/dashboard.js', 'file');
-  drupal_add_css(drupal_get_path('module', 'commerce_reports') . '/commerce_reports_dashboard.css');
+  drupal_add_js(drupal_get_path('module', 'commerce_reports') . '/theme/js/dashboard.js', 'file');
+  drupal_add_css(drupal_get_path('module', 'commerce_reports') . '/theme/css/commerce_reports_dashboard.css');
 
   $info = module_invoke_all('commerce_reports_dashboard');
   drupal_alter('commerce_reports_dashboard', $info);
