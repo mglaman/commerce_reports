@@ -15,5 +15,8 @@ core = 7.x
 ; Views includes
 files[] = includes/views/commerce_reports.views.inc
 
+; Views handlers
+files[] = includes/views/handlers/commerce_reports_handler_sort_date.inc
+
 ; Tests
 files[] = tests/commerce_reports.test
