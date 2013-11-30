@@ -1026,7 +1026,7 @@ function commerce_reports_views_default_views() {
     1 => 0,
   );
   $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
-  $handler->display->display_options['filters']['date_filter']['default_date'] = '-11 months';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = '-12 months';
   $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
   $handler->display->display_options['filters']['date_filter']['year_range'] = '-4:+0';
   $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
@@ -1143,7 +1143,7 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
   $handler->display->display_options['sorts']['created']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['created']['expose']['label'] = 'Order date';
-  $handler->display->display_options['sorts']['created']['granularity'] = 'day';
+  $handler->display->display_options['sorts']['created']['granularity'] = 'week';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Commerce Order: Order state */
@@ -1175,7 +1175,7 @@ function commerce_reports_views_default_views() {
     1 => 0,
   );
   $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
-  $handler->display->display_options['filters']['date_filter']['default_date'] = '-11 months';
+  $handler->display->display_options['filters']['date_filter']['default_date'] = '-12 months';
   $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
   $handler->display->display_options['filters']['date_filter']['year_range'] = '-4:+0';
   $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
@@ -1773,11 +1773,11 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['fields']['commerce_order_total_1']['group_columns'] = array(
     'currency_code' => 'currency_code',
   );
-  /* Filter criterion: Commerce Order: Order status */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = array(
+  /* Filter criterion: Commerce Order: Order state */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['value'] = array(
     'pending' => 'pending',
     'completed' => 'completed',
   );
@@ -1820,11 +1820,11 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Commerce Order: Order status */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = array(
+  /* Filter criterion: Commerce Order: Order state */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['value'] = array(
     'pending' => 'pending',
     'completed' => 'completed',
   );
@@ -1852,11 +1852,11 @@ function commerce_reports_views_default_views() {
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Commerce Order: Order status */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = array(
+  /* Filter criterion: Commerce Order: Order state */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['value'] = array(
     'pending' => 'pending',
     'completed' => 'completed',
   );
