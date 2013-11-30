@@ -26,7 +26,6 @@ function commerce_reports_views_handlers() {
 function commerce_reports_views_data_alter(&$data) {
   //Changed created to use our date sort handler which adds weekly granularity.
   $data['commerce_order']['created']['sort']['handler'] = 'commerce_reports_handler_sort_date';
-  dpm($data['commerce_order']['created']);
 
   $data['users']['uid_commerce_orders'] = array(
     'relationship' => array(
