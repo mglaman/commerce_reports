@@ -13,7 +13,6 @@ dependencies[] = views_date_format_sql
 core = 7.x
 
 ; Views includes
-files[] = includes/views/commerce_reports.views.inc
 
 ; Views handlers
 files[] = includes/views/handlers/commerce_reports_handler_sort_date.inc
