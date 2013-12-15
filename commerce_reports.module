@@ -375,8 +375,8 @@ function commerce_reports_commerce_reports_dashboard() {
       'title' => t('Customer statistics'),
       'sections' => array(
         'customers' => array(
-          'module' => 'commerce_reports',
-          'block' => 'commerce_reports_customers',
+          'module' => 'views',
+          'block' => 'e5caeb6059c44dfa5008c4ff7c6f04be',
         ),
       ),
       'weight' => 280,
