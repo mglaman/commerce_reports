@@ -145,6 +145,20 @@ div.commerce-reports-dashboard-overview-block div.commerce-reports-dashboard-sec
   margin-right: auto;
 }
 
+/**
+ * Customer Statistics block
+ */
+.commerce-reports-dashboard-customer_statistics-block .views-field {
+  font-size: 16px;
+  line-height: 55px;
+}
+.commerce-reports-dashboard-customer_statistics-block .views-label {
+  display: inline-block;
+  width: 140px;
+  margin-right: 10px;
+  border-right: 1px solid #e0e0e0;
+}
+
 /* ==================================================================================================================== */
 /* ! The 1140px Grid V2 by Andy Taylor \ http://cssgrid.net \ http://www.twitter.com/andytlr \ http://www.andytlr.com   */
 /* ==================================================================================================================== */
