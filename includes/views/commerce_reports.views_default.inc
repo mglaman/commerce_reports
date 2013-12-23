@@ -1365,8 +1365,8 @@ function commerce_reports_views_default_views() {
     'commerce_order_total_1' => '#910000',
     'created' => '#910000',
   );
-  $handler->display->display_options['style_options']['width'] = '';
-  $handler->display->display_options['style_options']['height'] = '';
+  $handler->display->display_options['style_options']['width'] = '1140';
+  $handler->display->display_options['style_options']['height'] = '225';
   $handler->display->display_options['style_options']['xaxis_labels_rotation'] = '0';
   $handler->display->display_options['style_options']['yaxis_labels_rotation'] = '0';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
@@ -1470,8 +1470,8 @@ function commerce_reports_views_default_views() {
     'commerce_order_total' => '#8bbc21',
     'commerce_order_total_1' => '#910000',
   );
-  $handler->display->display_options['style_options']['width'] = '';
-  $handler->display->display_options['style_options']['height'] = '';
+  $handler->display->display_options['style_options']['width'] = '1140';
+  $handler->display->display_options['style_options']['height'] = '225';
   $handler->display->display_options['style_options']['xaxis_labels_rotation'] = '0';
   $handler->display->display_options['style_options']['yaxis_labels_rotation'] = '0';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
@@ -1574,8 +1574,8 @@ function commerce_reports_views_default_views() {
     'commerce_order_total' => '#8bbc21',
     'commerce_order_total_1' => '#910000',
   );
-  $handler->display->display_options['style_options']['width'] = '';
-  $handler->display->display_options['style_options']['height'] = '';
+  $handler->display->display_options['style_options']['width'] = '1140';
+  $handler->display->display_options['style_options']['height'] = '225';
   $handler->display->display_options['style_options']['xaxis_labels_rotation'] = '0';
   $handler->display->display_options['style_options']['yaxis_labels_rotation'] = '0';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
