@@ -46,16 +46,6 @@ function commerce_reports_tax_menu() {
     'file' => 'commerce_reports_tax.admin.inc',
   );
 
-  $items['admin/commerce/reports/tax'] = array(
-    'title' => 'Taxes',
-    'description' => 'View reporting about your taxes.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('commerce_reports_tax_table_form'),
-    'access arguments' => array('access commerce tax reports'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'commerce_reports_tax.admin.inc',
-  );
-
   return $items;
 }
 

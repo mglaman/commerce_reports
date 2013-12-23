@@ -35,7 +35,7 @@ function commerce_reports_tax_schema() {
         'type' => 'int',
         'not null' => FALSE,
         'default' => NULL,
-        'description' => 'The applied amount of tax.',
+        'description' => 'The orders taxable amount.',
       ),
       'taxed' => array(
         'type' => 'int',
