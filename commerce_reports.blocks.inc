@@ -73,33 +73,3 @@ function commerce_reports_sales_format($data, $title) {
 
   return $sales;
 }
-
-/**
- * Implementation of table showing statistics about customers.
- */
-function commerce_reports_customers() {
-  $statistics = array();
-
-  $total_revenue = db_query('SELECT currency_code, SUM(amount) AS amount FROM {commerce_payment_transaction} GROUP by currency_code');
-
-  while ($result = $total_revenue->fetch()) {
-    $statistics[] = array(t('Total revenue'), commerce_currency_format($result->amount, $result->currency_code));
-  }
-
-  $total_customers = db_query("SELECT COUNT(uid) FROM (SELECT u.uid AS uid FROM {users} u INNER JOIN {commerce_order} o ON u.uid = o.uid WHERE o.status IN ('completed', 'pending') GROUP BY o.uid) s")->fetchField();
-  $new_customers_today = db_query("SELECT COUNT(uid) FROM (SELECT u.uid AS uid FROM {users} u INNER JOIN {commerce_order} o ON u.uid = o.uid WHERE o.status IN ('completed', 'pending') GROUP BY o.uid HAVING MIN(o.created) >= :created) s", array(':created' => strtotime('midnight', REQUEST_TIME)))->fetchField();
-  $online_customers = db_query("SELECT COUNT(uid) FROM (SELECT u.uid AS uid FROM {users} u INNER JOIN {commerce_order} o ON u.uid = o.uid WHERE o.status IN ('completed', 'pending') GROUP BY o.uid HAVING o.uid <> 0) s WHERE uid IN (SELECT sess.uid FROM {sessions} sess)")->fetchField();
-
-  $statistics = array_merge($statistics,
-    array(
-      array(t('Customers total'), $total_customers),
-      array(t('New customers today'), $new_customers_today),
-      array(t('Online customers'), $online_customers),
-    )
-  );
-
-  return array(
-    '#theme' => 'table',
-    '#rows' => $statistics,
-  );
-}
