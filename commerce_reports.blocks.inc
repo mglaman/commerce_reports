@@ -43,7 +43,11 @@ function commerce_reports_sales() {
 function commerce_reports_sales_data($start = 0, $time_periods = 1) {
   $sales = array();
 
-  $result = db_query('SELECT SUM(amount) AS sum, AVG(amount) AS average, COUNT(*) AS count, currency_code FROM {commerce_payment_transaction} cpt WHERE created >= :start  GROUP by currency_code', array(':start' => $start));
+  $result = db_query('SELECT SUM(amount) AS sum, AVG(amount) AS average, COUNT(*) AS count, currency_code
+    FROM {commerce_payment_transaction} cpt
+    INNER JOIN {commerce_order} co ON cpt.order_id = co.order_id
+    WHERE cpt.created >= :start AND cpt.status = :status
+    GROUP by cpt.currency_code', array(':status' => 'success', ':start' => $start));
 
   while ($row = $result->fetchAssoc()) {
     $currency = $row['currency_code'];
