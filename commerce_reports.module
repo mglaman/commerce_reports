@@ -84,6 +84,9 @@ function commerce_reports_preprocess_page(&$vars) {
         case 'admin/commerce/reports/sales/weekly':
           $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Weekly Report';
         break;
+        case 'admin/commerce/reports/sales/yearly':
+          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Yearly Report';
+        break;
         case 'admin/commerce/reports/sales':
           $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Monthly Report';
         break;
