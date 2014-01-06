@@ -102,3 +102,24 @@ function commerce_reports_tax_views_data() {
 
   return $data;
 }
+
+/**
+ * Implements hook_views_data_alter()
+ */
+function commerce_reports_tax_views_data_alter(&$data) {
+  // Define the relationship from commerce_order to commerce_payment_transaction.
+  $data['commerce_order']['table']['join']['commerce_reports_tax'] = array(
+    'left_field' => 'order_id',
+    'field' => 'order_id',
+  );
+
+  $data['commerce_order']['payment_transaction']['relationship'] = array(
+    'title' => t('Tax Reports'),
+    'help' => t("Relate this order to its tax reports. This relationship will cause duplicated records if there are multiple tax rates per order."),
+    'handler' => 'views_handler_relationship',
+    'base' => 'commerce_reports_tax',
+    'base field' => 'order_id',
+    'field' => 'order_id',
+    'label' => t('Tax', array(), array('context' => 'a drupal commerce tax report')),
+  );
+}
