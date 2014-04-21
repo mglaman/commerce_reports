@@ -155,7 +155,11 @@ function commerce_reports_block_view($delta = '') {
     case 'commerce_reports_sales':
       return commerce_reports_sales();
     case 'commerce_reports_customers':
-      return commerce_reports_customers();
+      $block_render = module_invoke('views', 'block_view', 'f3f98e42ba2d4d3103b95e9199cf48fe');
+      return array(
+        'title' => t('Customer statistics'),
+        'content' => $block_render['content'],
+      );
   }
 }
 
