@@ -19,7 +19,7 @@ if (!empty($block['#children'])) {
   <div class='header'>
     <h1><?php print $block['#title']; ?></h1>
     <?php if (!empty($block['#report'])) { ?>
-    <span>(from <?php print $block['#report']; ?>)</span>
+    <span>(<?php print t('from'); ?> <?php print $block['#report']; ?>)</span>
     <?php } ?>
     <?php if (!empty($block['#operations'])) { ?>
     <div class='operations'>

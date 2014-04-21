@@ -322,17 +322,17 @@ function commerce_reports_commerce_reports_dashboard() {
       ),
       'sections' => array(
         'year' => array(
-          'title' => 'Year',
+          'title' => t('Year'),
           'module' => 'views',
           'block' => 'cc437fbe6b867b448dc946fd925800a3',
         ),
         'month' => array(
-          'title' => 'Month',
+          'title' => t('Month'),
           'module' => 'views',
           'block' => '1127e4706efe2c1eb8537a65a644e572',
         ),
         'week' => array(
-          'title' => 'Week',
+          'title' => t('Week'),
           'module' => 'views',
           'block' => 'd70fc459675538d56c73a9f90574211a',
         ),
@@ -362,12 +362,12 @@ function commerce_reports_commerce_reports_dashboard() {
       ),
       'sections' => array(
         'revenue' => array(
-          'title' => 'Revenue',
+          'title' => t('Revenue'),
           'module' => 'views',
           'block' => 'commerce_reports_products-chart_revenue',
         ),
         'quantity' => array(
-          'title' => 'Quantity',
+          'title' => t('Quantity'),
           'module' => 'views',
           'block' => '31eccd6666389cf554f290e91ef9848a',
         ),
@@ -394,12 +394,12 @@ function commerce_reports_commerce_reports_dashboard() {
       ),
       'sections' => array(
         'billing_profiles' => array(
-          'title' => 'Billing',
+          'title' => t('Billing'),
           'module' => 'views',
           'block' => 'c143b512518b3a7c6b30be35b192abbf',
         ),
         'shipping_profiles' => array(
-          'title' => 'Shipping',
+          'title' => t('Shipping'),
           'module' => 'views',
           'block' => '5efb68bd488bc78cae2aac5b8ddc29a6',
         ),
