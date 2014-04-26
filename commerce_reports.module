@@ -62,36 +62,27 @@ function commerce_reports_theme($existing, $type, $theme, $path) {
   );
 }
 
-function commerce_reports_preprocess_page(&$vars) {
-  $view = views_get_page_view();
-  if (!empty($view) && strpos($view->name, 'commerce_reports_sales') !== FALSE) {
-    //dpm($vars['tabs']);
 
-    //Duplicate Monthly Report link into secondary tasks.
-    //@todo not sure if this is best way..but it does work.
-    foreach($vars['tabs']['#primary'] as $tab_key => $tab_value) {
-      if($tab_value['#link']['path'] == 'admin/commerce/reports/sales') {
-        $vars['tabs']['#secondary'][] = $tab_value;
-      }
-    }
-
-    foreach($vars['tabs']['#secondary'] as $sales_report_key => $sales_report_value) {
-
-      switch($sales_report_value['#link']['path']) {
-        case 'admin/commerce/reports/sales/daily':
-          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Daily Report';
-        break;
-        case 'admin/commerce/reports/sales/weekly':
-          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Weekly Report';
-        break;
-        case 'admin/commerce/reports/sales/yearly':
-          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Yearly Report';
-        break;
-        case 'admin/commerce/reports/sales':
-          $vars['tabs']['#secondary'][$sales_report_key]['#link']['title'] = 'Monthly Report';
-        break;
-      }
-    }
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function commerce_reports_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  // Alter local tasks under admin/commerce/reports/sales
+  if ($router_item['tab_parent'] == 'admin/commerce/reports/sales'
+    || $router_item['path'] == 'admin/commerce/reports/sales') {
+    $data['tabs'][1]['output'][] = array(
+      '#theme' => 'menu_local_task',
+      '#link' => array(
+        'title' => t('Monthly'),
+        'href' => 'admin/commerce/reports/sales',
+        'localized_options' => array(
+          'attributes' => array(
+            'title' => t('Monthly reports'),
+          ),
+        ),
+      ),
+      '#active' => ($router_item['path'] == 'admin/commerce/reports/sales'),
+    );
   }
 }
 
