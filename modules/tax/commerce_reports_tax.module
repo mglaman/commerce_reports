@@ -155,30 +155,31 @@ function commerce_reports_tax_entity_insert($entity, $type) {
  */
 function commerce_reports_tax_entity_update($entity, $type) {
   if ($type == 'commerce_order' && isset($entity->original)) {
+    // Mark original entity for easy reference.
     $original = $entity->original;
 
-    $order_status = $entity->status;
-    $original_order_status = $original->status;
+    // @todo: These should reflect states, like the Views. Verify
+    //          also, should these be configurable?
 
-    $include = in_array($order_status, commerce_reports_tax_order_statuses());
-    $included = in_array($original_order_status, commerce_reports_tax_order_statuses());
+    // Check the updated status against pending, processing, completed
+    $order_current_status = in_array($entity->status, array('pending', 'processing', 'completed'));
 
-    // The order changed to a order status we're interested in,
-    // we should extract its tax information.
-    if (!$included && $include) {
+    // Check the original status, so we know if we need to remove previous record
+    $order_previous_status = in_array($original->status, array('pending', 'processing', 'completed'));
+
+    // The order changed to a order status we're interested in, but did not
+    // previously have a watched status. Create a new record
+    if ($order_current_status && !$order_previous_status) {
       commerce_reports_tax_order_save($entity);
     }
-
-    // There order changed to a status that should not be included in the report,
-    // we should remove its information.
-    elseif ($included && !$include) {
+    // The order reverted to a status not watched, and previous had a watched status.
+    elseif (!$order_current_status && $order_previous_status) {
       commerce_reports_tax_order_delete($entity->order_id);
     }
-
-    // The order was updated an its total changed, we should figure out what has changed
-    // and change our information accordingly.
-    elseif ($included && $include && $original->commerce_order_total != $entity->commerce_order_total) {
-      commerce_reports_tax_order_save($entity, TRUE);
+    // The price has been modified on a watched order..
+    elseif ($order_current_status && $order_previous_status
+      && $original->commerce_order_total != $entity->commerce_order_total) {
+      commerce_reports_tax_order_save($entity);
     }
   }
 }
@@ -242,7 +243,7 @@ function commerce_reports_tax($start, $end) {
  * If the order has already been processed in the past it will compare the information
  * in the database with the generated information and update accordingly.
  */
-function commerce_reports_tax_order_save($order, $update = FALSE) {
+function commerce_reports_tax_order_save($order) {
   $wrapper = entity_metadata_wrapper('commerce_order', $order);
   $order_id = $wrapper->order_id->value();
 
@@ -279,32 +280,23 @@ function commerce_reports_tax_order_save($order, $update = FALSE) {
     }
   }
 
-  // If we know the tax information is already stored, we need to check the database and see what's already in there.
-  if ($update) {
-    $result = db_query("SELECT tax_rate, order_id, currency_code, taxable, taxed FROM {commerce_reports_tax} WHERE order_id = :order_id", array(':order_id' => $order->order_id));
+  // Check to see if save records exist before saving new record.
+  $result = db_query("SELECT tax_rate, order_id, currency_code, taxable, taxed FROM {commerce_reports_tax} WHERE order_id = :order_id", array(':order_id' => $order->order_id));
 
+  // If we have records, update the existing, else add new.
+  if ($result->rowCount() > 0) {
+    // Update record
     while ($row = $result->fetchAssoc()) {
-      $id = $row['tax_rate'] . $row['order_id'] . $row['currency_code'];
-
-      // If there exists an applied tax that corresponds with the one in the database; update it if necessary.
-      if (!empty($applied_taxes[$id])) {
-        if ($applied_taxes[$id] != $row) {
-          drupal_write_record('commerce_reports_tax', $applied_taxes[$id], array('tax_rate', 'order_id', 'currency_code'));
-
-          unset($applied_taxes[$id]);
-        }
-      }
-
-      // If it doesn't, then delete if from the database;
-      else {
-        db_query("DELETE FROM {commerce_reports_tax} WHERE tax_rate = :tax_rate AND order_id = :order_id AND currency_code = :currency_code", array(':tax_rate' => $row['tax_rate'], ':order_id' => $row['order_id'], ':currency_code' => $row['currency_code']));
-      }
+      $tax_record_id = $row['tax_rate'] . $row['order_id'] . $row['currency_code'];
+      drupal_write_record('commerce_reports_tax', $applied_taxes[$tax_record_id], array('tax_rate', 'order_id', 'currency_code'));
     }
   }
-
-  // Insert any of the remaining applied taxes.
-  foreach ($applied_taxes as $tax) {
-    $result = drupal_write_record('commerce_reports_tax', $tax);
+  else {
+    // Insert any of the remaining applied taxes.
+    foreach ($applied_taxes as $tax) {
+      dpm($tax);
+      $write = drupal_write_record('commerce_reports_tax', $tax);
+    }
   }
 }
 
