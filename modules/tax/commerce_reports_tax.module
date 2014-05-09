@@ -294,7 +294,6 @@ function commerce_reports_tax_order_save($order) {
   else {
     // Insert any of the remaining applied taxes.
     foreach ($applied_taxes as $tax) {
-      dpm($tax);
       $write = drupal_write_record('commerce_reports_tax', $tax);
     }
   }
