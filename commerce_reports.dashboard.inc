@@ -101,7 +101,8 @@ function commerce_reports_dashboard_block($name, $options = array()) {
         'href' => 'admin/commerce/reports/dashboard',
         'attributes' => array(
           'class' => array(
-            'switchSection'
+            'switchSection',
+            'overlay-exclude',
           ),
           'data-section' => $name,
         ),
