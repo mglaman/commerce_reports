@@ -29,6 +29,18 @@ function commerce_reports_tax_views_data() {
     ),
   );
 
+  $data['commerce_reports_tax']['tax_rate_display_name'] = array(
+    'title' => t('Tax rate display name'),
+    'help' => t('The tax rate display name.'),
+    'field' => array(
+      'handler' => 'commerce_reports_tax_handler_field_tax_rate_display_name',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
+
   // Expose the Order ID.
   $data['commerce_reports_tax']['order_id'] = array(
     'title' => t('Order ID', array(), array('context' => 'a drupal commerce order')),

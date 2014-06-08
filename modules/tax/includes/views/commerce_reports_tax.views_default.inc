@@ -40,10 +40,11 @@ function commerce_reports_tax_views_default_views(){
   $handler->display->display_options['relationships']['order_id']['table'] = 'commerce_reports_tax';
   $handler->display->display_options['relationships']['order_id']['field'] = 'order_id';
   $handler->display->display_options['relationships']['order_id']['required'] = TRUE;
-  /* Field: Commerce Tax Reports: Tax rate */
-  $handler->display->display_options['fields']['tax_rate']['id'] = 'tax_rate';
-  $handler->display->display_options['fields']['tax_rate']['table'] = 'commerce_reports_tax';
-  $handler->display->display_options['fields']['tax_rate']['field'] = 'tax_rate';
+  /* Field: Commerce Tax Reports: Tax rate display name */
+  $handler->display->display_options['fields']['tax_rate_display_name']['id'] = 'tax_rate_display_name';
+  $handler->display->display_options['fields']['tax_rate_display_name']['table'] = 'commerce_reports_tax';
+  $handler->display->display_options['fields']['tax_rate_display_name']['field'] = 'tax_rate_display_name';
+  $handler->display->display_options['fields']['tax_rate_display_name']['label'] = 'Tax rate';
   /* Field: COUNT(Commerce Order: Order number) */
   $handler->display->display_options['fields']['order_number']['id'] = 'order_number';
   $handler->display->display_options['fields']['order_number']['table'] = 'commerce_order';
