@@ -18,50 +18,73 @@ function commerce_reports_stock_views_api() {
   );
 }
 
+/**
+ * Implements hook_views_pre_execute().
+ */
+function commerce_reports_stock_views_pre_execute(&$view) {
+  // Prime the stock reports data set into static cache.
+  _commerce_reports_stock_calculate_dataset();
+}
+
 
 /**
  * Calculate all the stock reports data (weekly sales, monthly sales, lifetime)
  */
-function _commerce_reports_stock_calculate_dataset() {
-  $products = commerce_product_load_multiple(array(), array('status' => 1));
+function _commerce_reports_stock_calculate_dataset($sku = NULL, $key = NULL, $reset = FALSE) {
+  $data = &drupal_static(__FUNCTION__);
 
-  $start = variable_get('commerce_reports_stock_historyperiod', '3 months ago');
-  $start = strtotime($start);
-  $weekly_sales = _commerce_reports_stock_api_sales('W', $start);
-  $monthly_sales = _commerce_reports_stock_api_sales('M', $start);
+  // If there is no static cache for dataset yet or a reset was specified...
+  if (!isset($data) || $reset) {
+    $products = commerce_product_load_multiple(array(), array('status' => 1));
 
-  $data = array();
-  $lifetimes = array();
-  $instock = array();
-  foreach ($products as $product) {
-    $sku = $product->sku;
+    $start = variable_get('commerce_reports_stock_historyperiod', '3 months ago');
+    $start = strtotime($start);
+    $weekly_sales = _commerce_reports_stock_api_sales('W', $start);
+    $monthly_sales = _commerce_reports_stock_api_sales('M', $start);
 
-    $stock = isset($product->commerce_stock[LANGUAGE_NONE][0]['value'])
-      ? (int) $product->commerce_stock[LANGUAGE_NONE][0]['value']
-      : FALSE;
+    $data = array();
+    $lifetimes = array();
+    $instock = array();
+    foreach ($products as $product) {
+      $sku = $product->sku;
 
-    $weekly_burn = isset($weekly_sales[$sku])
-      ? _commerce_reports_stock_calculate_average_sales($weekly_sales[$sku])
-      : 0;
-    $monthly_burn = isset($monthly_sales[$sku])
-      ? _commerce_reports_stock_calculate_average_sales($monthly_sales[$sku])
-      : 0;
+      $stock = isset($product->commerce_stock[LANGUAGE_NONE][0]['value'])
+        ? (int) $product->commerce_stock[LANGUAGE_NONE][0]['value']
+        : FALSE;
 
-    $lifetime = _commerce_reports_stock_calculate_lifetime($stock, $weekly_burn);
-    $lifetimes[] = $lifetime;
-    $instock[] = (bool) $stock;
+      $weekly_burn = isset($weekly_sales[$sku])
+        ? _commerce_reports_stock_calculate_average_sales($weekly_sales[$sku])
+        : 0;
+      $monthly_burn = isset($monthly_sales[$sku])
+        ? _commerce_reports_stock_calculate_average_sales($monthly_sales[$sku])
+        : 0;
 
-    $data[$sku] = array(
-      'sku' => $sku,
-      'stock' => $stock,
-      'weeklysales' => sprintf('%0.1f', $weekly_burn),
-      'monthlysales' => sprintf('%0.1f', $monthly_burn),
-      'lifetime' => $lifetime,
-    );
+      $lifetime = _commerce_reports_stock_calculate_lifetime($stock, $weekly_burn);
+      $lifetimes[] = $lifetime;
+      $instock[] = (bool) $stock;
+
+      $data[$sku] = array(
+        'sku' => $sku,
+        'stock' => $stock,
+        'weeklysales' => sprintf('%0.1f', $weekly_burn),
+        'monthlysales' => sprintf('%0.1f', $monthly_burn),
+        'lifetime' => $lifetime,
+      );
+    }
+
+    array_multisort($instock, SORT_NUMERIC, $lifetimes, SORT_NUMERIC, $data);
   }
 
-  array_multisort($instock, SORT_NUMERIC, $lifetimes, SORT_NUMERIC, $data);
-
+  // Check to see if we should return specific data, or whole array.
+  if ($sku !== NULL && isset($data[$sku])) {
+    // If we have a key return that, else the whole sku entry.
+    if ($key !== NULL && isset($data[$sku][$key])) {
+      return $data[$sku][$key];
+    }
+    else {
+      return $data[$sku];
+    }
+  }
   return $data;
 }
 

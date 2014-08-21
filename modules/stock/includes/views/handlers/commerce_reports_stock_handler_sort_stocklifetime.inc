@@ -6,16 +6,11 @@
 class commerce_reports_stock_handler_sort_stocklifetime extends views_handler_sort {
   function can_expose() { return FALSE; }
 
-  function query() {
-    // Inform views_php_views_pre_execute() to seize control over the query.
-    $this->view->views_php = TRUE;
-  }
-
   /**
    *
    * @see views_php_views_post_execute()
    */
-  function php_post_execute() {
+  function post_execute(&$values) {
     if (!isset($this->view->commerce_reports_stock_data)) {
       return FALSE;
     }
