@@ -36,7 +36,7 @@ class commerce_reports_handler_sort_date extends views_handler_sort_date {
         $formula = views_date_sql_format('Ymd', "$this->table_alias.$this->real_field");
         break;
       case 'week':
-        $formula = views_date_sql_format('WY', "$this->table_alias.$this->real_field");
+        $formula = views_date_sql_format('YW', "$this->table_alias.$this->real_field");
         break;
       case 'month':
         $formula = views_date_sql_format('Ym', "$this->table_alias.$this->real_field");
