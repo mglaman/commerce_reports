@@ -45,6 +45,16 @@ function commerce_reports_menu() {
 }
 
 /**
+ * Implements hook_modules_enabled().
+ */
+function commerce_reports_modules_enabled($modules) {
+  if (in_array('views_data_export', $modules)) {
+    // Flush Views cache so export displays import.
+    views_invalidate_cache();
+  }
+}
+
+/**
  * Implements hook_theme().
  */
 function commerce_reports_theme($existing, $type, $theme, $path) {
