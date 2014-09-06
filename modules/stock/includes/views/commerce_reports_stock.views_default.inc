@@ -59,10 +59,12 @@ function commerce_reports_stock_views_default_views() {
   $handler->display->display_options['fields']['stocklifetime']['id'] = 'stocklifetime';
   $handler->display->display_options['fields']['stocklifetime']['table'] = 'commerce_product';
   $handler->display->display_options['fields']['stocklifetime']['field'] = 'stocklifetime';
-  /* Sort criterion: Commerce Product: Stock lifetime */
-  $handler->display->display_options['sorts']['stocklifetime']['id'] = 'stocklifetime';
-  $handler->display->display_options['sorts']['stocklifetime']['table'] = 'commerce_product';
-  $handler->display->display_options['sorts']['stocklifetime']['field'] = 'stocklifetime';
+  /* Sort criterion: Commerce Product: Stock (commerce_stock) */
+  $handler->display->display_options['sorts']['commerce_stock_value']['id'] = 'commerce_stock_value';
+  $handler->display->display_options['sorts']['commerce_stock_value']['table'] = 'field_data_commerce_stock';
+  $handler->display->display_options['sorts']['commerce_stock_value']['field'] = 'commerce_stock_value';
+  $handler->display->display_options['sorts']['commerce_stock_value']['exposed'] = TRUE;
+  $handler->display->display_options['sorts']['commerce_stock_value']['expose']['label'] = 'Stock';
   /* Filter criterion: Commerce Product: Status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'commerce_product';
