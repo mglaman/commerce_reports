@@ -360,7 +360,93 @@ function _commerce_reports_views_default_products_views() {
    * Integration with views data export.
    */
   if (module_exists('views_data_export')) {
-    commerce_reports_data_export($view);
+    /* Display: Data export */
+    $handler = $view->new_display('views_data_export', 'Data export', 'views_data_export_1');
+    $handler->display->display_options['pager']['type'] = 'none';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+    $handler->display->display_options['style_options']['provide_file'] = 1;
+    $handler->display->display_options['style_options']['filename'] = '%view-%timestamp-full.csv';
+    $handler->display->display_options['style_options']['parent_sort'] = 1;
+    $handler->display->display_options['style_options']['quote'] = 1;
+    $handler->display->display_options['style_options']['trim'] = 1;
+    $handler->display->display_options['style_options']['replace_newlines'] = 0;
+    $handler->display->display_options['style_options']['header'] = 1;
+    $handler->display->display_options['style_options']['keep_html'] = 0;
+    $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+    $handler->display->display_options['defaults']['filters'] = FALSE;
+    /* Filter criterion: Commerce Line Item: Type */
+    $handler->display->display_options['filters']['type']['id'] = 'type';
+    $handler->display->display_options['filters']['type']['table'] = 'commerce_line_item';
+    $handler->display->display_options['filters']['type']['field'] = 'type';
+    $handler->display->display_options['filters']['type']['value'] = array(
+      'product' => 'product',
+    );
+    /* Filter criterion: Commerce Order: Order state */
+    $handler->display->display_options['filters']['state']['id'] = 'state';
+    $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['state']['field'] = 'state';
+    $handler->display->display_options['filters']['state']['relationship'] = 'order_id';
+    $handler->display->display_options['filters']['state']['value'] = array(
+      'pending' => 'pending',
+      'completed' => 'completed',
+    );
+    $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order state';
+    $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
+    $handler->display->display_options['filters']['state']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );
+    /* Filter criterion: Commerce Product: SKU */
+    $handler->display->display_options['filters']['sku']['id'] = 'sku';
+    $handler->display->display_options['filters']['sku']['table'] = 'commerce_product';
+    $handler->display->display_options['filters']['sku']['field'] = 'sku';
+    $handler->display->display_options['filters']['sku']['relationship'] = 'commerce_product_product_id';
+    $handler->display->display_options['filters']['sku']['operator'] = 'contains';
+    $handler->display->display_options['filters']['sku']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['sku']['expose']['operator_id'] = 'sku_op';
+    $handler->display->display_options['filters']['sku']['expose']['label'] = 'SKU';
+    $handler->display->display_options['filters']['sku']['expose']['operator'] = 'sku_op';
+    $handler->display->display_options['filters']['sku']['expose']['identifier'] = 'sku';
+    $handler->display->display_options['filters']['sku']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );
+    /* Filter criterion: Date: Date (commerce_order) */
+    $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['relationship'] = 'order_id';
+    $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
+    $handler->display->display_options['filters']['date_filter']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Date (commerce_order)';
+    $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );
+    $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
+    $handler->display->display_options['filters']['date_filter']['default_date'] = '-1 year';
+    $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
+    $handler->display->display_options['filters']['date_filter']['year_range'] = '-3:+0';
+    $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+      'commerce_order.created' => 'commerce_order.created',
+    );
+    $handler->display->display_options['path'] = 'admin/commerce/reports/products/export';
+    $handler->display->display_options['displays'] = array(
+      'page' => 'page',
+      'default' => 0,
+      'chart_revenue' => 0,
+      'chart_quantity' => 0,
+    );
+    $handler->display->display_options['segment_size'] = '100';
   }
   $views[$view->name] = $view;
 
