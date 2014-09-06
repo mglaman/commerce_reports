@@ -1044,7 +1044,458 @@ function _commerce_reports_views_default_sales_views() {
    * Integration with views data export.
    */
   if (module_exists('views_data_export')) {
-    commerce_reports_data_export($view);
+    /* Display: Data export (Monthly) */
+    $handler = $view->new_display('views_data_export', 'Data export (Monthly)', 'views_data_export_1');
+    $handler->display->display_options['pager']['type'] = 'none';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+    $handler->display->display_options['style_options']['provide_file'] = 1;
+    $handler->display->display_options['style_options']['filename'] = '%view-%timestamp-full.csv';
+    $handler->display->display_options['style_options']['parent_sort'] = 1;
+    $handler->display->display_options['style_options']['quote'] = 1;
+    $handler->display->display_options['style_options']['trim'] = 1;
+    $handler->display->display_options['style_options']['replace_newlines'] = 0;
+    $handler->display->display_options['style_options']['header'] = 1;
+    $handler->display->display_options['style_options']['keep_html'] = 0;
+    $handler->display->display_options['defaults']['fields'] = FALSE;
+    /* Field: Commerce Order: Created date */
+    $handler->display->display_options['fields']['created']['id'] = 'created';
+    $handler->display->display_options['fields']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['created']['field'] = 'created';
+    $handler->display->display_options['fields']['created']['date_format'] = 'custom';
+    $handler->display->display_options['fields']['created']['custom_date_format'] = 'F Y';
+    $handler->display->display_options['fields']['created']['format_date_sql'] = 1;
+    /* Field: COUNT(Commerce Order: Order ID) */
+    $handler->display->display_options['fields']['order_id']['id'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['order_id']['field'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['group_type'] = 'count';
+    $handler->display->display_options['fields']['order_id']['label'] = 'Number of Orders';
+    /* Field: SUM(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total']['id'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['group_type'] = 'sum';
+    $handler->display->display_options['fields']['commerce_order_total']['label'] = 'Total Revenue';
+    $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    /* Field: AVG(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total_1']['id'] = 'commerce_order_total_1';
+    $handler->display->display_options['fields']['commerce_order_total_1']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_type'] = 'avg';
+    $handler->display->display_options['fields']['commerce_order_total_1']['label'] = 'Average Order';
+    $handler->display->display_options['fields']['commerce_order_total_1']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    $handler->display->display_options['defaults']['sorts'] = FALSE;
+    /* Sort criterion: Commerce Order: Created date */
+    $handler->display->display_options['sorts']['created']['id'] = 'created';
+    $handler->display->display_options['sorts']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['sorts']['created']['field'] = 'created';
+    $handler->display->display_options['sorts']['created']['exposed'] = TRUE;
+    $handler->display->display_options['sorts']['created']['expose']['label'] = 'Created date';
+    $handler->display->display_options['sorts']['created']['granularity'] = 'month';
+    $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+    $handler->display->display_options['defaults']['filters'] = FALSE;
+    /* Filter criterion: Commerce Order: Order state */
+    $handler->display->display_options['filters']['state']['id'] = 'state';
+    $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['state']['field'] = 'state';
+    $handler->display->display_options['filters']['state']['value'] = array(
+      'pending' => 'pending',
+      'completed' => 'completed',
+    );
+    $handler->display->display_options['filters']['state']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
+    $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
+    /* Filter criterion: Date: Date (commerce_order) */
+    $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
+    $handler->display->display_options['filters']['date_filter']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Date (commerce_order)';
+    $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );
+    $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
+    $handler->display->display_options['filters']['date_filter']['default_date'] = '-12 months';
+    $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
+    $handler->display->display_options['filters']['date_filter']['year_range'] = '-4:+0';
+    $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+      'commerce_order.created' => 'commerce_order.created',
+    );
+    $handler->display->display_options['path'] = 'admin/commerce/reports/sales/export';
+    $handler->display->display_options['displays'] = array(
+      'page' => 'page',
+      'default' => 0,
+      'page_1' => 0,
+      'page_2' => 0,
+      'page_3' => 0,
+      'chart_year' => 0,
+      'chart_month' => 0,
+      'chart_week' => 0,
+    );
+
+    /* Display: Data export (Weekly) */
+    $handler = $view->new_display('views_data_export', 'Data export (Weekly)', 'views_data_export_3');
+    $handler->display->display_options['pager']['type'] = 'none';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+    $handler->display->display_options['style_options']['provide_file'] = 1;
+    $handler->display->display_options['style_options']['filename'] = '%view-%timestamp-full.csv';
+    $handler->display->display_options['style_options']['parent_sort'] = 1;
+    $handler->display->display_options['style_options']['quote'] = 1;
+    $handler->display->display_options['style_options']['trim'] = 1;
+    $handler->display->display_options['style_options']['replace_newlines'] = 0;
+    $handler->display->display_options['style_options']['header'] = 1;
+    $handler->display->display_options['style_options']['keep_html'] = 0;
+    $handler->display->display_options['defaults']['fields'] = FALSE;
+    /* Field: Commerce Order: Created date */
+    $handler->display->display_options['fields']['created']['id'] = 'created';
+    $handler->display->display_options['fields']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['created']['field'] = 'created';
+    $handler->display->display_options['fields']['created']['date_format'] = 'custom';
+    $handler->display->display_options['fields']['created']['custom_date_format'] = '\\w\\e\\e\\k W \\o\\f Y';
+    $handler->display->display_options['fields']['created']['format_date_sql'] = 1;
+    /* Field: COUNT(Commerce Order: Order ID) */
+    $handler->display->display_options['fields']['order_id']['id'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['order_id']['field'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['group_type'] = 'count';
+    $handler->display->display_options['fields']['order_id']['label'] = 'Number of Orders';
+    /* Field: SUM(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total']['id'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['group_type'] = 'sum';
+    $handler->display->display_options['fields']['commerce_order_total']['label'] = 'Total Revenue';
+    $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    /* Field: AVG(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total_1']['id'] = 'commerce_order_total_1';
+    $handler->display->display_options['fields']['commerce_order_total_1']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_type'] = 'avg';
+    $handler->display->display_options['fields']['commerce_order_total_1']['label'] = 'Average Order';
+    $handler->display->display_options['fields']['commerce_order_total_1']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    $handler->display->display_options['defaults']['sorts'] = FALSE;
+    /* Sort criterion: Commerce Order: Created date */
+    $handler->display->display_options['sorts']['created']['id'] = 'created';
+    $handler->display->display_options['sorts']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['sorts']['created']['field'] = 'created';
+    $handler->display->display_options['sorts']['created']['exposed'] = TRUE;
+    $handler->display->display_options['sorts']['created']['expose']['label'] = 'Created date';
+    $handler->display->display_options['sorts']['created']['granularity'] = 'week';
+    $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+    $handler->display->display_options['defaults']['filters'] = FALSE;
+    /* Filter criterion: Commerce Order: Order state */
+    $handler->display->display_options['filters']['state']['id'] = 'state';
+    $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['state']['field'] = 'state';
+    $handler->display->display_options['filters']['state']['value'] = array(
+      'pending' => 'pending',
+      'completed' => 'completed',
+    );
+    $handler->display->display_options['filters']['state']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
+    $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
+    /* Filter criterion: Date: Date (commerce_order) */
+    $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
+    $handler->display->display_options['filters']['date_filter']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Date (commerce_order)';
+    $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );
+    $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
+    $handler->display->display_options['filters']['date_filter']['default_date'] = '-12 months';
+    $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
+    $handler->display->display_options['filters']['date_filter']['year_range'] = '-4:+0';
+    $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+      'commerce_order.created' => 'commerce_order.created',
+    );
+    $handler->display->display_options['path'] = 'admin/commerce/reports/sales/weekly/export';
+    $handler->display->display_options['displays'] = array(
+      'page_1' => 'page_1',
+      'default' => 0,
+      'page' => 0,
+      'page_2' => 0,
+      'page_3' => 0,
+      'chart_year' => 0,
+      'chart_month' => 0,
+      'chart_week' => 0,
+    );
+
+    /* Display: Data export (Daily) */
+    $handler = $view->new_display('views_data_export', 'Data export (Daily)', 'views_data_export_4');
+    $handler->display->display_options['pager']['type'] = 'none';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+    $handler->display->display_options['style_options']['provide_file'] = 1;
+    $handler->display->display_options['style_options']['filename'] = '%view-%timestamp-full.csv';
+    $handler->display->display_options['style_options']['parent_sort'] = 1;
+    $handler->display->display_options['style_options']['quote'] = 1;
+    $handler->display->display_options['style_options']['trim'] = 1;
+    $handler->display->display_options['style_options']['replace_newlines'] = 0;
+    $handler->display->display_options['style_options']['header'] = 1;
+    $handler->display->display_options['style_options']['keep_html'] = 0;
+    $handler->display->display_options['defaults']['fields'] = FALSE;
+    /* Field: Commerce Order: Created date */
+    $handler->display->display_options['fields']['created']['id'] = 'created';
+    $handler->display->display_options['fields']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['created']['field'] = 'created';
+    $handler->display->display_options['fields']['created']['date_format'] = 'custom';
+    $handler->display->display_options['fields']['created']['custom_date_format'] = 'j F Y';
+    $handler->display->display_options['fields']['created']['format_date_sql'] = 1;
+    /* Field: COUNT(Commerce Order: Order ID) */
+    $handler->display->display_options['fields']['order_id']['id'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['order_id']['field'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['group_type'] = 'count';
+    $handler->display->display_options['fields']['order_id']['label'] = 'Number of Orders';
+    /* Field: SUM(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total']['id'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['group_type'] = 'sum';
+    $handler->display->display_options['fields']['commerce_order_total']['label'] = 'Total Revenue';
+    $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    /* Field: AVG(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total_1']['id'] = 'commerce_order_total_1';
+    $handler->display->display_options['fields']['commerce_order_total_1']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_type'] = 'avg';
+    $handler->display->display_options['fields']['commerce_order_total_1']['label'] = 'Average Order';
+    $handler->display->display_options['fields']['commerce_order_total_1']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    $handler->display->display_options['defaults']['sorts'] = FALSE;
+    /* Sort criterion: Commerce Order: Created date */
+    $handler->display->display_options['sorts']['created']['id'] = 'created';
+    $handler->display->display_options['sorts']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['sorts']['created']['field'] = 'created';
+    $handler->display->display_options['sorts']['created']['exposed'] = TRUE;
+    $handler->display->display_options['sorts']['created']['expose']['label'] = 'Created date';
+    $handler->display->display_options['sorts']['created']['granularity'] = 'day';
+    $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+    $handler->display->display_options['defaults']['filters'] = FALSE;
+    /* Filter criterion: Commerce Order: Order state */
+    $handler->display->display_options['filters']['state']['id'] = 'state';
+    $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['state']['field'] = 'state';
+    $handler->display->display_options['filters']['state']['value'] = array(
+      'pending' => 'pending',
+      'completed' => 'completed',
+    );
+    $handler->display->display_options['filters']['state']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
+    $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
+    /* Filter criterion: Date: Date (commerce_order) */
+    $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
+    $handler->display->display_options['filters']['date_filter']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Date (commerce_order)';
+    $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );
+    $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
+    $handler->display->display_options['filters']['date_filter']['default_date'] = '-12 months';
+    $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
+    $handler->display->display_options['filters']['date_filter']['year_range'] = '-4:+0';
+    $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+      'commerce_order.created' => 'commerce_order.created',
+    );
+    $handler->display->display_options['path'] = 'admin/commerce/reports/sales/daily/export';
+    $handler->display->display_options['displays'] = array(
+      'page_2' => 'page_2',
+      'default' => 0,
+      'page' => 0,
+      'page_1' => 0,
+      'page_3' => 0,
+      'chart_year' => 0,
+      'chart_month' => 0,
+      'chart_week' => 0,
+    );
+
+    /* Display: Data export (Yearly) */
+    $handler = $view->new_display('views_data_export', 'Data export (Yearly)', 'views_data_export_2');
+    $handler->display->display_options['pager']['type'] = 'none';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+    $handler->display->display_options['style_options']['provide_file'] = 1;
+    $handler->display->display_options['style_options']['filename'] = '%view-%timestamp-full.csv';
+    $handler->display->display_options['style_options']['parent_sort'] = 1;
+    $handler->display->display_options['style_options']['quote'] = 1;
+    $handler->display->display_options['style_options']['trim'] = 1;
+    $handler->display->display_options['style_options']['replace_newlines'] = 0;
+    $handler->display->display_options['style_options']['header'] = 1;
+    $handler->display->display_options['style_options']['keep_html'] = 0;
+    $handler->display->display_options['defaults']['fields'] = FALSE;
+    /* Field: Commerce Order: Created date */
+    $handler->display->display_options['fields']['created']['id'] = 'created';
+    $handler->display->display_options['fields']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['created']['field'] = 'created';
+    $handler->display->display_options['fields']['created']['date_format'] = 'custom';
+    $handler->display->display_options['fields']['created']['custom_date_format'] = 'Y';
+    $handler->display->display_options['fields']['created']['format_date_sql'] = 1;
+    /* Field: COUNT(Commerce Order: Order ID) */
+    $handler->display->display_options['fields']['order_id']['id'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['table'] = 'commerce_order';
+    $handler->display->display_options['fields']['order_id']['field'] = 'order_id';
+    $handler->display->display_options['fields']['order_id']['group_type'] = 'count';
+    $handler->display->display_options['fields']['order_id']['label'] = 'Number of Orders';
+    /* Field: SUM(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total']['id'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total']['group_type'] = 'sum';
+    $handler->display->display_options['fields']['commerce_order_total']['label'] = 'Total Revenue';
+    $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    /* Field: AVG(Commerce Order: Order total) */
+    $handler->display->display_options['fields']['commerce_order_total_1']['id'] = 'commerce_order_total_1';
+    $handler->display->display_options['fields']['commerce_order_total_1']['table'] = 'field_data_commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['field'] = 'commerce_order_total';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_type'] = 'avg';
+    $handler->display->display_options['fields']['commerce_order_total_1']['label'] = 'Average Order';
+    $handler->display->display_options['fields']['commerce_order_total_1']['click_sort_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['settings'] = array(
+      'calculation' => FALSE,
+    );
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_column'] = 'amount';
+    $handler->display->display_options['fields']['commerce_order_total_1']['group_columns'] = array(
+      'currency_code' => 'currency_code',
+    );
+    $handler->display->display_options['defaults']['sorts'] = FALSE;
+    /* Sort criterion: Commerce Order: Created date */
+    $handler->display->display_options['sorts']['created']['id'] = 'created';
+    $handler->display->display_options['sorts']['created']['table'] = 'commerce_order';
+    $handler->display->display_options['sorts']['created']['field'] = 'created';
+    $handler->display->display_options['sorts']['created']['exposed'] = TRUE;
+    $handler->display->display_options['sorts']['created']['expose']['label'] = 'Created date';
+    $handler->display->display_options['sorts']['created']['granularity'] = 'year';
+    $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+    $handler->display->display_options['defaults']['filters'] = FALSE;
+    /* Filter criterion: Commerce Order: Order state */
+    $handler->display->display_options['filters']['state']['id'] = 'state';
+    $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['state']['field'] = 'state';
+    $handler->display->display_options['filters']['state']['value'] = array(
+      'pending' => 'pending',
+      'completed' => 'completed',
+    );
+    $handler->display->display_options['filters']['state']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
+    $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
+    $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
+    /* Filter criterion: Date: Date (commerce_order) */
+    $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['date_filter']['field'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['operator'] = 'between';
+    $handler->display->display_options['filters']['date_filter']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['date_filter']['expose']['operator_id'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['label'] = 'Date (commerce_order)';
+    $handler->display->display_options['filters']['date_filter']['expose']['operator'] = 'date_filter_op';
+    $handler->display->display_options['filters']['date_filter']['expose']['identifier'] = 'date_filter';
+    $handler->display->display_options['filters']['date_filter']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );
+    $handler->display->display_options['filters']['date_filter']['form_type'] = 'date_popup';
+    $handler->display->display_options['filters']['date_filter']['default_date'] = '-12 months';
+    $handler->display->display_options['filters']['date_filter']['default_to_date'] = 'now';
+    $handler->display->display_options['filters']['date_filter']['year_range'] = '-4:+0';
+    $handler->display->display_options['filters']['date_filter']['date_fields'] = array(
+      'commerce_order.created' => 'commerce_order.created',
+    );
+    $handler->display->display_options['path'] = 'admin/commerce/reports/sales/yearly/export';
+    $handler->display->display_options['displays'] = array(
+      'page_3' => 'page_3',
+      'default' => 0,
+      'page' => 0,
+      'page_1' => 0,
+      'page_2' => 0,
+      'chart_year' => 0,
+      'chart_month' => 0,
+      'chart_week' => 0,
+    );
+
   }
 
   $views[$view->name] = $view;
