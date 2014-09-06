@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Views integration for Commerce Reports Stock
+ */
+
+/**
  * Implements hook_views_data_alter().
  */
 function commerce_reports_stock_views_data_alter(&$data) {
