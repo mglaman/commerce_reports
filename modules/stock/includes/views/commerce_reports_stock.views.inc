@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Views integration for Commerce Reports Stock
+ */
+
+/**
  * Implements hook_views_data_alter().
  */
 function commerce_reports_stock_views_data_alter(&$data) {
@@ -11,9 +16,10 @@ function commerce_reports_stock_views_data_alter(&$data) {
       'handler' => 'commerce_reports_stock_handler_field_stocklifetime',
       'click sortable' => TRUE,
     ),
-    'sort' => array(
-      'handler' => 'commerce_reports_stock_handler_sort_stocklifetime',
-    ),
+    // Since this isn't a valid field on database, it's throwing an error.
+    //'sort' => array(
+    //  'handler' => 'views_handler_sort',
+    //),
   );
 
   $data['commerce_product']['monthlysales'] = array(

@@ -6,7 +6,6 @@ version = "7.x-1.0"
 dependencies[] = "commerce"
 dependencies[] = "commerce_stock"
 dependencies[] = "commerce_reports"
-dependencies[] = "views_php"
 
 ; Views handlers
 files[] = includes/views/handlers/commerce_reports_stock_handler_field_stocklifetime.inc
