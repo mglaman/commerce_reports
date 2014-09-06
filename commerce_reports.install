@@ -18,3 +18,12 @@ function commerce_reports_install() {
 function commerce_reports_update_7300(&$sandbox) {
   variable_set('date_format_commerce_reports', 'l j F o');
 }
+
+/**
+ * Flushes caches to ensure Views and Dashboard do not break.
+ */
+function commerce_reports_update_7400() {
+  // Just flush 'em all. Updating does this, but this way it shows as a pending
+  // thing to do, so people don't go "Ah it's broken!"
+  drupal_flush_all_caches();
+}
