@@ -59,7 +59,13 @@ function _commerce_reports_stock_calculate_dataset($sku = NULL, $key = NULL, $re
       $product_wrapper = entity_metadata_wrapper('commerce_product', $product);
 
       $sku = $product_wrapper->sku->value();
-      $stock =  (int) $product_wrapper->commerce_stock->value();
+
+      // Provide a default value.
+      $stock = 0;
+      // @todo: This assumes Commerce Simple Stock was utilized.
+      if ($product_wrapper->__isset('commerce_stock')) {
+        $stock =  (int) $product_wrapper->commerce_stock->value();
+      }
 
       // Compute the number of weeks since start.
       $now = new DateTime();
@@ -166,12 +172,12 @@ function _commerce_reports_stock_get_stock_enabled_products($reset = FALSE) {
     if (!empty($products_result)) {
       $products_result = reset($products_result);
       $products = entity_load('commerce_product', array_keys($products_result));
-    }
 
-    // Key the list by SKU
-    // @todo: Is there a way to do this already in core Commerce?
-    foreach ($products as $pid => $product) {
-      $product_list[$product->sku] = $product;
+      // Key the list by SKU
+      // @todo: Is there a way to do this already in core Commerce?
+      foreach ($products as $pid => $product) {
+        $product_list[$product->sku] = $product;
+      }
     }
   }
   return $product_list;
