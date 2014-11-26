@@ -185,6 +185,15 @@ function commerce_reports_tax_entity_update($entity, $type) {
 }
 
 /**
+ * Implements hook_entity_delete().
+ */
+function commerce_reports_tax_entity_delete($entity, $type) {
+  if ($type == 'commerce_order') {
+    commerce_reports_tax_order_delete($entity->order_id);
+  }
+}
+
+/**
  * Returns the order statuses that should be taken into account.
  */
 function commerce_reports_tax_order_statuses() {
