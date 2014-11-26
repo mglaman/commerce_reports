@@ -15,10 +15,10 @@ function _commerce_reports_tax_generate(&$context) {
 
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['current'] = 0;
-    $context['sandbox']['max'] = db_query("SELECT COUNT(order_id) FROM {commerce_order} WHERE type = 'commerce_order' AND status IN (:order_statuses) ORDER BY order_id ASC", array(':order_statuses' => commerce_reports_tax_order_statuses()))->fetchColumn();
+    $context['sandbox']['max'] = db_query("SELECT COUNT(order_id) FROM {commerce_order} WHERE status IN (:order_statuses) ORDER BY order_id ASC", array(':order_statuses' => commerce_reports_tax_order_statuses()))->fetchColumn();
   }
 
-  $pending_orders = db_query("SELECT co.order_id AS order_id, COUNT(crt.tax_rate) AS should_update FROM {commerce_order} co LEFT JOIN {commerce_reports_tax} crt ON co.order_id = crt.order_id WHERE co.type = 'commerce_order' AND co.status IN (:order_statuses) AND co.order_id > :current_order_id GROUP BY co.order_id ORDER BY co.order_id ASC LIMIT 10", array(':order_statuses' => commerce_reports_tax_order_statuses(), ':current_order_id' => $context['sandbox']['current']))->fetchAllAssoc('order_id', PDO::FETCH_ASSOC);
+  $pending_orders = db_query("SELECT co.order_id AS order_id, COUNT(crt.tax_rate) AS should_update FROM {commerce_order} co LEFT JOIN {commerce_reports_tax} crt ON co.order_id = crt.order_id WHERE co.status IN (:order_statuses) AND co.order_id > :current_order_id GROUP BY co.order_id ORDER BY co.order_id ASC LIMIT 10", array(':order_statuses' => commerce_reports_tax_order_statuses(), ':current_order_id' => $context['sandbox']['current']))->fetchAllAssoc('order_id', PDO::FETCH_ASSOC);
 
   if ($pending_orders) {
     $orders = entity_load('commerce_order', array_keys($pending_orders));
