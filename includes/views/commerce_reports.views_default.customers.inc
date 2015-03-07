@@ -135,12 +135,11 @@ function _commerce_reports_views_default_customer_views() {
   $handler->display->display_options['filters']['status']['value'] = '1';
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Commerce Order: Order status */
-  $handler->display->display_options['filters']['status_1']['id'] = 'status_1';
-  $handler->display->display_options['filters']['status_1']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['status_1']['field'] = 'status';
-  $handler->display->display_options['filters']['status_1']['relationship'] = 'uid_commerce_orders';
-  $handler->display->display_options['filters']['status_1']['value'] = array(
+  /* Filter criterion: Commerce Order: Order state */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['value'] = array(
     'pending' => 'pending',
     'completed' => 'completed',
   );
@@ -158,15 +157,6 @@ function _commerce_reports_views_default_customer_views() {
   $handler->display->display_options['filters']['status']['value'] = '1';
   $handler->display->display_options['filters']['status']['group'] = 1;
   $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Commerce Order: Order status */
-  $handler->display->display_options['filters']['status_1']['id'] = 'status_1';
-  $handler->display->display_options['filters']['status_1']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['status_1']['field'] = 'status';
-  $handler->display->display_options['filters']['status_1']['relationship'] = 'uid_commerce_orders';
-  $handler->display->display_options['filters']['status_1']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
   /* Filter criterion: User: Name */
   $handler->display->display_options['filters']['uid']['id'] = 'uid';
   $handler->display->display_options['filters']['uid']['table'] = 'users';
@@ -177,6 +167,15 @@ function _commerce_reports_views_default_customer_views() {
   $handler->display->display_options['filters']['uid']['expose']['label'] = 'Search customers';
   $handler->display->display_options['filters']['uid']['expose']['operator'] = 'uid_op';
   $handler->display->display_options['filters']['uid']['expose']['identifier'] = 'uid';
+  /* Filter criterion: Commerce Order: Order state */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['relationship'] = 'uid_commerce_orders';
+  $handler->display->display_options['filters']['state']['value'] = array(
+    'pending' => 'pending',
+    'completed' => 'completed',
+  );
   $handler->display->display_options['path'] = 'admin/commerce/reports/customers';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Customers';
@@ -312,12 +311,11 @@ function _commerce_reports_views_default_customer_views() {
     $handler->display->display_options['filters']['status']['value'] = '1';
     $handler->display->display_options['filters']['status']['group'] = 1;
     $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-    /* Filter criterion: Commerce Order: Order status */
-    $handler->display->display_options['filters']['status_1']['id'] = 'status_1';
-    $handler->display->display_options['filters']['status_1']['table'] = 'commerce_order';
-    $handler->display->display_options['filters']['status_1']['field'] = 'status';
-    $handler->display->display_options['filters']['status_1']['relationship'] = 'uid_commerce_orders';
-    $handler->display->display_options['filters']['status_1']['value'] = array(
+    /* Filter criterion: Commerce Order: Order state */
+    $handler->display->display_options['filters']['state']['id'] = 'state';
+    $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+    $handler->display->display_options['filters']['state']['field'] = 'state';
+    $handler->display->display_options['filters']['state']['value'] = array(
       'pending' => 'pending',
       'completed' => 'completed',
     );

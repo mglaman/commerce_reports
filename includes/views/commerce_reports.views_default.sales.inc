@@ -117,7 +117,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -235,7 +235,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -386,7 +386,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -537,7 +537,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -688,7 +688,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -820,7 +820,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -924,7 +924,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -1028,7 +1028,7 @@ function _commerce_reports_views_default_sales_views() {
   );
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+  $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
   $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
   $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -1119,7 +1119,7 @@ function _commerce_reports_views_default_sales_views() {
     );
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
     $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
     $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -1232,7 +1232,7 @@ function _commerce_reports_views_default_sales_views() {
     );
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
     $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
     $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -1345,7 +1345,7 @@ function _commerce_reports_views_default_sales_views() {
     );
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order state';
     $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
     $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -1458,7 +1458,7 @@ function _commerce_reports_views_default_sales_views() {
     );
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order statuses';
+    $handler->display->display_options['filters']['state']['expose']['label'] = 'Order state';
     $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
     $handler->display->display_options['filters']['state']['expose']['multiple'] = TRUE;
@@ -1624,11 +1624,11 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Commerce Order: Order status */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'commerce_order';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = array(
+  /* Filter criterion: Commerce Order: Order State */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['value'] = array(
     'pending' => 'pending',
     'completed' => 'completed',
   );
