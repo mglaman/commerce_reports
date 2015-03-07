@@ -51,6 +51,15 @@ function commerce_reports_tax_schema() {
 }
 
 /**
+ * Implements hook_uninstall().
+ */
+function commerce_reports_tax_uninstall() {
+  variable_del('commerce_reports_tax_order_generate_statuses');
+  variable_del('commerce_reports_tax_order_statuses');
+  variable_del('commerce_reports_tax_batch_finished');
+}
+
+/**
  * Changes to the database structure.
  */
 function commerce_reports_tax_update_7300(&$sandbox) {

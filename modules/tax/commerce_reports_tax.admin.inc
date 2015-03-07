@@ -8,13 +8,39 @@
   * Configuration form.
   */
 function commerce_reports_tax_form($form, &$form_state) {
+  $options = array();
+
+  $statuses = commerce_order_statuses();
+  foreach ($statuses as $status) {
+    $options[$status['name']] = check_plain($status['title']);
+  }
+
+  $form['commerce_reports_tax_order_statuses'] = array(
+    '#type' => 'select',
+    '#multiple' => TRUE,
+    '#title' => t('Order statuses'),
+    '#description' => 'Statuses for which tax will be calculated.',
+    '#options' => $options,
+    '#default_value' => variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')),
+  );
+  $form['commerce_reports_tax_order_generate_statuses'] = array(
+    '#type' => 'select',
+    '#multiple' => TRUE,
+    '#title' => t('Generate Order statuses'),
+    '#description' => 'Statuses for which tax will be generated.',
+    '#options' => $options,
+    '#default_value' => variable_get('commerce_reports_tax_order_generate_statuses', array('pending', 'completed')),
+  );
+
   $form['generate'] = array(
     '#type' => 'submit',
     '#value' => t('Generate all tax information'),
-    '#submit' => array('commerce_reports_tax_form_submit_generate'),
+    '#submit' => array(
+      'system_settings_form_submit',
+      'commerce_reports_tax_form_submit_generate'),
   );
 
-  return $form;
+  return system_settings_form($form);
 }
 
 /**

@@ -158,14 +158,11 @@ function commerce_reports_tax_entity_update($entity, $type) {
     // Mark original entity for easy reference.
     $original = $entity->original;
 
-    // @todo: These should reflect states, like the Views. Verify
-    //          also, should these be configurable?
-
-    // Check the updated status against pending, processing, completed
-    $order_current_status = in_array($entity->status, array('pending', 'processing', 'completed'));
+    // Check the updated status against statuses in settings.
+    $order_current_status = in_array($entity->status, variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')));
 
     // Check the original status, so we know if we need to remove previous record
-    $order_previous_status = in_array($original->status, array('pending', 'processing', 'completed'));
+    $order_previous_status = in_array($original->status, variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')));
 
     // The order changed to a order status we're interested in, but did not
     // previously have a watched status. Create a new record
@@ -197,7 +194,7 @@ function commerce_reports_tax_entity_delete($entity, $type) {
  * Returns the order statuses that should be taken into account.
  */
 function commerce_reports_tax_order_statuses() {
-  return array('pending', 'completed');
+  return variable_get('commerce_reports_tax_order_generate_statuses', array('pending', 'completed'));
 }
 
 /**
