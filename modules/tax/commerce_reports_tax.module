@@ -146,7 +146,10 @@ function commerce_reports_tax_block_view($delta = '') {
  * Implements hook_entity_insert().
  */
 function commerce_reports_tax_entity_insert($entity, $type) {
-  if ($type == 'commerce_order') {
+  if ($type == 'commerce_order' &&
+    in_array($entity->status, variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')))) {
+
+    commerce_reports_tax_order_save($entity);
   }
 }
 
