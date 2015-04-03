@@ -20,8 +20,10 @@ function commerce_reports_stock_views_api() {
  * Implements hook_views_pre_execute().
  */
 function commerce_reports_stock_views_pre_execute(&$view) {
-  // Prime the stock reports data set into static cache.
-  _commerce_reports_stock_calculate_dataset();
+  if ($view->name == 'commerce_reports_stock') {
+    // Prime the stock reports data set into static cache.
+    _commerce_reports_stock_calculate_dataset();
+  }
 }
 
 
