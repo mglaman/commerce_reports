@@ -11,7 +11,7 @@
 /**
  * Implements hook_views_default_views().
  */
-function commerce_reports_tax_views_default_views(){
+function commerce_reports_tax_views_default_views() {
 
   $view = new view();
   $view->name = 'commerce_reports_taxes';

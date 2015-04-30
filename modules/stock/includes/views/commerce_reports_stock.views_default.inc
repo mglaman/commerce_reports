@@ -1,7 +1,12 @@
 <?php
 
 /**
- * Implementation of hook_views_default_views().
+ * @file
+ * Default Views configuration for Commerce Reports Stock.
+ */
+
+/**
+ * Implements hook_views_default_views().
  */
 function commerce_reports_stock_views_default_views() {
   $views = array();

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Views integration for Commerce Reports Stock
+ * Views integration for Commerce Reports Stock.
  */
 
 /**
@@ -17,9 +17,9 @@ function commerce_reports_stock_views_data_alter(&$data) {
       'click sortable' => TRUE,
     ),
     // Since this isn't a valid field on database, it's throwing an error.
-    //'sort' => array(
-    //  'handler' => 'views_handler_sort',
-    //),
+    // 'sort' => array(
+    // 'handler' => 'views_handler_sort',
+    // ),
   );
 
   $data['commerce_product']['monthlysales'] = array(

@@ -5,7 +5,6 @@
  * This module provides advanced stock reporting for Drupal Commerce.
  */
 
-
 /**
  * Implements hook_views_api().
  */
@@ -35,10 +34,15 @@ function commerce_reports_stock_views_pre_execute(&$view) {
  * @todo : This is dirty and heavy. Can we trim this up / streamline?
  *          Our view is technically querying all products twice :/
  *
- * @param null $sku
- * @param null $key
+ * @param null|string $sku
+ *    Optional SKU to return data for.
+ * @param null|string $key
+ *    Optional data key to return.
  * @param bool $reset
- * @return array
+ *    Boolean to reset cache or not.
+ *
+ * @return mixed
+ *    Returns an array of data, or string if $key was set.
  */
 function _commerce_reports_stock_calculate_dataset($sku = NULL, $key = NULL, $reset = FALSE) {
   $data = &drupal_static(__FUNCTION__);
@@ -56,8 +60,9 @@ function _commerce_reports_stock_calculate_dataset($sku = NULL, $key = NULL, $re
     $lifetimes = array();
     $in_stock = array();
 
-    // Go through each product and make calculations
+    // Go through each product and make calculations.
     foreach ($products as $product) {
+      /** @var EntityDrupalWrapper $product_wrapper */
       $product_wrapper = entity_metadata_wrapper('commerce_product', $product);
 
       $sku = (string) $product_wrapper->sku->value();
@@ -66,7 +71,7 @@ function _commerce_reports_stock_calculate_dataset($sku = NULL, $key = NULL, $re
       $stock = 0;
       // @todo: This assumes Commerce Simple Stock was utilized.
       if ($product_wrapper->__isset('commerce_stock')) {
-        $stock =  (int) $product_wrapper->commerce_stock->value();
+        $stock = (int) $product_wrapper->commerce_stock->value();
       }
 
       // Compute the number of weeks since start.
@@ -126,9 +131,13 @@ function _commerce_reports_stock_calculate_dataset($sku = NULL, $key = NULL, $re
 /**
  * Calculate the stock lifetime.
  *
- * @param $stock
- * @param $weekly_burn
+ * @param int $stock
+ *    The current stock count.
+ * @param int $weekly_burn
+ *    The weekly burn.
+ *
  * @return int
+ *    The length of the current stock's lifetime.
  */
 function _commerce_reports_stock_calculate_lifetime($stock, $weekly_burn) {
   // Why does this mean it is 1000?
@@ -143,11 +152,15 @@ function _commerce_reports_stock_calculate_lifetime($stock, $weekly_burn) {
  *
  * This is simplistic, we could do more.
  *
- * @param $sales
- * @param $period
+ * @param array $sales
+ *    Array of the number of sales.
+ * @param int $period
+ *    The period length.
+ *
  * @return float|int
+ *    The average amount of sales.
  */
-function _commerce_reports_stock_calculate_average_sales($sales, $period) {
+function _commerce_reports_stock_calculate_average_sales(array $sales, $period) {
   return (empty($sales)) ? 0 : array_sum($sales) / $period;
 }
 
@@ -155,7 +168,10 @@ function _commerce_reports_stock_calculate_average_sales($sales, $period) {
  * Get the stock enabled products.
  *
  * @param bool $reset
+ *    Boolean to reset cache.
+ *
  * @return array
+ *    Array of products, keyed by SKU.
  */
 function _commerce_reports_stock_get_stock_enabled_products($reset = FALSE) {
   $product_list = &drupal_static(__FUNCTION__);
@@ -175,7 +191,7 @@ function _commerce_reports_stock_get_stock_enabled_products($reset = FALSE) {
       $products_result = reset($products_result);
       $products = entity_load('commerce_product', array_keys($products_result));
 
-      // Key the list by SKU
+      // Key the list by SKU.
       // @todo: Is there a way to do this already in core Commerce?
       foreach ($products as $pid => $product) {
         $product_list[$product->sku] = $product;
@@ -189,8 +205,12 @@ function _commerce_reports_stock_get_stock_enabled_products($reset = FALSE) {
  * Group sales by year, month, day or week.
  *
  * @param string $interval
+ *    Interval to group sales by. Valid options: D, W, M, Y.
  * @param int $start
+ *    Timestamp to check creation after.
+ *
  * @return array
+ *    An array of products.
  */
 function _commerce_reports_stock_api_sales($interval = 'D', $start = 0) {
   $formats = array(

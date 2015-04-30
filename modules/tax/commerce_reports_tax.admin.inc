@@ -4,9 +4,9 @@
  * Administrative forms.
  */
 
- /**
-  * Configuration form.
-  */
+/**
+ * Configuration form.
+ */
 function commerce_reports_tax_form($form, &$form_state) {
   $options = array();
 
@@ -15,29 +15,32 @@ function commerce_reports_tax_form($form, &$form_state) {
     $options[$status['name']] = check_plain($status['title']);
   }
 
-  $form['commerce_reports_tax_order_statuses'] = array(
-    '#type' => 'select',
-    '#multiple' => TRUE,
-    '#title' => t('Order statuses'),
-    '#description' => 'Statuses for which tax will be calculated.',
-    '#options' => $options,
-    '#default_value' => variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')),
+  $form['commerce_reports_tax_order_statuses']          = array(
+    '#type'          => 'select',
+    '#multiple'      => TRUE,
+    '#title'         => t('Order statuses'),
+    '#description'   => t('Statuses for which tax will be calculated.'),
+    '#options'       => $options,
+    '#default_value' => variable_get('commerce_reports_tax_order_statuses',
+      array('pending', 'processing', 'completed')),
   );
   $form['commerce_reports_tax_order_generate_statuses'] = array(
-    '#type' => 'select',
-    '#multiple' => TRUE,
-    '#title' => t('Generate Order statuses'),
-    '#description' => 'Statuses for which tax will be generated.',
-    '#options' => $options,
-    '#default_value' => variable_get('commerce_reports_tax_order_generate_statuses', array('pending', 'completed')),
+    '#type'          => 'select',
+    '#multiple'      => TRUE,
+    '#title'         => t('Generate Order statuses'),
+    '#description'   => t('Statuses for which tax will be generated.'),
+    '#options'       => $options,
+    '#default_value' => variable_get('commerce_reports_tax_order_generate_statuses',
+      array('pending', 'completed')),
   );
 
   $form['generate'] = array(
-    '#type' => 'submit',
-    '#value' => t('Generate all tax information'),
+    '#type'   => 'submit',
+    '#value'  => t('Generate all tax information'),
     '#submit' => array(
       'system_settings_form_submit',
-      'commerce_reports_tax_form_submit_generate'),
+      'commerce_reports_tax_form_submit_generate',
+    ),
   );
 
   return system_settings_form($form);
@@ -54,9 +57,9 @@ function commerce_reports_tax_form_submit_generate($form, &$form_state) {
  * Callback for tax report generation.
  */
 function commerce_reports_tax_generate_callback() {
-	commerce_reports_tax_generate();
+  commerce_reports_tax_generate();
 
-	batch_process('admin/commerce/reports/tax');
+  batch_process('admin/commerce/reports/tax');
 }
 
 /**
@@ -72,19 +75,29 @@ function commerce_reports_tax_table($start = 0, $end = REQUEST_TIME) {
   if (!variable_get('commerce_reports_tax_batch_finished', FALSE)) {
     $rows = array();
 
-  	$rows[] = array(
-      'data' => array(array('data' => t("It seems you have not yet extracted tax information from orders that occurred before enabling the tax reporting module. You will have to <a href='@generate-url'>generate</a> past data before anything will show up.", array('@generate-url' => url('admin/commerce/config/tax-reports/generate'))), 'colspan' => 3)),
+    $rows[] = array(
+      'data' => array(
+        array(
+          'data' => t("It seems you have not yet extracted tax information from orders that occurred before enabling the tax reporting module. You will have to <a href='@generate-url'>generate</a> past data before anything will show up.", array('@generate-url' => url('admin/commerce/config/tax-reports/generate'))),
+          'colspan' => 3,
+        ),
+      ),
     );
   }
   elseif (!$rows) {
     $rows[] = array(
-      'data' => array(array('data' => t("There's currently no tax data available. You might want to <a href='@generate-url'>generate</a> past data.", array('@generate-url' => url('admin/commerce/config/tax-reports/generate'))), 'colspan' => 3)),
+      'data' => array(
+        array(
+          'data' => t("There's currently no tax data available. You might want to <a href='@generate-url'>generate</a> past data.", array('@generate-url' => url('admin/commerce/config/tax-reports/generate'))),
+          'colspan' => 3,
+        ),
+      ),
     );
   }
 
   return array(
-    '#theme' => 'table',
+    '#theme'  => 'table',
     '#header' => array(t('Tax rate'), t('Taxable'), t('Taxed')),
-    '#rows' => $rows,
+    '#rows'   => $rows,
   );
 }

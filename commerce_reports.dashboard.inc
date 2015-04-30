@@ -8,6 +8,15 @@ define('COMMERCE_REPORTS_DASHBOARD_BLOCK', 1);
 define('COMMERCE_REPORTS_DASHBOARD_BROAD_BLOCK', 2);
 define('COMMERCE_REPORTS_DASHBOARD_ROW', 3);
 
+/**
+ * Determines a blocks width on the Commerce Reports dashboard.
+ *
+ * @param array $items
+ *    Array of blocks.
+ *
+ * @return int
+ *    Returns the block's width.
+ */
 function commerce_reports_dashboard_block_width($items = array()) {
   $width = 0;
 
@@ -57,6 +66,15 @@ function commerce_reports_dashboard() {
   return $render;
 }
 
+/**
+ * Creates render array of a row on the dashboard.
+ *
+ * @param array $items
+ *    Dashboard row's blocks.
+ *
+ * @return array
+ *    Returns render array.
+ */
 function commerce_reports_dashboard_row($items = array()) {
   return array(
     '#theme_wrappers' => array('commerce_reports_dashboard_row'),
@@ -127,4 +145,3 @@ function commerce_reports_dashboard_block($name, $options = array()) {
 
   return $render;
 }
-

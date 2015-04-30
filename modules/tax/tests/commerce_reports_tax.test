@@ -51,7 +51,7 @@ class CommerceReportsTaxGenerationTests extends CommerceBaseTestCase {
   
   protected function generateTax($amount = 1) {
     // Create a tax rate of Salex Type.
-    $tax_rate = $this->createDummyTaxRate(array('' => ''));
+    $this->createDummyTaxRate(array('' => ''));
     
     $taxed = array();
     
@@ -79,7 +79,7 @@ class CommerceReportsTaxGenerationTests extends CommerceBaseTestCase {
       $orders = commerce_order_load_multiple(array($order->order_id), array(), TRUE);
       $order = reset($orders);
       
-      foreach ($order->commerce_order_total['und'][0]['data']['components'] as $component) {
+      foreach ($order->commerce_order_total[LANGUAGE_NONE][0]['data']['components'] as $component) {
         if (!empty($component['price']['data']['tax_rate'])) {
           if (empty($taxed[$component['price']['data']['tax_rate']['name']])) {
             $taxed[$component['price']['data']['tax_rate']['name']] = 0;
@@ -111,7 +111,7 @@ class CommerceReportsTaxGenerationTests extends CommerceBaseTestCase {
   }
   
   /**
-   * The following test is unfinished thanks to an apparant bug in SimpleTest.
+   * The following test is unfinished thanks to an apparent bug in SimpleTest.
    */
   function testSingleTaxType() {
     debug($this->generateTax());

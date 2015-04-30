@@ -229,16 +229,18 @@ function commerce_reports_geckoboard_revenue_monthly() {
   $upper_bound = (int) (max($projected, $previous) * 1.2);
 
   // Set our goals
-  $red = $previous * 0.7; // 30% decline on last month
-  $amber = $previous * 0.9; // 10% growth on last month
+  // 30% decline on last month
+  $red = $previous * 0.7;
+  // 10% growth on last month
+  $amber = $previous * 0.9;
 
   // Generate evenly spaced points
   $ticks = range(0, $upper_bound, $upper_bound / 6);
   $ticks = array_map('intval', $ticks);
 
   // Generate marks corresponding to our sales data so we don't have to guess the numbers
-  //$ticks = array(0, $current, $previous, $projected, $upper_bound);
-  //sort($ticks);
+  // $ticks = array(0, $current, $previous, $projected, $upper_bound);
+  // sort($ticks);
 
   return array(
     'orientation' => 'horizontal',

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Module file for Commerce Reports.
+ */
+
+/**
  * Implements hook_help().
  */
 function commerce_reports_help($path, $arg) {
@@ -9,10 +14,10 @@ function commerce_reports_help($path, $arg) {
       return '<p>' . t('The table lists each product listed in the store, its amount sold and the revenue it produced.') . '</p>';
 
     case 'admin/commerce/reports/customers':
-      return '<p>' . t('The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order. Clicking on a customer\'s name will take you to their account page.') . '</p>';
+      return '<p>' . t("The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order. Clicking on a customer's name will take you to their account page.") . '</p>';
 
     case 'admin/commerce/reports/sales':
-      return '<p>' . t('Here you can find a customizable and filterable sales report. You can break down sales monthly, weekly or daily, specify a time period and which order statusses should be included. Each line indicates the total amount of orders, the total revenue and the average revenue per order for a certain day, week or month.') . '</p>';
+      return '<p>' . t('Here you can find a customizable and filterable sales report. You can break down sales monthly, weekly or daily, specify a time period and which order statuses should be included. Each line indicates the total amount of orders, the total revenue and the average revenue per order for a certain day, week or month.') . '</p>';
 
     case 'admin/commerce/reports/payment-methods':
       return '<p>' . t('Here you can find basic information about the usage of the various payment methods. Each line represents some gateway and statistics associated with that gateway.') . '</p>';
@@ -28,7 +33,8 @@ function commerce_reports_menu() {
   $items['admin/commerce/reports'] = array(
     'title' => 'Reports',
     'description' => 'View reports for your store.',
-    'access arguments' => array('access commerce reports'), // Inherited by children.
+    // Inherited by children.
+    'access arguments' => array('access commerce reports'),
     'page callback' => 'commerce_reports_dashboard',
     'file' => 'commerce_reports.dashboard.inc',
     'weight' => -20,
@@ -98,9 +104,7 @@ function commerce_reports_menu_local_tasks_alter(&$data, $router_item, $root_pat
 
 /**
  * Implements hook_charts_info_alter().
- *
  */
-
 function commerce_reports_charts_info_alter(&$info) {
   // Say the Google charts library supports geo charts.
   $info['google']['types'][] = 'geomap';
@@ -119,11 +123,15 @@ function commerce_reports_charts_type_info() {
     // Many charting libraries always refer to the main axis as the "y-axis",
     // even if the chart's main axis is horizontal. An example of this is a
     // bar chart, where the values are along the horizontal axis.
-    'axis_inverted' => TRUE, // Meaning x/y axis are flipped.
+    // Meaning x/y axis are flipped.
+    'axis_inverted' => TRUE,
   );
   return $chart_types;
 }
 
+/**
+ * Implements hook_charts_google_visualization_types_alter().
+ */
 function commerce_reports_charts_google_visualization_types_alter(&$types) {
   $types['geomap'] = 'GeoMap';
 }
@@ -155,6 +163,7 @@ function commerce_reports_block_view($delta = '') {
   switch ($delta) {
     case 'commerce_reports_sales':
       return commerce_reports_sales();
+
     case 'commerce_reports_customers':
       $block_render = module_invoke('views', 'block_view', 'f3f98e42ba2d4d3103b95e9199cf48fe');
       return array(
@@ -162,12 +171,14 @@ function commerce_reports_block_view($delta = '') {
         'content' => $block_render['content'],
       );
   }
+
+  return NULL;
 }
 
 /**
  * Implements hook_form_alter().
  *
- * Changes the apperance of the exposed form of the sales data report.
+ * Changes the appearance of the exposed form of the sales data report.
  */
 function commerce_reports_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
   if ($form['#id'] == 'views-exposed-form-commerce-reports-sales-page') {
@@ -178,7 +189,7 @@ function commerce_reports_form_views_exposed_form_alter(&$form, &$form_state, $f
 }
 
 /**
- * Implement hook_views_pre_render().
+ * Implements hook_views_pre_render().
  */
 function commerce_reports_views_pre_render(&$view) {
   if (strpos($view->name, 'commerce_reports_') !== FALSE) {
@@ -193,7 +204,7 @@ function commerce_reports_permission() {
   return array(
     'access commerce reports' => array(
       'title' => t('Access commerce reports'),
-    )
+    ),
   );
 }
 
@@ -216,14 +227,15 @@ function commerce_reports_date_formats() {
   return array(
     array(
       'commerce_reports' => ('Commerce Reports'),
-    )
+    ),
   );
 }
 
 /**
  * Implements hook_field_formatter_info().
  *
- * Defines a formatter view for the commerce_price field type that works for the commerce_reports_visualization handler.
+ * Defines a formatter view for the commerce_price field type that works for
+ * the commerce_reports_visualization handler.
  */
 function commerce_reports_field_formatter_info() {
   return array(

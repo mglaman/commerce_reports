@@ -4,29 +4,37 @@
  * @file
  * Hooks provided by Commerce Reports.
  */
- 
+
 /**
  * Add custom blocks to the dashboard provided by Commerce Reports.
  *
- * Modules that wish to add their own blocks to the dashboard can implement this hook
- * to provide metadata about this block. All content displayed on the dashboard is powered by
- * hook_block_info and hook_block_view. Each Drupal block is referenced as a section by the dashboard.
+ * Modules that wish to add their own blocks to the dashboard can implement this
+ * hook to provide metadata about this block. All content displayed on the
+ * dashboard is powered by hook_block_info and hook_block_view. Each Drupal
+ * block is referenced as a section by the dashboard.
  *
- * @return
- *   An array whose keys are internal dashboard block names and whose values are arrays
- *   containing the keys:
+ * @return array
+ *   An array whose keys are internal dashboard block names and whose values
+ *   are arrays containing the keys:
  *     - title: A human readable, translated label for the block.
- *     - type: COMMERCE_REPORTS_DASHBOARD_BLOCK (default) if you want your block to take a third of the page,
- *       or COMMERCE_REPORTS_DASHBOARD_ROW if you want your block to stretch over a complete row.
- *     - switchSections (optional): A boolean that indicates if there should be the ability to switch between sections (see later).
- *       If TRUE, only one section will be shown at a time and there will be controls available to switch between these sections.
- *       If FALSE, all sections will be shown below each other.              
- *     - report (optional): The array describing which report or module this block belongs to. Known keys are:
+ *     - type:  COMMERCE_REPORTS_DASHBOARD_BLOCK (default) if you want the block
+ *              to take a third of the page, or COMMERCE_REPORTS_DASHBOARD_ROW
+ *              if you want your block to stretch over a complete row.
+ *     - switchSections (optional): A boolean that indicates if there should be
+ *              the ability to switch between sections (see later).
+ *              If TRUE, only one section will be shown at a time and there will
+ *              be controls available to switch between these sections.
+ *              If FALSE, all sections will be shown below each other.
+ *     - report (optional): The array describing which report or module this
+ *              block belongs to. Known keys are:
  *         - title: A human readable, translated label for the module or report.
- *         - path (optional): The Drupal path to the module, as it should be given to url().
- *     - sections: The array describing which sections should be added to this block. This is where you reference the Drupal blocks
- *       that you wish to display. It returns an array whose keys are internal names for the sections and whose values are arrays
- *       containing the keys:
+ *         - path (optional): The Drupal path to the module, as it should be
+ *                given to url().
+ *     - sections: The array describing which sections should be added to this
+ *              block. This is where you reference the Drupal blocks that you
+ *              wish to display. It returns an array whose keys are internal
+ *              names for the sections and whose values are arrays containing
+ *              the keys:
  *         - title: A human readable, translated label for the section.
  *         - module: The name of the module implementing the block.
  *         - block: The name of the block.

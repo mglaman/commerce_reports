@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Module file for Commerce Reports Tax.
+ */
+
+/**
  * Implements hook_help().
  */
 function commerce_reports_tax_help($path, $arg) {
@@ -147,7 +152,8 @@ function commerce_reports_tax_block_view($delta = '') {
  */
 function commerce_reports_tax_entity_insert($entity, $type) {
   if ($type == 'commerce_order' &&
-    in_array($entity->status, variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')))) {
+    in_array($entity->status, variable_get('commerce_reports_tax_order_statuses',
+      array('pending', 'processing', 'completed')))) {
 
     commerce_reports_tax_order_save($entity);
   }
@@ -162,21 +168,25 @@ function commerce_reports_tax_entity_update($entity, $type) {
     $original = $entity->original;
 
     // Check the updated status against statuses in settings.
-    $order_current_status = in_array($entity->status, variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')));
+    $order_current_status = in_array($entity->status,
+      variable_get('commerce_reports_tax_order_statuses',
+        array('pending', 'processing', 'completed')));
 
-    // Check the original status, so we know if we need to remove previous record
-    $order_previous_status = in_array($original->status, variable_get('commerce_reports_tax_order_statuses', array('pending', 'processing', 'completed')));
+    // Check the original status, so we know if we need to remove last record.
+    $order_previous_status = in_array($original->status,
+      variable_get('commerce_reports_tax_order_statuses',
+        array('pending', 'processing', 'completed')));
 
     // The order changed to a order status we're interested in, but did not
-    // previously have a watched status. Create a new record
+    // previously have a watched status. Create a new record.
     if ($order_current_status && !$order_previous_status) {
       commerce_reports_tax_order_save($entity);
     }
-    // The order reverted to a status not watched, and previous had a watched status.
+    // The order reverted to a status not watched and has previous record.
     elseif (!$order_current_status && $order_previous_status) {
       commerce_reports_tax_order_delete($entity->order_id);
     }
-    // The price has been modified on a watched order..
+    // The price has been modified on a watched order.
     elseif ($order_current_status && $order_previous_status
       && $original->commerce_order_total != $entity->commerce_order_total) {
       commerce_reports_tax_order_save($entity);
@@ -220,7 +230,7 @@ function commerce_reports_tax_generate() {
  * Deletes the tax information of multiple orders.
  */
 function commerce_reports_tax_order_delete_multiple($order_ids = array()) {
-  db_query("DELETE FROM {commerce_reports_tax} WHERE order_id IN (:order_ids)", array(':order_ids' => $order_ids));
+  return db_query("DELETE FROM {commerce_reports_tax} WHERE order_id IN (:order_ids)", array(':order_ids' => $order_ids));
 }
 
 /**
@@ -240,7 +250,11 @@ function commerce_reports_tax($start, $end) {
   $rows = array();
 
   while ($result = $results->fetchAssoc()) {
-    $rows[$result['name']] = array($result['title'], commerce_currency_format($result['taxable'], $result['currency_code']), commerce_currency_format($result['taxed'], $result['currency_code']));
+    $rows[$result['name']] = array(
+      $result['title'],
+      commerce_currency_format($result['taxable'], $result['currency_code']),
+      commerce_currency_format($result['taxed'], $result['currency_code']),
+    );
   }
 
   return $rows;
@@ -249,10 +263,12 @@ function commerce_reports_tax($start, $end) {
 /**
  * Stores the tax information of an order.
  *
- * If the order has already been processed in the past it will compare the information
- * in the database with the generated information and update accordingly.
+ * If the order has already been processed in the past it will compare the
+ * information in the database with the generated information and update
+ * accordingly.
  */
 function commerce_reports_tax_order_save($order) {
+  /** @var EntityDrupalWrapper $wrapper */
   $wrapper = entity_metadata_wrapper('commerce_order', $order);
   $order_id = $wrapper->order_id->value();
 
@@ -261,17 +277,17 @@ function commerce_reports_tax_order_save($order) {
   foreach ($wrapper->commerce_line_items as $line_item_wrapper) {
     if ($tax_rates = _commerce_reports_tax_get_tax_rates($line_item_wrapper)) {
 
-      // Taxable
+      // Taxable.
       $taxable = $line_item_wrapper->commerce_total->value();
 
-      // Taxed
+      // Taxed.
       foreach ($tax_rates as $tax_rate) {
         $taxed = commerce_price_component_total($taxable, $tax_rate['price_component']);
         $id = $tax_rate['name'] . $order_id . $taxed['currency_code'];
 
-        // Create fresh record if it doesn't exist
+        // Create fresh record if it doesn't exist.
         if (empty($applied_taxes[$id])) {
-          $applied_taxes[$id] = new StdClass;
+          $applied_taxes[$id] = new stdClass();
           $applied_taxes[$id]->tax_rate = $tax_rate['name'];
           $applied_taxes[$id]->order_id = $order_id;
           $applied_taxes[$id]->currency_code = $taxed['currency_code'];
@@ -279,7 +295,7 @@ function commerce_reports_tax_order_save($order) {
           $applied_taxes[$id]->taxed = 0;
         }
 
-        // Increase the amounts
+        // Increase the amounts.
         $applied_taxes[$id]->taxable += $taxable['amount'];
         $applied_taxes[$id]->taxed += $taxed['amount'];
       }
@@ -294,30 +310,33 @@ function commerce_reports_tax_order_save($order) {
 
   // If we have records, update the existing, else add new.
   if ($result->rowCount() > 0) {
-    // Update record
+    // Update record.
     while ($row = $result->fetchAssoc()) {
       $tax_record_id = $row['tax_rate'] . $row['order_id'] . $row['currency_code'];
-      drupal_write_record('commerce_reports_tax', $applied_taxes[$tax_record_id], array('tax_rate', 'order_id', 'currency_code'));
+      drupal_write_record(
+        'commerce_reports_tax',
+        $applied_taxes[$tax_record_id],
+        array('tax_rate', 'order_id', 'currency_code'));
     }
   }
   else {
     // Insert any of the remaining applied taxes.
     foreach ($applied_taxes as $tax) {
-      $write = drupal_write_record('commerce_reports_tax', $tax);
+      drupal_write_record('commerce_reports_tax', $tax);
     }
   }
 }
 
 /**
  * Helper function for getting applied tax rate from line item wrapper.
- * @param  $line_item_wrapper
+ *
+ * @param EntityDrupalWrapper $line_item_wrapper
  *   The wrapped line item entity.
  *
- * @return
+ * @return array
  *   An array set of tax rates from given line item.
- *
  */
-function _commerce_reports_tax_get_tax_rates($line_item_wrapper) {
+function _commerce_reports_tax_get_tax_rates(EntityDrupalWrapper $line_item_wrapper) {
   $commerce_total_data = $line_item_wrapper->commerce_total->data->value();
   $tax_rates = array();
   foreach ($commerce_total_data['components'] as $component) {

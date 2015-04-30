@@ -11,7 +11,7 @@ function commerce_reports_patterns_form($form, &$form_state) {
   $form['min_confidence'] = array(
     '#type' => 'textfield',
     '#title' => t('Minimum confidence'),
-    '#description' => t('The minimum confidence should be given as a percentage that indicates the chance of occurence a rule should minimally have.'),
+    '#description' => t('The minimum confidence should be given as a percentage that indicates the chance of occurrence a rule should minimally have.'),
     '#size' => 6,
     '#field_suffix' => '%',
   );

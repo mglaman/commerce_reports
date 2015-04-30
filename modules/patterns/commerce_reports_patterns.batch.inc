@@ -18,7 +18,7 @@ function commerce_reports_patterns_load($min_support, &$context) {
       ),
     );
     
-    $context['sandbox']['products'] = db_query('SELECT sku, COUNT(li.line_item_id) AS occurences FROM {commerce_product} p LEFT JOIN {commerce_line_item} li ON p.sku = li.line_item_label GROUP BY sku HAVING occurences >= :min_occurences ORDER BY occurences DESC', array(':min_occurences' => $min_transactions))->fetchAll();
+    $context['sandbox']['products'] = db_query('SELECT sku, COUNT(li.line_item_id) AS occurrences FROM {commerce_product} p LEFT JOIN {commerce_line_item} li ON p.sku = li.line_item_label GROUP BY sku HAVING occurrences >= :min_occurrences ORDER BY occurrences DESC', array(':min_occurrences' => $min_transactions))->fetchAll();
     
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['max'] = count($context['sandbox']['products']);
@@ -116,9 +116,9 @@ function commerce_reports_patterns_frequent_itemset(&$context) {
       'tidlist' => array_intersect($a_set['tidlist'], $b_set['tidlist']),
     );
     
-    $occurences = max(count($candidate['tidlist']), 0);
+    $occurrences = max(count($candidate['tidlist']), 0);
     
-    if ($occurences >= $context['results']['minimum_transactions']) {
+    if ($occurrences >= $context['results']['minimum_transactions']) {
       $new_items = array_diff($candidate['items'], $partition_prefix);
       $prefix = array_merge($partition_prefix, array(reset($new_items)));
 
