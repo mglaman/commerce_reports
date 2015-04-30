@@ -16,6 +16,3 @@ core = 7.x
 
 ; Views handlers
 files[] = includes/views/handlers/commerce_reports_handler_sort_date.inc
-
-; Tests
-files[] = tests/commerce_reports.test
