@@ -22,26 +22,24 @@ class CommerceReportsUITestCase extends CommerceReportsBaseTestCase {
   }
 
   public function testMenuIntegration() {
+    $paths = array(
+      'admin/commerce/reports',
+      'admin/commerce/reports/products',
+      'admin/commerce/reports/customers',
+      'admin/commerce/reports/sales',
+      'admin/commerce/reports/payment-methods',
+    );
     $this->drupalLogin($this->store_admin);
-
-    $this->drupalGet('admin');
-    $links = $this->_getLinks(t('Reports'));
-    $this->assertEqual(count($links), 1, t("The correct amount of menu entries to 'Reports' was found on the administration page."));
-    if ($links) {
-      $attributes = reset($links)->attributes();
-      $this->assertEqual($attributes['href'], '/?q=admin/reports', t('The menu entry points to the correct page.'));
+    foreach ($paths as $path) {
+      $this->drupalGet($path);
+      $this->assertResponse(200, t('Store admin can access report: @path.', array('@path' => $path)));
     }
 
-    $this->drupalGet('admin/commerce');
-    $links = $this->_getLinks(t('Reports'));
-    $this->assertEqual(count($links), 1, t("The correct amount of menu entries to 'Reports' was found on the store administration page."));
-    if ($links) {
-      $attributes = reset($links)->attributes();
-      $this->assertEqual($attributes['href'], '/?q=admin/commerce/reports', t('The menu entry points to the correct page.'));
+    $this->drupalLogin($this->createStoreCustomer());
+    foreach ($paths as $path) {
+      $this->drupalGet($path);
+      $this->assertResponse(403, t('Customers cannot access report: @path.', array('@path' => $path)));
     }
-
-    $this->drupalGet('admin/commerce/reports');
-    $this->assertResponse(200, t('Reports admin can access reports.'));
   }
 
 }

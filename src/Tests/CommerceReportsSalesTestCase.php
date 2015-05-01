@@ -36,10 +36,14 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
     $possibleDates = array();
 
     foreach ($report as $line) {
-      $possibleDates[] = $line->commerce_order_created_granularity;
+      $possibleDates[] = $this->getOrderCreated($line);
     }
 
     return $possibleDates;
+  }
+
+  protected function getOrderCreated($line) {
+    return $line->_field_data['order_id_1']['entity']->created;
   }
 
   protected function _test() {
@@ -64,7 +68,7 @@ class CommerceReportsSalesTestCase extends CommerceReportsBaseTestCase {
     $report = views_get_view_result('commerce_reports_sales', 'page');
 
     foreach ($report as $line) {
-      $created = $line->commerce_order_created_granularity;
+      $created = $this->getOrderCreated($line);
 
       if (empty($sales[$created])) {
         $this->assertTrue(empty($line->order_id) && empty($line->commerce_order_total) && empty($line->commerce_order_total_1), t('There was no unintented activity.'));

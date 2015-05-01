@@ -64,7 +64,7 @@ class CommerceReportsCustomerTestCase extends CommerceReportsBaseTestCase {
         );
       }
 
-      $customers[$uid]['orders'] ++;
+      $customers[$uid]['orders']++;
 
       foreach ($order['products'] as $product_id => $quantity) {
         $customers[$uid]['products'] += $quantity;
@@ -72,7 +72,7 @@ class CommerceReportsCustomerTestCase extends CommerceReportsBaseTestCase {
       }
     }
 
-    $report = views_get_view_result('commerce_reports_customers', 'default');
+    $report = views_get_view_result('commerce_reports_customers', 'page');
 
     $this->assertEqual(count($report), min(count($customers), 10), t('The amount of customers (%reported) that is reported (%generated) upon is correct.', array('%reported' => count($report), '%generated' => count($customers))));
 
