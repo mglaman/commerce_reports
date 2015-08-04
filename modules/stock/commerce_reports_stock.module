@@ -116,16 +116,29 @@ function _commerce_reports_stock_calculate_dataset($sku = NULL, $key = NULL, $re
   }
 
   // Check to see if we should return specific data, or whole array.
-  if ($sku !== NULL && isset($data[$sku])) {
-    // If we have a key return that, else the whole sku entry.
-    if ($key !== NULL && isset($data[$sku][$key])) {
+  if($key !== NULL && $sku !== NULL){
+    if(isset($data[$sku]) && isset($data[$sku][$key])){
       return $data[$sku][$key];
+    } else {
+      return $key == 'lifetime' ? 1000 : 0;
     }
-    else {
+    // If we have a key return that, else the whole sku entry.
+  } elseif( $sku !== NULL ) {
+    if(isset($data[$sku])){
       return $data[$sku];
+    } else {
+      return array(
+          'sku' => $sku,
+          'stock' => $stock,
+          'weeklysales' => 0,
+          'monthlysales' => 0,
+          'lifetime' => 1000 ,
+      );
     }
+  } else {
+    return $data;
   }
-  return $data;
+
 }
 
 /**
