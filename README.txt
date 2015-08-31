@@ -63,6 +63,13 @@ Commerce Kickstart uses a custom administrative menu which can make accessing
 Commerce Reports difficult. The path to the reporting dashboard can be found at
 /admin/commerce/reports.
 
+5. Excluding fees or other price components (#2284209)
+---------------------------
+There is there Commerce price by components module which provides a field formatter
+that will exclude price components from being included in a rendered price.
+
+https://www.drupal.org/project/commerce_price_components
+
 Changes From 7.x-3.x to 7.x-4.x
 ===========================
 
