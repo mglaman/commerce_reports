@@ -16,3 +16,5 @@ core = 7.x
 
 ; Views handlers
 files[] = includes/views/handlers/commerce_reports_handler_sort_date.inc
+
+test_dependencies[] = views_data_export
