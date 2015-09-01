@@ -111,10 +111,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -229,10 +226,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -380,10 +374,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -531,10 +522,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -682,10 +670,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -814,10 +799,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -918,10 +900,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -1022,10 +1001,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   $handler->display->display_options['filters']['state']['exposed'] = TRUE;
   $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
   $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -1113,10 +1089,7 @@ function _commerce_reports_views_default_sales_views() {
     $handler->display->display_options['filters']['state']['id'] = 'state';
     $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
     $handler->display->display_options['filters']['state']['field'] = 'state';
-    $handler->display->display_options['filters']['state']['value'] = array(
-      'pending' => 'pending',
-      'completed' => 'completed',
-    );
+    $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -1226,10 +1199,7 @@ function _commerce_reports_views_default_sales_views() {
     $handler->display->display_options['filters']['state']['id'] = 'state';
     $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
     $handler->display->display_options['filters']['state']['field'] = 'state';
-    $handler->display->display_options['filters']['state']['value'] = array(
-      'pending' => 'pending',
-      'completed' => 'completed',
-    );
+    $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['label'] = 'Order State';
@@ -1339,10 +1309,7 @@ function _commerce_reports_views_default_sales_views() {
     $handler->display->display_options['filters']['state']['id'] = 'state';
     $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
     $handler->display->display_options['filters']['state']['field'] = 'state';
-    $handler->display->display_options['filters']['state']['value'] = array(
-      'pending' => 'pending',
-      'completed' => 'completed',
-    );
+    $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['label'] = 'Order state';
@@ -1452,10 +1419,7 @@ function _commerce_reports_views_default_sales_views() {
     $handler->display->display_options['filters']['state']['id'] = 'state';
     $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
     $handler->display->display_options['filters']['state']['field'] = 'state';
-    $handler->display->display_options['filters']['state']['value'] = array(
-      'pending' => 'pending',
-      'completed' => 'completed',
-    );
+    $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
     $handler->display->display_options['filters']['state']['exposed'] = TRUE;
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['label'] = 'Order state';
@@ -1612,10 +1576,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
 
   /* Display: Today */
   $handler = $view->new_display('block', 'Today', 'today');
@@ -1628,10 +1589,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   /* Filter criterion: Date: Date (commerce_order) */
   $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
   $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
@@ -1659,10 +1617,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   /* Filter criterion: Date: Date (commerce_order) */
   $handler->display->display_options['filters']['date_filter']['id'] = 'date_filter';
   $handler->display->display_options['filters']['date_filter']['table'] = 'commerce_order';
@@ -1691,10 +1646,7 @@ function _commerce_reports_views_default_sales_views() {
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   /* Filter criterion: Commerce Order: Created date */
   $handler->display->display_options['filters']['created']['id'] = 'created';
   $handler->display->display_options['filters']['created']['table'] = 'commerce_order';

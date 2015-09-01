@@ -283,6 +283,37 @@ function commerce_reports_field_formatter_view($entity_type, $entity, $field, $i
 }
 
 /**
+ * Returns the order states to report on.
+ *
+ * @return array
+ *    Array of order states for Views to filter on.
+ */
+function commerce_reports_reportable_order_states() {
+  $cache =& drupal_static(__FUNCTION__, array());
+
+  if (empty($cache)) {
+    $report_states = array(
+      'pending',
+      'completed',
+    );
+    drupal_alter('commerce_reports_reportable_order_states', $report_states);
+
+    // Validate states.
+    $order_states = commerce_order_states();
+    foreach ($report_states as $state) {
+      if (!in_array($state, $order_states)) {
+        unset($report_states[$state]);
+      }
+    }
+
+    // Use array_combine to match View's 'value' => 'value',
+    $cache = array_combine($report_states, $report_states);
+  }
+
+  return $cache;
+}
+
+/**
  * Implements hook_commerce_reports_dashboard().
  */
 function commerce_reports_commerce_reports_dashboard() {

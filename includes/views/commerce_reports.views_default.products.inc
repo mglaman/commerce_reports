@@ -144,10 +144,7 @@ function _commerce_reports_views_default_products_views() {
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
   $handler->display->display_options['filters']['state']['relationship'] = 'order_id';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -168,10 +165,7 @@ function _commerce_reports_views_default_products_views() {
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
   $handler->display->display_options['filters']['state']['relationship'] = 'order_id';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    'pending' => 'pending',
-    'completed' => 'completed',
-  );
+  $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
   /* Filter criterion: Commerce Product: SKU */
   $handler->display->display_options['filters']['sku']['id'] = 'sku';
   $handler->display->display_options['filters']['sku']['table'] = 'commerce_product';
@@ -387,10 +381,7 @@ function _commerce_reports_views_default_products_views() {
     $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
     $handler->display->display_options['filters']['state']['field'] = 'state';
     $handler->display->display_options['filters']['state']['relationship'] = 'order_id';
-    $handler->display->display_options['filters']['state']['value'] = array(
-      'pending' => 'pending',
-      'completed' => 'completed',
-    );
+    $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
     $handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
     $handler->display->display_options['filters']['state']['expose']['label'] = 'Order state';
     $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';

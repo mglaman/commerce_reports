@@ -81,3 +81,15 @@ function hook_commerce_reports_dashboard() {
 function hook_commerce_reports_dashboard_alter(&$info) {
   $info['overview_today']['weight'] = 90;
 }
+
+/**
+ * Allow modules to add additional states to report on.
+ *
+ * @param array $order_states
+ */
+function hook_commerce_reports_reportable_order_states_alter(array $order_states) {
+  // https://www.drupal.org/node/2345319
+  if (module_exists('commerce_billy')) {
+    $order_states[] = 'invoiced';
+  }
+}
