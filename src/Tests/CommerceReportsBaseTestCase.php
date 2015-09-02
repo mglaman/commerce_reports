@@ -6,12 +6,16 @@ namespace Drupal\commerce_reports\Tests;
  * Class CommerceReportsBaseTestCase
  */
 class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
+  /**
+   * Don't need most of default core modules.
+   */
+  protected $profile = 'minimal';
 
   protected $products;
   protected $customers;
   protected $orders;
 
-
+  protected $additional_modules = array();
   protected $store_admin;
 
   /**
@@ -36,6 +40,9 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
   function setUp() {
     $modules = parent::setUpHelper('all');
     $modules[] = 'commerce_reports';
+    foreach ($this->additional_modules as $module) {
+      $modules[] = $module;
+    }
     parent::setUp($modules);
 
     $this->products = array();
@@ -62,6 +69,31 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
   }
 
   /**
+   * Returns information about created products for tests.
+   *
+   * @return array
+   */
+  protected function createdProductsData() {
+    $products = array();
+    foreach ($this->orders as $order) {
+      foreach ($order['products'] as $product_id => $quantity) {
+        $sku = $this->products[$product_id]->sku;
+
+        if (empty($products[$sku])) {
+          $products[$sku] = array(
+            'quantity' => 0,
+            'revenue' => 0,
+          );
+        }
+
+        $products[$sku]['quantity'] += $quantity;
+        $products[$sku]['revenue'] += $quantity * $this->products[$product_id]->commerce_price[LANGUAGE_NONE][0]['amount'];
+      }
+    }
+    return $products;
+  }
+
+  /**
    * Helper function creating multiple dummy customers.
    */
   protected function createCustomers($amount = 1) {
@@ -69,6 +101,36 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
       $customer = $this->createStoreCustomer();
       $this->customers[$customer->uid] = $customer;
     }
+  }
+
+  /**
+   * Returns information about created customers for tests.
+   *
+   * @return array
+   */
+  protected function createdCustomersData() {
+    $customers = array();
+
+    foreach ($this->orders as $order) {
+      $uid = $order['commerce_order']->uid;
+
+      if (empty($customers[$uid])) {
+        $customers[$uid] = array(
+          'orders' => 0,
+          'products' => 0,
+          'revenue' => 0,
+        );
+      }
+
+      $customers[$uid]['orders']++;
+
+      foreach ($order['products'] as $product_id => $quantity) {
+        $customers[$uid]['products'] += $quantity;
+        $customers[$uid]['revenue'] += $quantity * $this->products[$product_id]->commerce_price[LANGUAGE_NONE][0]['amount'];
+      }
+    }
+
+    return $customers;
   }
 
   /**
@@ -138,6 +200,22 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
     }
 
     return $total;
+  }
+
+  /**
+   * Return a an executed View.
+   *
+   * @param $name
+   * @param $id
+   * @return \view
+   */
+  protected function getView($name, $id) {
+    $view = views_get_view($name, TRUE);
+    $view->set_arguments(array());
+    $view->set_display(array($id));
+    $view->pre_execute();
+    $view->execute($id);
+    return $view;
   }
 
 }

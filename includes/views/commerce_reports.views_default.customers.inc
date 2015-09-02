@@ -310,6 +310,7 @@ function _commerce_reports_views_default_customer_views() {
     $handler->display->display_options['filters']['state']['id'] = 'state';
     $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
     $handler->display->display_options['filters']['state']['field'] = 'state';
+    $handler->display->display_options['filters']['state']['relationship'] = 'uid_commerce_orders';
     $handler->display->display_options['filters']['state']['value'] = commerce_reports_reportable_order_states();
     /* Filter criterion: User: Name */
     $handler->display->display_options['filters']['uid']['id'] = 'uid';
