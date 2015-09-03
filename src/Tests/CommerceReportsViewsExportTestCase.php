@@ -119,6 +119,49 @@ class CommerceReportsViewsExportTestCase extends CommerceReportsBaseTestCase {
     $this->assertEqual(count($rendered), count($months), t('The amount of years (%reported) that is reported (%generated) upon is correct.', array('%reported' => count($rendered), '%generated' => count($months))));
   }
 
+  public function testExportRespectsFilters() {
+    // Generate test data
+    $dates = $this->sampleDates();
+    $this->createCustomers(5);
+    $this->createOrders(20, FALSE, $dates);
+    $months = $this->ordersGroupedByTime('F Y');
+
+    // Date info
+    $start = new \DateTime();
+    $end = clone $start;
+
+    $start->setTimestamp($dates[0]);
+    $end = $end->add(new \DateInterval('P1M'));
+
+    // Setup our view
+    $name = 'commerce_reports_sales';
+    $id = 'page';
+    $view = views_get_view($name, TRUE);
+    $view->set_arguments(array());
+    $view->set_display(array($id));
+
+    // Set filters.
+    $this->verbose(t('Filtering on @start and @end', array(
+      '@start' => $start->format('F Y'),
+      '@end' => $end->format('F Y'),
+    )));
+    $filters = $view->display_handler->get_option('filters');
+    $filters['date_filter']['default_date'] = $start->format('F Y');
+    $filters['date_filter']['default_to_date'] = $end->format('F Y');
+    $view->display_handler->set_option('filters', $filters);
+
+    $view->pre_execute();
+    $view->execute('views_data_export_1');
+
+    $rendered = array_filter(explode(PHP_EOL, $view->render()));
+    array_shift($rendered);
+    $data = reset($rendered);
+    $data = str_getcsv($data);
+
+    $this->assertEqual($data[1], $months[$start->format('F Y')], t('The amount of orders (%reported) that is reported (%generated) upon is correct for @month.', array('%reported' => $data[1], '%generated' => $months[$start->format('F Y')], '@month' => $start->format('F Y'))));
+
+  }
+
   protected function ordersGroupedByTime($format) {
     $time = array();
     foreach ($this->orders as $order) {
