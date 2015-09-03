@@ -133,8 +133,8 @@ class CommerceReportsViewsExportTestCase extends CommerceReportsBaseTestCase {
 
   protected function sampleDates() {
     $sample = array();
-    $date = new \DateTime();
     for ($i = 0; $i < rand(0, 20); $i++) {
+      $date = new \DateTime();
       $sample[] = $date->sub(new \DateInterval("P{$i}M"))->getTimestamp();
     }
     return $sample;
