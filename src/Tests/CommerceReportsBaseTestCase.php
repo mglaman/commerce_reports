@@ -17,6 +17,7 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
 
   protected $additional_modules = array();
   protected $store_admin;
+  protected $marketing_user;
 
   /**
    * Overrides CommerceBaseTestCase::permissionBuilder().
@@ -49,9 +50,22 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
     $this->customers = array();
     $this->orders = array();
     $this->store_admin = $this->createStoreAdmin();
+    // Create a marketing user, like a customer but can access results.
+    $this->marketing_user = $this->drupalCreateUser(array(
+      'access content',
+      'access checkout',
+      'view own commerce_order entities',
+      'access commerce reports',
+      'access administration pages',
+    ));
+
 
     if (!$this->store_admin) {
       $this->fail(t('Failed to create Store Admin user for test.'));
+    }
+
+    if (!$this->marketing_user) {
+      $this->fail(t('Failed to create Marketing user for test.'));
     }
 
     // Set the default country to US.
@@ -190,6 +204,27 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
     }
   }
 
+  protected function createdOrdersData() {
+    $sales = array();
+    foreach ($this->orders as $order) {
+      $created = $order['commerce_order']->created;
+
+      if (empty($sales[$created])) {
+        $sales[$created] = array(
+          'orders' => 0,
+          'revenue' => 0,
+        );
+      }
+
+      $sales[$created]['orders'] ++;
+
+      foreach ($order['products'] as $product_id => $quantity) {
+        $sales[$created]['revenue'] += $quantity * $this->products[$product_id]->commerce_price[LANGUAGE_NONE][0]['amount'];
+      }
+    }
+    return $sales;
+  }
+
   protected function getTotal() {
     $total = 0;
 
@@ -216,6 +251,11 @@ class CommerceReportsBaseTestCase extends \CommerceBaseTestCase {
     $view->pre_execute();
     $view->execute($id);
     return $view;
+  }
+
+  protected function switchUser(\stdClass $account) {
+    global $user;
+    $user = $account;
   }
 
 }
