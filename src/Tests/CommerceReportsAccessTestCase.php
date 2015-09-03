@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mglaman
- * Date: 9/3/15
- * Time: 7:05 AM
- */
 
 namespace Drupal\commerce_reports\Tests;
 
@@ -48,6 +42,14 @@ class CommerceReportsAccessTestCase extends CommerceReportsBaseTestCase {
         $this->assertEqual($customers[$uid]['revenue'], $revenue, t('The reported revenue %reported matches the generated revenue %generated.', array('%reported' => $revenue, '%generated' => $customers[$uid]['revenue'])));
       }
     }
+  }
+
+  public function testCustomerReportAsAnon() {
+    $this->createOrders();
+    $this->switchUser(drupal_anonymous_user());
+
+    $view = views_get_view('commerce_reports_customers');
+    $this->assertFalse($view->access(), 'Unprivledged user does not have access');
   }
 
   public function testProductReportAsMarketingUser() {
